@@ -8,10 +8,6 @@ AU:NewDefaults('gamemenu', {
         {indexRange = {1, 1}, tab = 'gamemenu', subtab = 1},
     },
 
-    gamemenuprint = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'gamemenu print description'}},
-
-    -- we keep gamemenuprint as full metadata example, index/category must be given!
-    -- gamemenuprint = {value = 50, metadata = {element = 'slider', category = 'General', index = 2, description = 'This is an example description with five to nine words', extraDesc = 'additional text', dependency = {key = 'enabled', state = true}, exclusiveGroup = 'groupName', isNew = false, min = 0, max = 100, stepSize = 1}},
 })
 
 AU:NewModule('gamemenu', 1, function()
@@ -303,11 +299,6 @@ AU:NewModule('gamemenu', 1, function()
     local helpers = {}
     local callbacks = {}
 
-    callbacks.gamemenuprint = function(value)
-        if value then
-            -- print('gamemenu print from AU!')
-        end
-    end
 
     AU:NewCallbacks('gamemenu', callbacks)
 end)

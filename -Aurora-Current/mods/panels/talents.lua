@@ -7,14 +7,6 @@ AU:NewDefaults('talents', {
         {tab = 'template', subtab = 'mainbar', categories = 'General'},
     },
 
-
-    -- talentsprint = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'talents print description'}},
-
-
-
-
-    -- we keep talentsprint as full metadata example, index/category must be given!
-    -- talentsprint = {value = 50, metadata = {element = 'slider', category = 'General', index = 2, description = 'This is an example description with five to nine words', extraDesc = 'additional text', dependency = {key = 'enabled', state = true}, exclusiveGroup = 'groupName', isNew = false, min = 0, max = 100, stepSize = 1}},
 })
 
 AU:NewModule('talents', 1, function()

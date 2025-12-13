@@ -7,13 +7,6 @@ AU:NewDefaults('spellbook', {
         {indexRange = {1, 1}, tab = 'spellbook', subtab = 1},
     },
 
-    spellbookprint = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'spellbook print description'}},
-
-
-
-
-    -- we keep spellbookprint as full metadata example, index/category must be given!
-    -- spellbookprint = {value = 50, metadata = {element = 'slider', category = 'General', index = 2, description = 'This is an example description with five to nine words', extraDesc = 'additional text', dependency = {key = 'enabled', state = true}, exclusiveGroup = 'groupName', isNew = false, min = 0, max = 100, stepSize = 1}},
 })
 
 AU:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
@@ -255,12 +248,10 @@ AU:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
         local btn = spellbook:CreateSpellButton(spellbook)
 
         if i <= 18 then
-            -- Left page (18 buttons: 6 rows x 3 columns, fill by rows)
             local leftRow = math.floor((i - 1) / 3)
             local leftCol = math.mod(i - 1, 3)
             btn:SetPoint("TOPLEFT", leftPage, "TOPLEFT", 15 + leftCol * COLUMN_SPACING, -35 - leftRow * ROW_SPACING)
         else
-            -- Right page (18 buttons: 6 rows x 3 columns, fill by rows)
             local rightRow = math.floor((i - 19) / 3)
             local rightCol = math.mod(i - 19, 3)
             btn:SetPoint("TOPLEFT", rightPage, "TOPLEFT", 15 + rightCol * COLUMN_SPACING, -35 - rightRow * ROW_SPACING)
@@ -453,11 +444,6 @@ AU:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
     local helpers = {}
     local callbacks = {}
 
-    callbacks.spellbookprint = function(value)
-        if value then
-            -- print('spellbook print from AU!')
-        end
-    end
 
     AU:NewCallbacks('spellbook', callbacks)
 end)

@@ -7,13 +7,6 @@ AU:NewDefaults('gui-extrapanels', {
         {indexRange = {1, 1}, tab = 'gui-extrapanels', subtab = 1},
     },
 
-    extrapanelsprint = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'gui-extrapanels print description'}},
-
-
-
-
-    -- we keep gui-extrapanelsprint as full metadata example, index/category must be given!
-    -- gui-extrapanelsprint = {value = 50, metadata = {element = 'slider', category = 'General', index = 2, description = 'This is an example description with five to nine words', extraDesc = 'additional text', dependency = {key = 'enabled', state = true}, exclusiveGroup = 'groupName', isNew = false, min = 0, max = 100, stepSize = 1}},
 })
 
 AU:NewModule('gui-extrapanels', 2, function()
@@ -38,7 +31,6 @@ AU:NewModule('gui-extrapanels', 2, function()
     local infoPanel = setup.panels['info']
     infoPanel:SetHeight(450)
 
-    -- Top-Left Frame: Technical
     local techFrame = CreateFrame('Frame', nil, infoPanel)
     techFrame:SetWidth(320)
     techFrame:SetHeight(250)
@@ -145,7 +137,6 @@ AU:NewModule('gui-extrapanels', 2, function()
     resolutionValue:SetPoint('RIGHT', techFrame, 'RIGHT', -10, 0)
     resolutionValue:SetJustifyH('RIGHT')
 
-    -- Top-Right Frame: Addon Statistics
     local statsFrame = CreateFrame('Frame', nil, infoPanel)
     statsFrame:SetWidth(320)
     statsFrame:SetHeight(170)
@@ -265,7 +256,6 @@ AU:NewModule('gui-extrapanels', 2, function()
     disabledAddonsValue:SetPoint('RIGHT', statsFrame, 'RIGHT', -10, 0)
     disabledAddonsValue:SetJustifyH('RIGHT')
 
-    -- Bottom-Left Frame: Player Information
     local playerFrame = CreateFrame('Frame', nil, infoPanel)
     playerFrame:SetWidth(320)
     playerFrame:SetHeight(200)
@@ -362,7 +352,6 @@ AU:NewModule('gui-extrapanels', 2, function()
     end)
     RequestTimePlayed()
 
-    -- Bottom-Right Frame: Blacklisted Addons
     local blacklistFrame = CreateFrame('Frame', nil, infoPanel)
     blacklistFrame:SetWidth(320)
     blacklistFrame:SetHeight(200)
@@ -502,12 +491,6 @@ AU:NewModule('gui-extrapanels', 2, function()
     -- callbacks
     local helpers = {}
     local callbacks = {}
-
-    callbacks.extrapanelsprint = function(value)
-        if value then
-            -- print('gui-extrapanels print from AU!')
-        end
-    end
 
     AU:NewCallbacks('gui-extrapanels', callbacks)
 end)

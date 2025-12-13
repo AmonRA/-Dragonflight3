@@ -6,8 +6,6 @@ AU:NewDefaults('gui-extrapanels2', {
     gui = {
         {indexRange = {1, 1}, tab = 'gui-extrapanels2', subtab = 1},
     },
-
-    extrapanels2print = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'gui-extrapanels2 print description'}},
 })
 
 AU:NewModule('gui-extrapanels2', 2, function()
@@ -238,35 +236,35 @@ AU:NewModule('gui-extrapanels2', 2, function()
     scanner.scanMode = 'event'
     scanner.helper = CreateFrame('Frame')
     scanner.sortedData = nil
-    
+
     for i = 1, 30 do
         scanner.ranks[i] = AU.ui.Font(scanner.content, 11, '', {0.6, 0.6, 0.6})
         scanner.ranks[i]:SetJustifyH('LEFT')
         scanner.ranks[i]:Hide()
-        
+
         scanner.labels[i] = AU.ui.Font(scanner.content, 11, '', {1, 1, 1})
         scanner.labels[i]:SetJustifyH('LEFT')
         scanner.labels[i]:Hide()
-        
+
         scanner.calls[i] = AU.ui.Font(scanner.content, 11, '', {1, 1, 1})
         scanner.calls[i]:SetJustifyH('RIGHT')
         scanner.calls[i]:Hide()
-        
+
         scanner.times[i] = AU.ui.Font(scanner.content, 11, '', {1, 1, 1})
         scanner.times[i]:SetJustifyH('RIGHT')
         scanner.times[i]:Hide()
-        
+
         scanner.avgs[i] = AU.ui.Font(scanner.content, 11, '', {1, 1, 1})
         scanner.avgs[i]:SetJustifyH('RIGHT')
         scanner.avgs[i]:Hide()
     end
-    
+
     local origOnMouseWheel = scanner:GetScript('OnMouseWheel')
     scanner:SetScript('OnMouseWheel', function()
         if origOnMouseWheel then origOnMouseWheel() end
         scanner:RenderVisible()
     end)
-    
+
     scanner.scrollBar:SetScript('OnValueChanged', function()
         local value = this:GetValue()
         scanner:SetVerticalScroll(value)
@@ -309,15 +307,15 @@ AU:NewModule('gui-extrapanels2', 2, function()
                                 original()
                                 return
                             end
-                            
+
                             if not scanner.data[frameName] then
                                 scanner.data[frameName] = {0, 0}
                             end
-                            
+
                             local start = GetTime()
                             original()
                             local runtime = GetTime() - start
-                            
+
                             scanner.data[frameName][1] = scanner.data[frameName][1] + 1
                             scanner.data[frameName][2] = scanner.data[frameName][2] + runtime
                         end)
@@ -338,15 +336,15 @@ AU:NewModule('gui-extrapanels2', 2, function()
                                 original()
                                 return
                             end
-                            
+
                             if not scanner.data[frameName] then
                                 scanner.data[frameName] = {0, 0}
                             end
-                            
+
                             local start = GetTime()
                             original()
                             local runtime = GetTime() - start
-                            
+
                             scanner.data[frameName][1] = scanner.data[frameName][1] + 1
                             scanner.data[frameName][2] = scanner.data[frameName][2] + runtime
                         end)
@@ -358,7 +356,7 @@ AU:NewModule('gui-extrapanels2', 2, function()
 
     function scanner:DisplayUpdate()
         if not self.monitoring then return end
-        
+
         self.sortedData = {}
         for name, data in pairs(self.data) do
             table.insert(self.sortedData, {name, data[1], data[2]})
@@ -372,20 +370,20 @@ AU:NewModule('gui-extrapanels2', 2, function()
         local totalItems = table.getn(self.sortedData)
         self.content:SetHeight(math.max(400, totalItems * 15))
         self.updateScrollBar()
-        
+
         self:RenderVisible()
     end
-    
+
     function scanner:RenderVisible()
         if not self.sortedData then return end
-        
+
         local scrollOffset = scanner:GetVerticalScroll()
         local startIndex = math.floor(scrollOffset / 15) + 1
         local totalItems = table.getn(self.sortedData)
-        
+
         for i = 1, 30 do
             local dataIndex = startIndex + i - 1
-            
+
             if dataIndex <= totalItems then
                 local name, count, time = self.sortedData[dataIndex][1], self.sortedData[dataIndex][2], self.sortedData[dataIndex][3]
                 local colorCode = dataIndex <= 10 and '|cffff8080' or '|cffffffff'
@@ -496,12 +494,6 @@ AU:NewModule('gui-extrapanels2', 2, function()
     -- callbacks
     local helpers = {}
     local callbacks = {}
-
-    callbacks.extrapanels2print = function(value)
-        if value then
-            -- print('gui-extrapanels2 print from AU!')
-        end
-    end
 
     AU:NewCallbacks('gui-extrapanels2', callbacks)
 end)

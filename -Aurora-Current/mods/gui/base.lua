@@ -157,7 +157,6 @@ AU:NewModule('gui-base', 1, function()
         end
     end
 
-    -- Pre-create all panels upfront
     for _, tabData in pairs(setup.tabConfig) do
         if tabData.key then
             local parentFrame = setup.noScrollTabs[tabData.key] and setup.normalframe or setup.panelframe.content
@@ -193,12 +192,10 @@ AU:NewModule('gui-base', 1, function()
     end
 
     function setup:ShowPanel(tabKey, subtabKey)
-        -- Hide all panels
         for key, panel in pairs(self.panels) do
             panel:Hide()
         end
 
-        -- Create panel key
         local panelKey = tabKey
         if subtabKey then
             panelKey = tabKey .. '_' .. subtabKey

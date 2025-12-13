@@ -7,13 +7,6 @@ AU:NewDefaults('bios', {
         {indexRange = {1, 1}, tab = 'bios', subtab = 1},
     },
 
-    biosprint = {value = true, metadata = {element = 'checkbox', category = 'General', index = 1, description = 'bios print description'}},
-
-
-
-
-    -- we keep biosprint as full metadata example, index/category must be given!
-    -- biosprint = {value = 50, metadata = {element = 'slider', category = 'General', index = 2, description = 'This is an example description with five to nine words', extraDesc = 'additional text', dependency = {key = 'enabled', state = true}, exclusiveGroup = 'groupName', isNew = false, min = 0, max = 100, stepSize = 1}},
 })
 
 AU:NewModule('bios', 1, function()
@@ -42,11 +35,6 @@ AU:NewModule('bios', 1, function()
     local helpers = {}
     local callbacks = {}
 
-    callbacks.biosprint = function(value)
-        if value then
-            -- print('bios print from AU!')
-        end
-    end
 
     AU:NewCallbacks('bios', callbacks)
 end)

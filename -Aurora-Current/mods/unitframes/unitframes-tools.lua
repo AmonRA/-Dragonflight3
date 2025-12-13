@@ -104,9 +104,7 @@ function setup:CreateUnitFrame(unit, width, height)
     unitFrame.border:SetTexture(self.textures.portraitBorder)
     unitFrame.border:SetSize(80, 80)
 
-    -- create a larger overlay texture for classification (elite/rare/boss)
     unitFrame.classBorderOverlay = borderFrame:CreateTexture(nil, 'OVERLAY')
-    -- overlay sits centered on the existing border but can be larger
     unitFrame.classBorderOverlay:SetPoint('CENTER', unitFrame.border, 'CENTER', 0, 0)
     unitFrame.classBorderOverlay:SetSize(96, 96)
     unitFrame.classBorderOverlay:Hide()
@@ -618,7 +616,6 @@ function setup:UpdateClassificationBorder(unitFrame)
         return
     end
     local classification = UnitClassification('target')
-    -- default: hide overlay
     if unitFrame.classBorderOverlay then unitFrame.classBorderOverlay:Hide() end
     if classification == 'worldboss' then
         unitFrame.border:SetTexture(self.textures.borderBoss)
