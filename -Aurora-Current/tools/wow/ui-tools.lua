@@ -1600,7 +1600,7 @@ function AU.ui.TabFrame(parent, width, height, tabHeight, subtabIndent, name)
                             else
                                 subtab.currentY = subtab.targetY
                             end
-                            subtab.button:SetPoint('TOPLEFT', tabScroll.content, 'TOPLEFT', SUBTAB_INDENT, subtab.currentY)
+                            subtab.button:SetPoint('TOPLEFT', tabScroll.content, 'TOPLEFT', SUBTAB_INDENT-6, subtab.currentY)
                         end
                     end
                 end
@@ -1620,7 +1620,7 @@ function AU.ui.TabFrame(parent, width, height, tabHeight, subtabIndent, name)
                     for j = 1, table.getn(tab.subtabs) do
                         local subtab = tab.subtabs[j]
                         subtab.currentY = subtab.targetY
-                        subtab.button:SetPoint('TOPLEFT', tabScroll.content, 'TOPLEFT', SUBTAB_INDENT, subtab.currentY)
+                        subtab.button:SetPoint('TOPLEFT', tabScroll.content, 'TOPLEFT', SUBTAB_INDENT-6, subtab.currentY)
                     end
                 end
             end

@@ -86,11 +86,25 @@ AU:NewModule('gui-base', 1, function()
     setup.headerframe = CreateFrame('Frame', nil, setup.mainframe)
     setup.headerframe:SetPoint('TOPLEFT', setup.mainframe, 'TOPLEFT', 0, -20)
     setup.headerframe:SetPoint('BOTTOMRIGHT', setup.mainframe, 'TOPRIGHT', 0, -60)
+
+    setup.panelHeaderText = AU.ui.Font(setup.headerframe, 12, '')
+    setup.panelHeaderText:SetPoint('BOTTOM', setup.headerframe, 'BOTTOM', 0, 5)
+
+    -- local headerTex = setup.headerframe:CreateTexture(nil, 'BACKGROUND')
+    -- headerTex:SetTexture('Interface\\Buttons\\WHITE8X8')
+    -- headerTex:SetPoint("TOPLEFT", setup.headerframe, "TOPLEFT", 5, -5)
+    -- headerTex:SetPoint("BOTTOMRIGHT", setup.headerframe, "BOTTOMRIGHT", -5, 0)
+    -- headerTex:SetVertexColor(0,0,0,.4)
     -- debugframe(setup.headerframe)
 
     local tabframeHeight = setup.basic.height - 60
     setup.tabframe = AU.ui.TabFrame(setup.mainframe, 110, tabframeHeight, 20, 10, 'AuroraGUITabs')
-    setup.tabframe:SetPoint('TOPLEFT', setup.headerframe, 'BOTTOMLEFT', 0, 0)
+    setup.tabframe:SetPoint('TOPLEFT', setup.headerframe, 'BOTTOMLEFT', 4, 0)
+    local tabTex = setup.tabframe:CreateTexture(nil, 'BACKGROUND')
+    tabTex:SetTexture('Interface\\Buttons\\WHITE8X8')
+    tabTex:SetPoint("TOPLEFT", setup.mainframe, "TOPLEFT", 0, -23)
+    tabTex:SetPoint("BOTTOMRIGHT", setup.tabframe, "BOTTOMRIGHT", 5, 5)
+    tabTex:SetVertexColor(0,0,0,.4)
     -- debugframe(setup.tabframe)
 
     setup.subframe = CreateFrame('Frame', nil, setup.mainframe)
@@ -111,9 +125,6 @@ AU:NewModule('gui-base', 1, function()
     -- debugframe(setup.normalframe)
 
     setup.noScrollTabs = {home = true, info = true, modules = true, performance = true, trouble = true, profiles = true}
-
-    setup.panelHeaderText = AU.ui.Font(setup.mainframe, 12, '')
-    setup.panelHeaderText:SetPoint('BOTTOM', setup.headerframe, 'BOTTOM', 0, 0)
 
     local subtabsLookup = {}
     for moduleName, moduleData in pairs(AU.defaults) do
@@ -182,11 +193,11 @@ AU:NewModule('gui-base', 1, function()
 
         if subtabIndex then
             setup.activeSubtab = tabInfo.subtabs[subtabIndex]
-            setup.panelHeaderText:SetText(setup.activeSubtab)
+            setup.panelHeaderText:SetText(strupper(setup.activeSubtab))
             setup:ShowPanel(setup.activeTab, setup.activeSubtab)
         else
             setup.activeSubtab = nil
-            setup.panelHeaderText:SetText(tabInfo.name)
+            setup.panelHeaderText:SetText(strupper(tabInfo.name))
             setup:ShowPanel(setup.activeTab, nil)
         end
     end
