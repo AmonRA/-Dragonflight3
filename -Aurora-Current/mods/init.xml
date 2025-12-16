@@ -47,6 +47,7 @@
 
     <!-- PANELS -->
     <Include file="panels\gamemenu.lua"/>
+    <Include file="panels\questlog.lua"/>
     <Include file="panels\spellbook.lua"/>
     <Include file="panels\talents.lua"/>
 

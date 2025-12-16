@@ -207,10 +207,10 @@ function setup:CreateUnitFrame(unit, width, height)
     end
     -- debugframe(unitFrame)
     local glowFrame = CreateFrame('Frame', nil, unitFrame)
-    glowFrame:SetFrameLevel(unitFrame.model:GetFrameLevel() + 1)
+    glowFrame:SetFrameLevel(unitFrame.model:GetFrameLevel() + 2)
     glowFrame:SetAllPoints(unitFrame)
 
-    unitFrame.model.combatGlow = glowFrame:CreateTexture(nil, 'BACKGROUND')
+    unitFrame.model.combatGlow = glowFrame:CreateTexture(nil, 'OVERLAY')
     unitFrame.model.combatGlow:SetTexture(self.textures.portraitBorderGlow)
     unitFrame.model.combatGlow:SetPoint('TOPLEFT', unitFrame.model, 'TOPLEFT', -15, 15)
     unitFrame.model.combatGlow:SetPoint('BOTTOMRIGHT', unitFrame.model, 'BOTTOMRIGHT', 15, -15)
@@ -240,10 +240,10 @@ function setup:CreateUnitFrame(unit, width, height)
     end
 
     if unit == 'player' then
-        unitFrame.model.restingGlow = glowFrame:CreateTexture(nil, 'BACKGROUND')
+        unitFrame.model.restingGlow = glowFrame:CreateTexture(nil, 'OVERLAY')
         unitFrame.model.restingGlow:SetTexture(self.textures.portraitBorderGlow)
-        unitFrame.model.restingGlow:SetPoint('TOPLEFT', unitFrame.model, 'TOPLEFT', -15, 15)
-        unitFrame.model.restingGlow:SetPoint('BOTTOMRIGHT', unitFrame.model, 'BOTTOMRIGHT', 15, -15)
+        unitFrame.model.restingGlow:SetPoint('TOPLEFT', unitFrame.model, 'TOPLEFT', -17, 17)
+        unitFrame.model.restingGlow:SetPoint('BOTTOMRIGHT', unitFrame.model, 'BOTTOMRIGHT', 17, -17)
         unitFrame.model.restingGlow:SetVertexColor(.3, .82, 0)
         unitFrame.model.restingGlow:Hide()
         unitFrame.model.restingGlow.elapsed = 0
@@ -842,13 +842,20 @@ function setup:UpdateCombatGlow(unitFrame)
         unitFrame.model.combatGlow:Hide()
         unitFrame.model.combatGlow2:Hide()
     end
+    if unitFrame.unit == 'player' then
+        setup:UpdateRestingGlow(unitFrame)
+    end
 end
 
 function setup:UpdateRestingGlow(unitFrame)
     if not unitFrame.model.restingGlow then return end
     local mode = unitFrame.restingGlowMode or 'Both'
     local isResting = IsResting()
-    if mode == 'Both' then
+    local inCombat = UnitAffectingCombat(unitFrame.unit)
+    if inCombat then
+        unitFrame.model.restingGlow:Hide()
+        unitFrame.model.restingGlow2:Hide()
+    elseif mode == 'Both' then
         if isResting then unitFrame.model.restingGlow:Show() else unitFrame.model.restingGlow:Hide() end
         if isResting then unitFrame.model.restingGlow2:Show() else unitFrame.model.restingGlow2:Hide() end
     elseif mode == 'Portrait Only' then
@@ -1553,7 +1560,7 @@ function setup:GenerateDefaults()
             defaults['playerShowEnergyTick'] = {value = true, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 13, description = 'Show energy tick indicator', dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerEnergyTickColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 14, description = 'Energy tick color', dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerRestingGlowTextures'] = {value = 'Both', metadata = {element = 'dropdown', category = catEffects, indexInCategory = 15, description = 'Resting glow textures', options = {'Both', 'Portrait Only', 'Bar Only', 'None'}, dependency = {key = 'playerEnabled', state = true}}}
-            defaults['playerRestingGlowColor'] = {value = {.3, .82, 0, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 16, description = 'Resting glow color', dependency = {key = 'playerEnabled', state = true}}}
+            defaults['playerRestingGlowColor'] = {value = {0, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 16, description = 'Resting glow color', dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerRestingGlowMaxAlpha'] = {value = 0.7, metadata = {element = 'slider', category = catEffects, indexInCategory = 17, description = 'Resting glow max alpha (portrait)', min = 0, max = 1, step = 0.05, dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerRestingGlow2MaxAlpha'] = {value = 0.7, metadata = {element = 'slider', category = catEffects, indexInCategory = 18, description = 'Resting glow max alpha (bar)', min = 0, max = 1, step = 0.05, dependency = {key = 'playerEnabled', state = true}}}
         end
@@ -1802,12 +1809,21 @@ function setup:GenerateCallbacks()
                 local portrait = setup.portraits[j]
                 if (frame.key == 'party' and string.find(portrait.unit, 'party')) or portrait.unit == frame.key then
                     local offset = GetPortraitModelOffset(value)
+                    local glowOffset = math.floor(value * 0.2)
                     portrait.portraitFrame:SetSize(value, value)
                     portrait.borderBg:SetSize(value, value)
                     portrait.model:SetSize(value - offset, value - offset)
                     portrait.portrait2D:SetSize(value - offset, value - offset)
                     portrait.classIcon:SetSize(value - offset, value - offset)
                     portrait.border:SetSize(value, value)
+                    if portrait.model.combatGlow then
+                        portrait.model.combatGlow:SetPoint('TOPLEFT', portrait.model, 'TOPLEFT', -glowOffset, glowOffset)
+                        portrait.model.combatGlow:SetPoint('BOTTOMRIGHT', portrait.model, 'BOTTOMRIGHT', glowOffset, -glowOffset)
+                    end
+                    if portrait.model.restingGlow then
+                        portrait.model.restingGlow:SetPoint('TOPLEFT', portrait.model, 'TOPLEFT', -glowOffset - 2, glowOffset + 2)
+                        portrait.model.restingGlow:SetPoint('BOTTOMRIGHT', portrait.model, 'BOTTOMRIGHT', glowOffset + 2, -glowOffset - 2)
+                    end
                 end
             end
         end
@@ -1833,8 +1849,8 @@ function setup:GenerateCallbacks()
                 if (frame.key == 'party' and string.find(portrait.unit, 'party')) or portrait.unit == frame.key then
                     portrait.hpBar:SetWidth(value)
                     portrait.hpBar:Update()
-                    if portrait.model.combatGlow2 then portrait.model.combatGlow2:SetWidth(value + 2) end
-                    if portrait.model.restingGlow2 then portrait.model.restingGlow2:SetWidth(value + 2) end
+                    if portrait.model.combatGlow2 then portrait.model.combatGlow2:SetWidth(value -3) end
+                    if portrait.model.restingGlow2 then portrait.model.restingGlow2:SetWidth(value -3) end
                 end
             end
         end

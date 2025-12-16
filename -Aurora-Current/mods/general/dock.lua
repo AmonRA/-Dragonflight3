@@ -26,7 +26,7 @@ AU:NewDefaults('dock', {
     combatGlowPulseSpeed = {value = 1.0, metadata = {element = 'slider', category = 'Combat Glow', indexInCategory = 7, description = 'Pulse Speed', min = 0.5, max = 3.0, step = 0.1, dependency = {key = 'combatGlow', state = true}}},
 
     restingGlow = {value = true, metadata = {element = 'checkbox', category = 'Resting Glow', indexInCategory = 1, description = 'Enable Resting Glow'}},
-    restingGlowColor = {value = {0, 1, 0, 1}, metadata = {element = 'colorpicker', category = 'Resting Glow', indexInCategory = 2, description = 'Resting Glow Color', dependency = {key = 'restingGlow', state = true}}},
+    restingGlowColor = {value = {0, 1, 1, 1}, metadata = {element = 'colorpicker', category = 'Resting Glow', indexInCategory = 2, description = 'Resting Glow Color', dependency = {key = 'restingGlow', state = true}}},
     restingGlowTop = {value = 'all', metadata = {element = 'dropdown', category = 'Resting Glow', indexInCategory = 3, description = 'Top Glow Pieces', options = {'all', 'left+right', 'left', 'center', 'right'}, dependency = {key = 'restingGlow', state = true}}},
     restingGlowBottom = {value = 'all', metadata = {element = 'dropdown', category = 'Resting Glow', indexInCategory = 4, description = 'Bottom Glow Pieces', options = {'all', 'left+right', 'left', 'center', 'right'}, dependency = {key = 'restingGlow', state = true}}},
     restingGlowAlphaTop = {value = 0.8, metadata = {element = 'slider', category = 'Resting Glow', indexInCategory = 5, description = 'Top Glow Alpha', min = 0.1, max = 1.0, step = 0.1, dependency = {key = 'restingGlow', state = true}}},
