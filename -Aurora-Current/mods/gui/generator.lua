@@ -328,8 +328,9 @@ AU:NewModule('gui-generator', 3, function()
                                 end
                                 for j = 1, table.getn(element.options) do
                                     local option = element.options[j]
-                                    local displayText = string.gsub(option, 'Fonts\\', '')
-                                    displayText = string.gsub(displayText, 'font:', '')
+                                    if option then
+                                        local displayText = string.gsub(option, 'Fonts\\', '')
+                                        displayText = string.gsub(displayText, 'font:', '')
                                     dropdown:AddItem(displayText, function()
                                         dropdown.text:SetText(displayText)
                                         dropdown.selectedValue = option
@@ -360,12 +361,19 @@ AU:NewModule('gui-generator', 3, function()
                                             end
                                         end
                                     end)
+                                    end
                                 end
                                 local currentValue = AU.profile[mod][key]
-                                local currentDisplay = string.gsub(currentValue, 'Fonts\\', '')
-                                currentDisplay = string.gsub(currentDisplay, 'font:', '')
-                                dropdown.text:SetText(currentDisplay)
-                                dropdown.selectedValue = currentValue
+                                if currentValue then
+                                    local currentDisplay = string.gsub(currentValue, 'Fonts\\', '')
+                                    currentDisplay = string.gsub(currentDisplay, 'font:', '')
+                                    dropdown.text:SetText(currentDisplay)
+                                    dropdown.selectedValue = currentValue
+                                else
+                                    dropdown.text:SetText('')
+                                    dropdown.selectedValue = nil
+                                end
+
                                 widgets[mod .. '.' .. key] = dropdown
                                 widgets[mod .. '.' .. key .. '.desc'] = desc
 

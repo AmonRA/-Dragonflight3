@@ -169,7 +169,7 @@ function setup:CreateActionButton(parent, name, actionID)
 
     if id >= 133 and id <= 142 then
         button.autocast = CreateFrame('Model', nil, button)
-        button.autocast:SetAllPoints()
+        button.autocast:SetAllPoints(button)
         button.autocast:SetModel('Interface\\Buttons\\UI-AutoCastButton.mdx')
         button.autocast:SetSequence(0)
         button.autocast:SetSequenceTime(0, 0)

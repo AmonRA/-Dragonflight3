@@ -9,7 +9,7 @@ AU:NewDefaults('minimap', {
     },
 
     showMinimap = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 1, description = 'Show or hide the minimap'}},
-    minimapSize = {value = 105, metadata = {element = 'slider', category = 'General', indexInCategory = 2, description = 'Size of the minimap', min = 100, max = 350, stepSize = 5, dependency = {key = 'showMinimap', state = true}}},
+    minimapSize = {value = 160, metadata = {element = 'slider', category = 'General', indexInCategory = 2, description = 'Size of the minimap', min = 100, max = 350, stepSize = 5, dependency = {key = 'showMinimap', state = true}}},
     mapSquare = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 3, description = 'Use square minimap shape', dependency = {key = 'showMinimap', state = true}}},
     mapAlpha = {value = 1, metadata = {element = 'slider', category = 'General', indexInCategory = 4, description = 'Transparency of the minimap', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'showMinimap', state = true}}},
     showPing = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 5, description = 'Show name of the pinging player on minimap', dependency = {key = 'showMinimap', state = true}}},
@@ -20,15 +20,15 @@ AU:NewDefaults('minimap', {
     minimapAnimation = {value = true, metadata = {element = 'checkbox', category = 'Animation', indexInCategory = 1, description = 'Enable minimap animations', dependency = {key = 'showMinimap', state = true}}},
     animationTexture = {value = 'Aura1', metadata = {element = 'dropdown', category = 'Animation', indexInCategory = 2, description = 'Animation texture style', options = {'Aura1', 'Aura2', 'Aura3', 'Aura4', 'Glow1', 'Glow2', 'Shock1', 'Shock2', 'Shock3'}, dependency = {key = 'minimapAnimation', state = true}}},
     animationSpeed = {value = 0.1, metadata = {element = 'slider', category = 'Animation', indexInCategory = 3, description = 'Animation speed', min = -5, max = 5, stepSize = 0.1, dependency = {key = 'minimapAnimation', state = true}}},
-    animationSize = {value = 190, metadata = {element = 'slider', category = 'Animation', indexInCategory = 4, description = 'Animation size', min = 100, max = 300, stepSize = 5, dependency = {key = 'minimapAnimation', state = true}}},
-    animationAlpha = {value = .5, metadata = {element = 'slider', category = 'Animation', indexInCategory = 5, description = 'Animation transparency', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'minimapAnimation', state = true}}},
+    animationSize = {value = 310, metadata = {element = 'slider', category = 'Animation', indexInCategory = 4, description = 'Animation size', min = 50, max = 400, stepSize = 5, dependency = {key = 'minimapAnimation', state = true}}},
+    animationAlpha = {value = .8, metadata = {element = 'slider', category = 'Animation', indexInCategory = 5, description = 'Animation transparency', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'minimapAnimation', state = true}}},
     animationStrata = {value = 'BACKGROUND', metadata = {element = 'dropdown', category = 'Animation', indexInCategory = 6, description = 'Animation layer', options = {'BACKGROUND', 'LOW', 'MEDIUM', 'HIGH'}, dependency = {key = 'minimapAnimation', state = true}}},
     animationColor = {value = {1, .82, 0}, metadata = {element = 'colorpicker', category = 'Animation', indexInCategory = 7, description = 'Animation color tint', dependency = {key = 'minimapAnimation', state = true}}},
     minimapAnimation2 = {value = true, metadata = {element = 'checkbox', category = 'Animation', indexInCategory = 8, description = 'Enable second animation layer', dependency = {key = 'showMinimap', state = true}}},
-    animationTexture2 = {value = 'Aura4', metadata = {element = 'dropdown', category = 'Animation', indexInCategory = 9, description = 'Animation 2 texture style', options = {'Aura1', 'Aura2', 'Aura3', 'Aura4', 'Glow1', 'Glow2', 'Shock1', 'Shock2', 'Shock3'}, dependency = {key = 'minimapAnimation2', state = true}}},
+    animationTexture2 = {value = 'Shock3', metadata = {element = 'dropdown', category = 'Animation', indexInCategory = 9, description = 'Animation 2 texture style', options = {'Aura1', 'Aura2', 'Aura3', 'Aura4', 'Glow1', 'Glow2', 'Shock1', 'Shock2', 'Shock3'}, dependency = {key = 'minimapAnimation2', state = true}}},
     animationSpeed2 = {value = -0.1, metadata = {element = 'slider', category = 'Animation', indexInCategory = 10, description = 'Animation 2 speed', min = -5, max = 5, stepSize = 0.1, dependency = {key = 'minimapAnimation2', state = true}}},
-    animationSize2 = {value = 250, metadata = {element = 'slider', category = 'Animation', indexInCategory = 11, description = 'Animation 2 size', min = 100, max = 300, stepSize = 5, dependency = {key = 'minimapAnimation2', state = true}}},
-    animationAlpha2 = {value = .3, metadata = {element = 'slider', category = 'Animation', indexInCategory = 12, description = 'Animation 2 transparency', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'minimapAnimation2', state = true}}},
+    animationSize2 = {value = 295, metadata = {element = 'slider', category = 'Animation', indexInCategory = 11, description = 'Animation 2 size', min = 50, max = 400, stepSize = 5, dependency = {key = 'minimapAnimation2', state = true}}},
+    animationAlpha2 = {value = 1, metadata = {element = 'slider', category = 'Animation', indexInCategory = 12, description = 'Animation 2 transparency', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'minimapAnimation2', state = true}}},
     animationStrata2 = {value = 'BACKGROUND', metadata = {element = 'dropdown', category = 'Animation', indexInCategory = 13, description = 'Animation 2 layer', options = {'BACKGROUND', 'LOW', 'MEDIUM', 'HIGH'}, dependency = {key = 'minimapAnimation2', state = true}}},
     animationColor2 = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Animation', indexInCategory = 14, description = 'Animation 2 color tint', dependency = {key = 'minimapAnimation2', state = true}}},
     customPlayerArrow = {value = true, metadata = {element = 'checkbox', category = 'Arrow', indexInCategory = 1, description = 'Use Dragonflight\'s custom player arrow', dependency = {key = 'showMinimap', state = true}}},
@@ -37,21 +37,21 @@ AU:NewDefaults('minimap', {
     playerArrowColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Arrow', indexInCategory = 4, description = 'Color of the player arrow', dependency = {key = 'customPlayerArrow', state = true}}},
     mapColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 7, description = 'Color tint of the map', dependency = {key = 'showMinimap', state = true}}},
     showSunMoon = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 8, description = 'Show sun/moon indicator', dependency = {key = 'showMinimap', state = true}}},
-    gameTimeSize = {value = 25, metadata = {element = 'slider', category = 'General', indexInCategory = 9, description = 'Size of sun/moon button', min = 16, max = 48, stepSize = 1, dependency = {key = 'showSunMoon', state = true}}},
-    mailSize = {value = 32, metadata = {element = 'slider', category = 'General', indexInCategory = 10, description = 'Size of mail icon', min = 16, max = 48, stepSize = 1, dependency = {key = 'showMinimap', state = true}}},
+    gameTimeSize = {value = 30, metadata = {element = 'slider', category = 'General', indexInCategory = 9, description = 'Size of sun/moon button', min = 16, max = 48, stepSize = 1, dependency = {key = 'showSunMoon', state = true}}},
+    mailSize = {value = 24, metadata = {element = 'slider', category = 'General', indexInCategory = 10, description = 'Size of mail icon', min = 16, max = 48, stepSize = 1, dependency = {key = 'showMinimap', state = true}}},
     showZoom = {value = true, metadata = {element = 'checkbox', category = 'Zoom', indexInCategory = 1, description = 'Show zoom buttons', dependency = {key = 'showMinimap', state = true}}},
-    zoomSize = {value = 15, metadata = {element = 'slider', category = 'Zoom', indexInCategory = 2, description = 'Size of zoom buttons', min = 20, max = 50, stepSize = 1, dependency = {key = 'showZoom', state = true}}},
+    zoomSize = {value = 25, metadata = {element = 'slider', category = 'Zoom', indexInCategory = 2, description = 'Size of zoom buttons', min = 20, max = 50, stepSize = 1, dependency = {key = 'showZoom', state = true}}},
     zoomTextures = {value = 'Default', metadata = {element = 'dropdown', category = 'Zoom', indexInCategory = 3, description = 'Zoom button textures', options = {'Default'}, dependency = {key = 'showZoom', state = true}}},
     alphaZoom = {value = 1, metadata = {element = 'slider', category = 'Zoom', indexInCategory = 4, description = 'Transparency of zoom buttons', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'showZoom', state = true}}},
     mouseWheelZoom = {value = true, metadata = {element = 'checkbox', category = 'Zoom', indexInCategory = 5, description = 'Enable mouse wheel zoom', dependency = {key = 'showMinimap', state = true}}},
     zoomX = {value = 0, metadata = {element = 'slider', category = 'Zoom', indexInCategory = 6, description = 'Horizontal position offset', min = -100, max = 100, stepSize = 1, dependency = {key = 'showZoom', state = true}}},
     zoomY = {value = 0, metadata = {element = 'slider', category = 'Zoom', indexInCategory = 7, description = 'Vertical position offset', min = -100, max = 100, stepSize = 1, dependency = {key = 'showZoom', state = true}}},
-    showTopPanel = {value = false, metadata = {element = 'checkbox', category = 'Panel', indexInCategory = 1, description = 'Show top panel', dependency = {key = 'showMinimap', state = true}}},
+    showTopPanel = {value = true, metadata = {element = 'checkbox', category = 'Panel', indexInCategory = 1, description = 'Show top panel', dependency = {key = 'showMinimap', state = true}}},
     topPanelTexture = {value = 'tex:generic:backdrop_rounded.blp', metadata = {element = 'dropdown', category = 'Panel', indexInCategory = 2, description = 'Top panel texture', options = {'tex:generic:backdrop_rounded.blp'}, dependency = {key = 'showTopPanel', state = true}}},
     topPanelWidth = {value = 170, metadata = {element = 'slider', category = 'Panel', indexInCategory = 3, description = 'Width of top panel', min = 100, max = 300, stepSize = 5, dependency = {key = 'showTopPanel', state = true}}},
     topPanelHeight = {value = 20, metadata = {element = 'slider', category = 'Panel', indexInCategory = 4, description = 'Height of top panel', min = 15, max = 40, stepSize = 1, dependency = {key = 'showTopPanel', state = true}}},
     zoneTextSize = {value = 11, metadata = {element = 'slider', category = 'Zone', indexInCategory = 1, description = 'Font size of zone text', min = 8, max = 20, stepSize = 1, dependency = {key = 'showTopPanel', state = true}}},
-    zoneTextColour = {value = {1, 0.82, 0}, metadata = {element = 'colorpicker', category = 'Zone', indexInCategory = 2, description = 'Color of zone text', dependency = {key = 'showTopPanel', state = true}}},
+    -- zoneTextColour = {value = {1, 0.82, 0}, metadata = {element = 'colorpicker', category = 'Zone', indexInCategory = 2, description = 'Color of zone text', dependency = {key = 'showTopPanel', state = true}}},
     zoneTextAnchor = {value = 'LEFT', metadata = {element = 'dropdown', category = 'Zone', indexInCategory = 3, description = 'Text alignment for zone', options = {'LEFT', 'CENTER', 'RIGHT'}, dependency = {key = 'showTopPanel', state = true}}},
     zoneTextFont = {value = 'font:PT-Sans-Narrow-Bold.ttf', metadata = {element = 'dropdown', category = 'Zone', indexInCategory = 4, description = 'Font for zone text', options = media.fonts, dependency = {key = 'showTopPanel', state = true}}},
     showTime = {value = true, metadata = {element = 'checkbox', category = 'Time', indexInCategory = 1, description = 'Show time on top panel', dependency = {key = 'showTopPanel', state = true}}},
@@ -72,7 +72,7 @@ AU:NewModule('minimap', 1, 'PLAYER_LOGIN', function()
     AU.lib.CreateButtonSkinner()
 
     local gameTimeButton, gameTimeBorder, gameTimeIcon = AU.lib.CreateGameTimeButton(cluster)
-    gameTimeButton:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', 15, 15)
+    gameTimeButton:SetPoint('BOTTOMLEFT', Minimap, 'TOPRIGHT', -10, -20)
 
     local pingFrame
     local pingText

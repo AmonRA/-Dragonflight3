@@ -1,9 +1,9 @@
 UNLOCKAURORA()
 
 local frameConfigs = {
-    {prefix = 'buff', name = 'Buff', hasSorting = true, defaultSize = 22, defaultPerRow = 8, maxPerRow = 16},
-    {prefix = 'debuff', name = 'Debuff', hasSorting = true, defaultSize = 33, defaultPerRow = 8, maxPerRow = 16},
-    {prefix = 'weapon', name = 'Weapon', hasSorting = false, defaultSize = 30, defaultPerRow = 2, maxPerRow = 2}
+    {prefix = 'buff', name = 'Buff', hasSorting = true, defaultSize = 25, defaultPerRow = 8, maxPerRow = 16},
+    {prefix = 'debuff', name = 'Debuff', hasSorting = true, defaultSize = 25, defaultPerRow = 8, maxPerRow = 16},
+    {prefix = 'weapon', name = 'Weapon', hasSorting = false, defaultSize = 25, defaultPerRow = 2, maxPerRow = 2}
 }
 
 local defaults = {
@@ -25,7 +25,7 @@ for i = 1, table.getn(frameConfigs) do
     local showKey = 'show'..cfg.name..'s'
     local cat = (cfg.prefix == 'buff') and catBuffs or (cfg.prefix == 'debuff') and catDebuffs or catWeapons
     local idx = 1
-    
+
     defaults[showKey] = {value = true, metadata = {element = 'checkbox', category = cat, indexInCategory = idx, description = 'Show '..string.lower(cfg.name)..'s'}}
     idx = idx + 1
     defaults[cfg.prefix..'ButtonsPerRow'] = {value = cfg.defaultPerRow, metadata = {element = 'slider', category = cat, indexInCategory = idx, description = cfg.name..' buttons per row', min = 1, max = cfg.maxPerRow, stepSize = 1, dependency = {key = showKey, state = true}}}
@@ -52,7 +52,7 @@ AU:NewModule('buffs', 1, 'PLAYER_LOGIN', function()
     local buffFrame = setup:CreateBuffFrame('AU_BuffFrame', 16, 'HELPFUL', AU.profile['buffs']['buffButtonsPerRow'] or 8)
     buffFrame.buttonSize = AU.profile['buffs']['buffSize'] or 22
     buffFrame.spacing = AU.profile['buffs']['buffSpacing'] or 5
-    buffFrame:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', -15, -15)
+    buffFrame:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', -255, -20)
 
     local debuffFrame = setup:CreateBuffFrame('AU_DebuffFrame', 16, 'HARMFUL', AU.profile['buffs']['debuffButtonsPerRow'] or 8)
     debuffFrame.buttonSize = AU.profile['buffs']['debuffSize'] or 33
@@ -96,6 +96,9 @@ AU:NewModule('buffs', 1, 'PLAYER_LOGIN', function()
             frame.buttonSize = value
             for _, btn in pairs(frame.buttons) do
                 btn:SetSize(value, value)
+                if btn.border then
+                    btn.border:SetSize(value, value)
+                end
             end
             setup:UpdateFrameLayout(frame, frame.buttons, AU.profile['buffs'][prefix..'ButtonsPerRow'])
         end

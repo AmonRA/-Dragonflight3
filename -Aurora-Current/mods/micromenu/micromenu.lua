@@ -10,10 +10,12 @@ AU:NewDefaults('micro', {
     buttonSize = {value = 29, metadata = {element = 'slider', category = 'General', indexInCategory = 1, description = 'Micro menu button size', min = 20, max = 50, stepSize = 1}},
     buttonSpacing = {value = -12, metadata = {element = 'slider', category = 'General', indexInCategory = 2, description = 'Spacing between buttons', min = -20, max = 10, stepSize = 1}},
     showExpandButton = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 3, description = 'Show expand/collapse button'}},
-    expandButtons = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 4, description = 'Show or hide micro menu buttons'}},
+    expandButtonRight = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 4, description = 'Position expand button on right side', dependency = {key = 'showExpandButton', state = true}}},
+    expandButtons = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 5, description = 'Show or hide micro menu buttons'}},
     alpha = {value = 1, metadata = {element = 'slider', category = 'Appearance', indexInCategory = 1, description = 'Button transparency', min = 0, max = 1, stepSize = 0.1, dependency = {key = 'fadeOutDelay', state = 0}}},
     fadeOutDelay = {value = 0, metadata = {element = 'slider', category = 'Appearance', indexInCategory = 2, description = 'Fade out delay (0 = disabled)', min = 0, max = 10, stepSize = 0.5}},
     minAlpha = {value = 0.1, metadata = {element = 'slider', category = 'Appearance', indexInCategory = 3, description = 'Minimum alpha when faded', min = 0, max = 1, stepSize = 0.1}},
+    buttonColour = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = 'Appearance', indexInCategory = 4, description = 'Color of micromenu buttons'}},
 })
 
 AU:NewModule('micro', 1, 'PLAYER_LOGIN', function()
@@ -22,7 +24,7 @@ AU:NewModule('micro', 1, 'PLAYER_LOGIN', function()
     setup.frame = setup:CreateMicroMenu()
     setup:OnEvent()
     setup:UpdateButtonStates()
-    setup.frame:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 280, 17)
+    setup.frame:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -40, 12)
     setup.frame:SetFrameStrata(UIParent:GetFrameStrata())
     setup.frame:SetFrameLevel(UIParent:GetFrameLevel() + 1)
     setup.frame:EnableMouse(true)
@@ -95,7 +97,8 @@ AU:NewModule('micro', 1, 'PLAYER_LOGIN', function()
         for i = 1, table.getn(setup.buttons) do
             setup.buttons[i]:SetSize(value, value * 1.17)
         end
-        setup.frame.expandButton:SetSize(value * 0.79, value * 0.48)
+        setup.frame.expandButtonLeft:SetSize(value * 0.79, value * 0.48)
+        setup.frame.expandButtonRight:SetSize(value * 0.79, value * 0.48)
         helpers.RepositionButtons()
     end
 
@@ -118,21 +121,22 @@ AU:NewModule('micro', 1, 'PLAYER_LOGIN', function()
 
     callbacks.showExpandButton = function(value)
         if value then
-            setup.frame.expandButton:Show()
+            if AU.profile['micro']['expandButtonRight'] then
+                setup.frame.expandButtonRight:Show()
+                setup.frame.expandButtonLeft:Hide()
+            else
+                setup.frame.expandButtonLeft:Show()
+                setup.frame.expandButtonRight:Hide()
+            end
         else
-            setup.frame.expandButton:Hide()
+            setup.frame.expandButtonLeft:Hide()
+            setup.frame.expandButtonRight:Hide()
         end
     end
 
     callbacks.expandButtons = function(value)
-        setup.frame.expandButton:SetChecked(value)
-        if value then
-            setup.frame.expandButton:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
-            setup.frame.expandButton:GetHighlightTexture():SetTexCoord(1, 0, 0, 1)
-        else
-            setup.frame.expandButton:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
-            setup.frame.expandButton:GetHighlightTexture():SetTexCoord(0, 1, 0, 1)
-        end
+        setup.frame.expandButtonLeft:SetChecked(value)
+        setup.frame.expandButtonRight:SetChecked(value)
         for _, button in ipairs(setup.buttons) do
             if value then
                 button:Show()
@@ -144,6 +148,24 @@ AU:NewModule('micro', 1, 'PLAYER_LOGIN', function()
             setup.msIndicator:Show()
         else
             setup.msIndicator:Hide()
+        end
+    end
+
+    callbacks.buttonColour = function(value)
+        for _, button in ipairs(setup.buttons) do
+            button:GetNormalTexture():SetVertexColor(value[1], value[2], value[3], value[4])
+            button:GetPushedTexture():SetVertexColor(value[1], value[2], value[3], value[4])
+            button:GetDisabledTexture():SetVertexColor(value[1], value[2], value[3], value[4])
+        end
+    end
+
+    callbacks.expandButtonRight = function(value)
+        if value then
+            setup.frame.expandButtonLeft:Hide()
+            setup.frame.expandButtonRight:Show()
+        else
+            setup.frame.expandButtonRight:Hide()
+            setup.frame.expandButtonLeft:Show()
         end
     end
 

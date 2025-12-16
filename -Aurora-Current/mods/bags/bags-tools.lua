@@ -828,7 +828,7 @@ function setup:InitializeBags()
     local anchor = CreateFrame('Frame', 'AU_BagAnchor', UIParent)
     anchor:SetWidth(containerFrame:GetWidth())
     anchor:SetHeight(containerFrame:GetHeight())
-    anchor:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -40, 70)
+    anchor:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -40, 100)
 
     for i = 1, 4 do
         local slots = GetContainerNumSlots(i) or 0

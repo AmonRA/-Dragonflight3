@@ -6,6 +6,7 @@ local setup = {
     updater = CreateFrame('Frame'),
     combatGlowElapsed = 0,
     lastTargetColor = {0, 1, 0},
+    lastPlayerColor = {0, 1, 0},
 
     textures = {
         portraitBorderBg = media['tex:unitframes:portrait_border_bg.blp'],
@@ -37,13 +38,6 @@ local setup = {
         {0/512, 60/512, 300/512, 360/512}, {60/512, 120/512, 300/512, 360/512}, {120/512, 180/512, 300/512, 360/512}, {180/512, 240/512, 300/512, 360/512}, {240/512, 300/512, 300/512, 360/512}, {300/512, 360/512, 300/512, 360/512},
     },
 }
-
-local function GetPortraitModelOffset(size)
-    local minSize, maxSize = 40, 120
-    local minOffset, maxOffset = 21, 37
-    local offset = minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
-    return offset
-end
 
 -- TODO fix for now for dropdown
 function setup:ShowRightClickMenu(unit)
@@ -167,48 +161,49 @@ function setup:CreateUnitFrame(unit, width, height)
     end
 
     if unit == 'target' then
-        unitFrame.borderBg:SetPoint('LEFT', unitFrame, 'LEFT', 0, 0)
-        unitFrame.model:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
-        unitFrame.portrait2D:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
-        unitFrame.classIcon:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
-        unitFrame.border:SetPoint('LEFT', unitFrame, 'LEFT', 0, 0)
+        unitFrame.borderBg:SetPoint('RIGHT', unitFrame, 'RIGHT', 0, 0)
+        unitFrame.model:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
+        unitFrame.portrait2D:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
+        unitFrame.classIcon:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
+        unitFrame.border:SetPoint('RIGHT', unitFrame, 'RIGHT', 0, 0)
         unitFrame.hpBar:SetFillDirection('LEFT_TO_RIGHT')
-        unitFrame.hpBar:SetPoint('LEFT', unitFrame.border, 'RIGHT', -3, 10)
+        unitFrame.hpBar:SetPoint('RIGHT', unitFrame.border, 'LEFT', 3, -5)
         unitFrame.hpBar.text:SetPoint('LEFT', unitFrame.hpBar, 'LEFT', 3, 0)
         unitFrame.hpBar.pctText:SetPoint('RIGHT', unitFrame.hpBar, 'RIGHT', -3, 0)
         unitFrame.powerBar:SetFillDirection('LEFT_TO_RIGHT')
         unitFrame.powerBar:SetPoint('TOPLEFT', unitFrame.hpBar, 'BOTTOMLEFT', 0, 0)
         unitFrame.powerBar.text:SetPoint('LEFT', unitFrame.powerBar, 'LEFT', 3, 0)
         unitFrame.powerBar.pctText:SetPoint('RIGHT', unitFrame.powerBar, 'RIGHT', -3, 0)
-        unitFrame.infoBg:SetPoint('BOTTOMLEFT', unitFrame.hpBar, 'TOPLEFT', 0, 0)
+        unitFrame.infoBg:SetPoint('BOTTOMRIGHT', unitFrame.hpBar, 'TOPRIGHT', 7, 0)
         unitFrame.name:SetPoint('LEFT', unitFrame.infoBg, 'LEFT', 3, 1)
-        unitFrame.level:SetPoint('RIGHT', unitFrame.infoBg, 'RIGHT', -3, 1)
+        unitFrame.level:SetPoint('RIGHT', unitFrame.infoBg, 'RIGHT', -7, 1)
         if unitFrame.pvpIcon then
             unitFrame.pvpIconFrame:SetAllPoints(unitFrame.borderBg)
-            unitFrame.pvpIcon:SetPoint('CENTER', unitFrame.borderBg, 'LEFT', 12, 0)
+            unitFrame.pvpIcon:SetPoint('CENTER', unitFrame.borderBg, 'RIGHT', 12, -3)
         end
         unitFrame.hpBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar_reversed.tga'])
         unitFrame.powerBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar_reversed.tga'])
+        -- debugframe(unitFrame)
     else
-        unitFrame.borderBg:SetPoint('RIGHT', unitFrame, 'RIGHT', 0, 0)
-        unitFrame.model:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
-        unitFrame.portrait2D:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
-        unitFrame.classIcon:SetPoint('RIGHT', unitFrame, 'RIGHT', -13, 0)
-        unitFrame.border:SetPoint('RIGHT', unitFrame, 'RIGHT', 0, 0)
+        unitFrame.borderBg:SetPoint('LEFT', unitFrame, 'LEFT', 0, 0)
+        unitFrame.model:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
+        unitFrame.portrait2D:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
+        unitFrame.classIcon:SetPoint('LEFT', unitFrame, 'LEFT', 13, 0)
+        unitFrame.border:SetPoint('LEFT', unitFrame, 'LEFT', 0, 0)
         unitFrame.hpBar:SetFillDirection('RIGHT_TO_LEFT')
-        unitFrame.hpBar:SetPoint('RIGHT', unitFrame.border, 'LEFT', 3, 10)
+        unitFrame.hpBar:SetPoint('LEFT', unitFrame.border, 'RIGHT', -3, -5)
         unitFrame.hpBar.text:SetPoint('RIGHT', unitFrame.hpBar, 'RIGHT', 0, 0)
         unitFrame.hpBar.pctText:SetPoint('LEFT', unitFrame.hpBar, 'LEFT', 3, 0)
         unitFrame.powerBar:SetFillDirection('RIGHT_TO_LEFT')
         unitFrame.powerBar:SetPoint('TOPRIGHT', unitFrame.hpBar, 'BOTTOMRIGHT', 0, 0)
         unitFrame.powerBar.text:SetPoint('RIGHT', unitFrame.powerBar, 'RIGHT', 0, 0)
         unitFrame.powerBar.pctText:SetPoint('LEFT', unitFrame.powerBar, 'LEFT', 3, 0)
-        unitFrame.infoBg:SetPoint('BOTTOMRIGHT', unitFrame.hpBar, 'TOPRIGHT', 0, 0)
-        unitFrame.name:SetPoint('RIGHT', unitFrame.infoBg, 'RIGHT', -3, 1)
-        unitFrame.level:SetPoint('LEFT', unitFrame.infoBg, 'LEFT', 3, 1)
+        unitFrame.infoBg:SetPoint('BOTTOMLEFT', unitFrame.hpBar, 'TOPLEFT', -7, 0)
+        unitFrame.name:SetPoint('LEFT', unitFrame.infoBg, 'LEFT', 5, 1)
+        unitFrame.level:SetPoint('RIGHT', unitFrame.infoBg, 'RIGHT', -7, 1)
         if unitFrame.pvpIcon then
             unitFrame.pvpIconFrame:SetAllPoints(unitFrame.borderBg)
-            unitFrame.pvpIcon:SetPoint('CENTER', unitFrame.borderBg, 'RIGHT', 5, 0)
+            unitFrame.pvpIcon:SetPoint('CENTER', unitFrame.borderBg, 'LEFT', 5, -3)
         end
     end
     -- debugframe(unitFrame)
@@ -698,6 +693,10 @@ function setup:UpdateHealthBarColor(portrait, unit)
         portrait.hpBar:SetFillColor(setup.lastTargetColor[1], setup.lastTargetColor[2], setup.lastTargetColor[3], 1)
         return
     end
+    if mode == 'mirror' and portrait.unit == 'pet' then
+        portrait.hpBar:SetFillColor(setup.lastPlayerColor[1], setup.lastPlayerColor[2], setup.lastPlayerColor[3], 1)
+        return
+    end
     if mode == 'reaction' then
         local reaction = UnitReaction(unit, 'player')
         if reaction and AU.tables['factioncolors'][reaction] then
@@ -710,11 +709,17 @@ function setup:UpdateHealthBarColor(portrait, unit)
     if class and AU.tables['classcolors'][class] and UnitIsPlayer(unit) then
         local color = AU.tables['classcolors'][class]
         portrait.hpBar:SetFillColor(color[1], color[2], color[3], 1)
+        if portrait.unit == 'player' then
+            setup.lastPlayerColor = {color[1], color[2], color[3]}
+        end
     else
         local reaction = UnitReaction(unit, 'player')
         if reaction and AU.tables['factioncolors'][reaction] then
             local color = AU.tables['factioncolors'][reaction]
             portrait.hpBar:SetFillColor(color[1], color[2], color[3], 1)
+            if portrait.unit == 'player' then
+                setup.lastPlayerColor = {color[1], color[2], color[3]}
+            end
         end
     end
 
@@ -728,7 +733,6 @@ function setup:UpdateBuffs(unitFrame)
         end
         return 0
     end
-    local isRight = unitFrame.unit == 'target'
     local xBase = 0
     local yBase = -3
     local visibleBuffs = 0
@@ -742,17 +746,9 @@ function setup:UpdateBuffs(unitFrame)
             local col = math.mod(i - 1, 5)
             unitFrame.buffs[i]:ClearAllPoints()
             if anchor == 'below' then
-                if isRight then
-                    unitFrame.buffs[i]:SetPoint('TOPLEFT', unitFrame.powerBar, 'BOTTOMLEFT', col * 22 + xBase, -row * 22 + yBase)
-                else
-                    unitFrame.buffs[i]:SetPoint('TOPRIGHT', unitFrame.powerBar, 'BOTTOMRIGHT', -col * 22 + xBase, -row * 22 + yBase)
-                end
+                unitFrame.buffs[i]:SetPoint('TOPRIGHT', unitFrame.powerBar, 'BOTTOMRIGHT', -col * 22 + xBase, -row * 22 + yBase)
             else
-                if isRight then
-                    unitFrame.buffs[i]:SetPoint('BOTTOMLEFT', unitFrame.infoBg, 'TOPLEFT', col * 22 + xBase, row * 22 - yBase)
-                else
-                    unitFrame.buffs[i]:SetPoint('BOTTOMRIGHT', unitFrame.infoBg, 'TOPRIGHT', -col * 22 + xBase, row * 22 - yBase)
-                end
+                unitFrame.buffs[i]:SetPoint('BOTTOMRIGHT', unitFrame.infoBg, 'TOPRIGHT', -col * 22 + xBase, row * 22 - yBase)
             end
             visibleBuffs = visibleBuffs + 1
         else
@@ -771,7 +767,6 @@ function setup:UpdateDebuffs(unitFrame, buffRows)
         return
     end
     local buffAnchor = unitFrame.buffAnchor or 'below'
-    local isRight = unitFrame.unit == 'target'
     local xBase = 0
     local yBase = -3
     local offsetRows = 0
@@ -821,17 +816,9 @@ function setup:UpdateDebuffs(unitFrame, buffRows)
             unitFrame.debuffs[i]:ClearAllPoints()
 
             if anchor == 'below' then
-                if isRight then
-                    unitFrame.debuffs[i]:SetPoint('TOPLEFT', unitFrame.powerBar, 'BOTTOMLEFT', col * 22 + xBase, -offsetRows * 22 - row * 22 + yBase)
-                else
-                    unitFrame.debuffs[i]:SetPoint('TOPRIGHT', unitFrame.powerBar, 'BOTTOMRIGHT', -col * 22 + xBase, -offsetRows * 22 - row * 22 + yBase)
-                end
+                unitFrame.debuffs[i]:SetPoint('TOPRIGHT', unitFrame.powerBar, 'BOTTOMRIGHT', -col * 22 + xBase, -offsetRows * 22 - row * 22 + yBase)
             else
-                if isRight then
-                    unitFrame.debuffs[i]:SetPoint('BOTTOMLEFT', unitFrame.infoBg, 'TOPLEFT', col * 22 + xBase, offsetRows * 22 + row * 22 - yBase)
-                else
-                    unitFrame.debuffs[i]:SetPoint('BOTTOMRIGHT', unitFrame.infoBg, 'TOPRIGHT', -col * 22 + xBase, offsetRows * 22 + row * 22 - yBase)
-                end
+                unitFrame.debuffs[i]:SetPoint('BOTTOMRIGHT', unitFrame.infoBg, 'TOPRIGHT', -col * 22 + xBase, offsetRows * 22 + row * 22 - yBase)
             end
         else
             unitFrame.debuffs[i]:Hide()
@@ -1177,6 +1164,15 @@ function setup:OnEvent()
                         break
                     end
                 end
+                for k = 1, table.getn(setup.portraits) do
+                    if setup.portraits[k].unit == 'pet' then
+                        local petMode = (AU_GlobalDB and AU.profile['unitframes'] and AU.profile['unitframes']['petHealthBarColorMode']) or 'class'
+                        if petMode == 'mirror' then
+                            setup:UpdateHealthBarColor(setup.portraits[k], 'pet')
+                        end
+                        break
+                    end
+                end
             end
         end
     elseif event == 'PLAYER_ENTERING_WORLD' then
@@ -1208,6 +1204,17 @@ function setup:OnEvent()
                 portrait.hpBar.max = UnitHealthMax(portrait.unit)
                 portrait.hpBar:SetValue(UnitHealth(portrait.unit))
                 setup:UpdateHealthBarColor(portrait, portrait.unit)
+                if portrait.unit == 'player' then
+                    for j = 1, table.getn(setup.portraits) do
+                        if setup.portraits[j].unit == 'pet' then
+                            local petMode = (AU_GlobalDB and AU.profile['unitframes'] and AU.profile['unitframes']['petHealthBarColorMode']) or 'class'
+                            if petMode == 'mirror' then
+                                setup:UpdateHealthBarColor(setup.portraits[j], 'pet')
+                            end
+                            break
+                        end
+                    end
+                end
                 setup:UpdateBarText(portrait)
             end
         end
@@ -1336,6 +1343,65 @@ end
 
 -- init
 function setup:GenerateDefaults()
+    -- Frame-specific overrides - customize individual frames here because easier to edit than loop exceptions
+    local frameOverrides = {
+        player = {
+            -- Player gets mirror color mode because it can mirror health to mana
+            hasPlayerFeatures = true,
+            -- Player doesn't need name abbreviation because it's always you
+            hasNameAbbreviation = false,
+            -- Player doesn't need reaction coloring because it's always friendly
+            hasNameReactionColoring = false,
+            -- Player gets special resting and energy features
+            hasRestingFeatures = true,
+            -- Player has PvP icon
+            hasPvPIcon = true,
+        },
+        target = {
+            -- Target fills right to left because it's on the right side
+            healthBarFillDirection = 'RIGHT_TO_LEFT',
+            manaBarFillDirection = 'RIGHT_TO_LEFT',
+            -- Target border is flipped because it faces player
+            flipPortraitBorder = true,
+            -- Target needs name abbreviation and reaction coloring
+            hasNameAbbreviation = true,
+            hasNameReactionColoring = true,
+            hasPvPIcon = true,
+        },
+        targettarget = {
+            -- Target of target needs name abbreviation and reaction coloring
+            hasNameAbbreviation = true,
+            hasNameReactionColoring = true,
+            hasPvPIcon = true,
+            -- Target of target uses base border and smaller scale because it's secondary
+            portraitBorderTexture = 'portrait_border_base',
+            scale = 0.8,
+        },
+        pet = {
+            -- Pet doesn't have PvP icon but has happiness icon
+            hasPvPIcon = false,
+            hasHappinessIcon = true,
+            hasNameAbbreviation = true,
+            -- Pet uses base border and smaller scale because it's secondary
+            portraitBorderTexture = 'portrait_border_base',
+            scale = 0.8,
+        },
+        pettarget = {
+            -- Pet target needs name abbreviation and reaction coloring
+            hasNameAbbreviation = true,
+            hasNameReactionColoring = true,
+            hasPvPIcon = true,
+            -- Pet target uses base border and smaller scale because it's secondary
+            portraitBorderTexture = 'portrait_border_base',
+            scale = 0.8,
+        },
+        party = {
+            -- Party frames need name abbreviation
+            hasNameAbbreviation = true,
+            hasPvPIcon = true,
+        },
+    }
+
     local frames = {
         {key = 'player', name = 'Player'},
         {key = 'target', name = 'Target'},
@@ -1359,25 +1425,56 @@ function setup:GenerateDefaults()
         local catBuffsDebuffs = frame.name..' Buffs & Debuffs'
         local catEffects = frame.name..' Effects & Icons'
         table.insert(defaults.gui, {tab = 'unitframes', subtab = frame.key, catGeneral, catHealthBar, catPowerBar, catBuffsDebuffs, catEffects})
+        -- Get default values because all frames start with same base settings
+        local healthBarFillDirection = 'LEFT_TO_RIGHT'
+        local manaBarFillDirection = 'LEFT_TO_RIGHT'
+        local flipPortraitBorder = false
+        local hasPlayerFeatures = false
+        local hasNameAbbreviation = true
+        local hasNameReactionColoring = false
+        local hasRestingFeatures = false
+        local hasPvPIcon = true
+        local hasHappinessIcon = false
+        local portraitBorderTexture = 'portrait_border_edge'
+        local scale = 1
+
+        -- Apply frame-specific overrides because individual frames need custom settings
+        local overrides = frameOverrides[frame.key]
+        if overrides then
+            healthBarFillDirection = overrides.healthBarFillDirection or healthBarFillDirection
+            manaBarFillDirection = overrides.manaBarFillDirection or manaBarFillDirection
+            flipPortraitBorder = overrides.flipPortraitBorder or flipPortraitBorder
+            hasPlayerFeatures = overrides.hasPlayerFeatures or hasPlayerFeatures
+            hasNameAbbreviation = overrides.hasNameAbbreviation ~= nil and overrides.hasNameAbbreviation or hasNameAbbreviation
+            hasNameReactionColoring = overrides.hasNameReactionColoring or hasNameReactionColoring
+            hasRestingFeatures = overrides.hasRestingFeatures or hasRestingFeatures
+            hasPvPIcon = overrides.hasPvPIcon ~= nil and overrides.hasPvPIcon or hasPvPIcon
+            hasHappinessIcon = overrides.hasHappinessIcon or hasHappinessIcon
+            portraitBorderTexture = overrides.portraitBorderTexture or portraitBorderTexture
+            scale = overrides.scale or scale
+        end
+
         defaults[frame.key..'Enabled'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 1, description = 'Show or hide the '..frame.name..' frame'}}
-        defaults[frame.key..'Scale'] = {value = 1, metadata = {element = 'slider', category = catGeneral, indexInCategory = 2, description = 'Frame scale', min = 0.5, max = 2, step = 0.05, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'Scale'] = {value = scale, metadata = {element = 'slider', category = catGeneral, indexInCategory = 2, description = 'Frame scale', min = 0.5, max = 2, step = 0.05, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ShowPortrait'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 3, description = 'Show or hide the portrait', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'PortraitMode'] = {value = '3D Model', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 4, description = 'Portrait display mode', options = {'3D Model', '2D Portrait', 'Class Icon'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'PortraitSize'] = {value = 80, metadata = {element = 'slider', category = catGeneral, indexInCategory = 5, description = 'Portrait size', min = 40, max = 120, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ShowLevel'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 6, description = 'Show level text', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ShowName'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 7, description = 'Show name text', dependency = {key = frame.key..'Enabled', state = true}}}
-        if frame.key ~= 'player' then
+        -- Add name abbreviation settings because most frames need them except player
+        if hasNameAbbreviation then
             defaults[frame.key..'NameAbbreviation'] = {value = 'truncated', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 8, description = 'Name abbreviation mode', options = {'none', 'initials', 'truncated'}, dependency = {key = frame.key..'Enabled', state = true}}}
             defaults[frame.key..'NameMaxLength'] = {value = 14, metadata = {element = 'slider', category = catGeneral, indexInCategory = 9, description = 'Max name length (truncated mode)', min = 3, max = 20, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'NameAbbreviation', state = 'truncated'}}}}
         end
-        defaults[frame.key..'InfoBgWidth'] = {value = 120, metadata = {element = 'slider', category = catGeneral, indexInCategory = 10, description = 'Name bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'InfoBgWidth'] = {value = 127, metadata = {element = 'slider', category = catGeneral, indexInCategory = 10, description = 'Name bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'InfoBgHeight'] = {value = 16, metadata = {element = 'slider', category = catGeneral, indexInCategory = 11, description = 'Name bar height', min = 8, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarWidth'] = {value = 120, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 1, description = 'Health bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarHeight'] = {value = 20, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 2, description = 'Health bar height', min = 10, max = 50, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'HealthBarTexture'] = {value = 'aurora_hpbar', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 3, description = 'Health bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'HealthBarFillDirection'] = {value = (frame.key == 'target') and 'RIGHT_TO_LEFT' or 'LEFT_TO_RIGHT', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 4, description = 'Health bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
-        local colorModeOptions = (frame.key == 'player') and {'class', 'reaction', 'custom', 'mirror'} or {'class', 'reaction', 'custom'}
-        defaults[frame.key..'HealthBarColorMode'] = {value = 'class', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 5, description = 'Health bar color mode', options = colorModeOptions, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'HealthBarTexture'] = {value = 'aurora_hpbar_reversed', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 3, description = 'Health bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
+
+        defaults[frame.key..'HealthBarFillDirection'] = {value = healthBarFillDirection, metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 4, description = 'Health bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        local colorModeOptions = hasPlayerFeatures and {'class', 'reaction', 'custom', 'mirror'} or (frame.key == 'pet' and {'class', 'reaction', 'custom', 'mirror'} or {'class', 'reaction', 'custom'})
+        defaults[frame.key..'HealthBarColorMode'] = {value = frame.key == 'pet' and 'mirror' or 'class', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 5, description = 'Health bar color mode', options = colorModeOptions, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarCustomColor'] = {value = {0, 1, 0}, metadata = {element = 'colorpicker', category = catHealthBar, indexInCategory = 6, description = 'Custom health bar color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'HealthBarColorMode', state = 'custom'}}}}
         defaults[frame.key..'HealthBarSmoothTransition'] = {value = true, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 7, description = 'Smooth health bar transition', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarEnablePulse'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 8, description = 'Enable health bar pulse', dependency = {key = frame.key..'Enabled', state = true}}}
@@ -1388,7 +1485,7 @@ function setup:GenerateDefaults()
         defaults[frame.key..'HealthTextFormat'] = {value = 'cur/max', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 13, description = 'Health text format', options = {'current', 'cur/max', 'none'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextShowPercent'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 14, description = 'Show health percentage', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextAbbreviate'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 15, description = 'Abbreviate health numbers', dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'HealthTextAnchor'] = {value = 'left', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 16, description = 'Health text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'HealthTextAnchor'] = {value = 'center', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 16, description = 'Health text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 17, description = 'Health text font', options = media.fonts, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextSize'] = {value = 10, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 18, description = 'Health text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catHealthBar, indexInCategory = 19, description = 'Health text color', dependency = {key = frame.key..'Enabled', state = true}}}
@@ -1399,14 +1496,15 @@ function setup:GenerateDefaults()
         defaults[frame.key..'LevelTextSize'] = {value = 10, metadata = {element = 'slider', category = catGeneral, indexInCategory = 13, description = 'Level text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'NameTextFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 14, description = 'Name text font', options = media.fonts, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'NameTextSize'] = {value = 10, metadata = {element = 'slider', category = catGeneral, indexInCategory = 15, description = 'Name text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'NameTextColor'] = {value = {1, 0.82, 0, 1}, metadata = {element = 'colorpicker', category = catGeneral, indexInCategory = 16, description = 'Name text color', dependency = {key = frame.key..'Enabled', state = true}}}
-        if frame.key == 'target' or frame.key == 'targettarget' or frame.key == 'pettarget' then
+        defaults[frame.key..'NameTextColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catGeneral, indexInCategory = 16, description = 'Name text color', dependency = {key = frame.key..'Enabled', state = true}}}
+        -- Add name reaction coloring because some frames need it
+        if hasNameReactionColoring then
             defaults[frame.key..'NameReactionColoring'] = {value = false, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 17, description = 'Use reaction coloring for name', dependency = {key = frame.key..'Enabled', state = true}}}
         end
         defaults[frame.key..'ManaBarWidth'] = {value = 120, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 1, description = 'Power bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarHeight'] = {value = 12, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 2, description = 'Power bar height', min = 6, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ManaBarTexture'] = {value = 'aurora_hpbar', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 3, description = 'Power bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ManaBarFillDirection'] = {value = (frame.key == 'target') and 'RIGHT_TO_LEFT' or 'LEFT_TO_RIGHT', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 4, description = 'Power bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ManaBarTexture'] = {value = 'aurora_hpbar_reversed', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 3, description = 'Power bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ManaBarFillDirection'] = {value = manaBarFillDirection, metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 4, description = 'Power bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarSmoothTransition'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 5, description = 'Smooth power bar transition', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarEnablePulse'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 6, description = 'Enable power bar pulse', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarPulseColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catPowerBar, indexInCategory = 7, description = 'Power bar pulse color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ManaBarEnablePulse', state = true}}}}
@@ -1416,7 +1514,7 @@ function setup:GenerateDefaults()
         defaults[frame.key..'ManaTextFormat'] = {value = 'cur/max', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 11, description = 'Power text format', options = {'current', 'cur/max', 'none'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextShowPercent'] = {value = false, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 12, description = 'Show power percentage', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextAbbreviate'] = {value = false, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 13, description = 'Abbreviate power numbers', dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ManaTextAnchor'] = {value = 'left', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 14, description = 'Power text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ManaTextAnchor'] = {value = 'center', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 14, description = 'Power text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 15, description = 'Power text font', options = media.fonts, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextSize'] = {value = 10, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 16, description = 'Power text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catPowerBar, indexInCategory = 17, description = 'Power text color', dependency = {key = frame.key..'Enabled', state = true}}}
@@ -1427,25 +1525,30 @@ function setup:GenerateDefaults()
         defaults[frame.key..'BuffSize'] = {value = 20, metadata = {element = 'slider', category = catBuffsDebuffs, indexInCategory = 2, description = 'Buff size', min = 10, max = 40, step = 2, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'DebuffAnchor'] = {value = 'below', metadata = {element = 'dropdown', category = catBuffsDebuffs, indexInCategory = 3, description = 'Debuff anchor position', options = {'below', 'above', 'Disabled'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'DebuffSize'] = {value = 20, metadata = {element = 'slider', category = catBuffsDebuffs, indexInCategory = 4, description = 'Debuff size', min = 10, max = 40, step = 2, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ShowDebuffTimer'] = {value = false, metadata = {element = 'checkbox', category = catBuffsDebuffs, indexInCategory = 5, description = 'Show debuff timer', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ShowDebuffTimer'] = {value = true, metadata = {element = 'checkbox', category = catBuffsDebuffs, indexInCategory = 5, description = 'Show debuff timer', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'DebuffTimerFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catBuffsDebuffs, indexInCategory = 6, description = 'Debuff timer font', options = media.fonts, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowDebuffTimer', state = true}}}}
-        defaults[frame.key..'DebuffTimerSize'] = {value = 8, metadata = {element = 'slider', category = catBuffsDebuffs, indexInCategory = 7, description = 'Debuff timer size', min = 6, max = 16, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowDebuffTimer', state = true}}}}
-        defaults[frame.key..'PortraitBorderTexture'] = {value = 'portrait_border_edge', metadata = {element = 'dropdown', category = catEffects, indexInCategory = 1, description = 'Portrait border texture', options = {'portrait_border_edge', 'portrait_border', 'portrait_border_base'}, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'FlipPortraitBorder'] = {value = (frame.key == 'target'), metadata = {element = 'checkbox', category = catEffects, indexInCategory = 2, description = 'Flip portrait border horizontally', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'DebuffTimerSize'] = {value = 15, metadata = {element = 'slider', category = catBuffsDebuffs, indexInCategory = 7, description = 'Debuff timer size', min = 5, max = 25, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowDebuffTimer', state = true}}}}
+        defaults[frame.key..'PortraitBorderTexture'] = {value = portraitBorderTexture, metadata = {element = 'dropdown', category = catEffects, indexInCategory = 1, description = 'Portrait border texture', options = {'portrait_border_edge', 'portrait_border', 'portrait_border_base'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'FlipPortraitBorder'] = {value = flipPortraitBorder, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 2, description = 'Flip portrait border horizontally', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'PortraitBorderColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 3, description = 'Portrait border color', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'CombatGlowTextures'] = {value = 'Both', metadata = {element = 'dropdown', category = catEffects, indexInCategory = 4, description = 'Combat glow textures', options = {'Both', 'Portrait Only', 'Bar Only', 'None'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'CombatGlowColor'] = {value = {1, 0, 0, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 5, description = 'Combat glow color', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'CombatGlowMaxAlpha'] = {value = 0.7, metadata = {element = 'slider', category = catEffects, indexInCategory = 6, description = 'Combat glow max alpha (portrait)', min = 0, max = 1, step = 0.05, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'CombatGlow2MaxAlpha'] = {value = 0.7, metadata = {element = 'slider', category = catEffects, indexInCategory = 7, description = 'Combat glow max alpha (bar)', min = 0, max = 1, step = 0.05, dependency = {key = frame.key..'Enabled', state = true}}}
-        if frame.key ~= 'pet' then
+        -- Add PvP icon settings because most frames need them except pet
+        if hasPvPIcon then
             defaults[frame.key..'ShowPvPIcon'] = {value = true, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 8, description = 'Show PvP icon', dependency = {key = frame.key..'Enabled', state = true}}}
             defaults[frame.key..'PvPIconSize'] = {value = 45, metadata = {element = 'slider', category = catEffects, indexInCategory = 9, description = 'PvP icon size', min = 20, max = 80, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowPvPIcon', state = true}}}}
             defaults[frame.key..'PvPIconColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 10, description = 'PvP icon color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowPvPIcon', state = true}}}}
         end
-        if frame.key == 'pet' then
+
+        -- Add happiness icon because only pet needs it
+        if hasHappinessIcon then
             defaults['petHappinessIconSize'] = {value = 22, metadata = {element = 'slider', category = catEffects, indexInCategory = 11, description = 'Happiness icon size', min = 8, max = 40, step = 2, dependency = {key = 'petEnabled', state = true}}}
         end
-        if frame.key == 'player' then
+
+        -- Add resting features because only player needs them
+        if hasRestingFeatures then
             defaults['playerShowRestingZZZ'] = {value = true, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 11, description = 'Show resting ZZZ animation', dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerRestingZZZColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 12, description = 'Resting ZZZ color', dependency = {key = 'playerEnabled', state = true}}}
             defaults['playerShowEnergyTick'] = {value = true, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 13, description = 'Show energy tick indicator', dependency = {key = 'playerEnabled', state = true}}}
@@ -1458,6 +1561,13 @@ function setup:GenerateDefaults()
     end
 
     return defaults
+end
+
+local function GetPortraitModelOffset(size)
+    local minSize, maxSize = 40, 120
+    local minOffset, maxOffset = 21, 37
+    local offset = minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
+    return offset
 end
 
 function setup:GenerateCallbacks()

@@ -29,7 +29,7 @@ function minimap:CreateMinimapCluster()
     local frame = CreateFrame('Frame', 'AU_MinimapCluster', UIParent)
     frame:SetHeight(self.config.height)
     frame:SetWidth(self.config.width)
-    frame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 50)
+    frame:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', -50, -70)
     return frame
 end
 
@@ -39,6 +39,7 @@ function minimap:SetupMinimap(cluster)
     Minimap:SetPoint('CENTER', cluster, 'CENTER', 0, -10)
     Minimap:SetHeight(150)
     Minimap:SetWidth(150)
+    Minimap:SetFrameLevel(1)
 
     local border = Minimap:CreateTexture(nil, 'ARTWORK')
     border:SetPoint('TOPLEFT', Minimap, 'TOPLEFT', -12, 13)
@@ -62,7 +63,7 @@ function minimap:CreateTopPanel(cluster)
     local panel = CreateFrame('Frame', 'AU_TopPanel', UIParent)
     panel:SetHeight(self.config.topPanelHeight)
     panel:SetWidth(self.config.width - 30)
-    panel:SetPoint('BOTTOM', cluster, 'TOP', 0, 0)
+    panel:SetPoint('BOTTOM', cluster, 'TOP', 0, 30)
     panel:EnableMouse(true)
 
     local border = panel:CreateTexture(nil, 'ARTWORK')
@@ -170,14 +171,14 @@ end
 
 function minimap:SetupBlizzardIcons()
     MiniMapMailFrame:ClearAllPoints()
-    MiniMapMailFrame:SetPoint('BOTTOM', Minimap, 'TOP', -27, 10)
+    MiniMapMailFrame:SetPoint('BOTTOMRIGHT', Minimap, 'TOPLEFT', 15, 10)
     MiniMapMailIcon:SetTexture(media['tex:minimap:mail.tga'])
     MiniMapMailIcon:SetWidth(32)
     MiniMapMailIcon:SetHeight(32)
     MiniMapMailBorder:Hide()
 
     MiniMapTrackingFrame:ClearAllPoints()
-    MiniMapTrackingFrame:SetPoint('BOTTOMRIGHT', Minimap, 'TOPRIGHT', 2, 12)
+    MiniMapTrackingFrame:SetPoint('BOTTOMRIGHT', Minimap, 'TOPLEFT', 35, -35)
     MiniMapTrackingFrame:SetScale(.8)
     MiniMapTrackingBorder:Hide()
 

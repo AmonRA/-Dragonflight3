@@ -9,10 +9,10 @@ AU:NewDefaults('castbar', {
     },
 
     showPlayerCastbar = {value = true, metadata = {element = 'checkbox', category = 'Player Appearance', indexInCategory = 1, description = 'Show or hide the player castbar'}},
-    playerCastbarWidth = {value = 135, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 2, description = 'Width of the player castbar', min = 100, max = 400, stepSize = 1, dependency = {key = 'showPlayerCastbar', state = true}}},
-    playerCastbarHeight = {value = 14, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 3, description = 'Height of the player castbar', min = 10, max = 40, stepSize = 1, dependency = {key = 'showPlayerCastbar', state = true}}},
+    playerCastbarWidth = {value = 155, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 2, description = 'Width of the player castbar', min = 100, max = 400, stepSize = 1, dependency = {key = 'showPlayerCastbar', state = true}}},
+    playerCastbarHeight = {value = 16, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 3, description = 'Height of the player castbar', min = 10, max = 40, stepSize = 1, dependency = {key = 'showPlayerCastbar', state = true}}},
     playerShowDropshadow = {value = true, metadata = {element = 'checkbox', category = 'Player Appearance', indexInCategory = 4, description = 'Show or hide the dropshadow', dependency = {key = 'showPlayerCastbar', state = true}}},
-    playerDropshadowWidth = {value = 134, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 5, description = 'Width of the dropshadow', min = 100, max = 400, stepSize = 1, dependency = {key = 'playerShowDropshadow', state = true}}},
+    playerDropshadowWidth = {value = 154, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 5, description = 'Width of the dropshadow', min = 100, max = 400, stepSize = 1, dependency = {key = 'playerShowDropshadow', state = true}}},
     playerDropshadowHeight = {value = 25, metadata = {element = 'slider', category = 'Player Appearance', indexInCategory = 6, description = 'Height of the dropshadow', min = 10, max = 50, stepSize = 1, dependency = {key = 'playerShowDropshadow', state = true}}},
     playerBarColor = {value = {1, 0.82, 0}, metadata = {element = 'colorpicker', category = 'Player Colors', indexInCategory = 1, description = 'Color of the castbar fill', dependency = {key = 'showPlayerCastbar', state = true}}},
     playerSparkColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Player Colors', indexInCategory = 2, description = 'Color of the spark', dependency = {key = 'showPlayerCastbar', state = true}}},
@@ -31,9 +31,9 @@ AU:NewDefaults('castbar', {
     playerAutoColorTime = {value = true, metadata = {element = 'checkbox', category = 'Player Text', indexInCategory = 8, description = 'Auto color time from white to red when less than one second remaining', dependency = {key = 'playerShowTime', state = true}}},
     playerTimeFormatWhole = {value = false, metadata = {element = 'checkbox', category = 'Player Text', indexInCategory = 9, description = 'Show time as whole numbers without decimals', dependency = {key = 'playerShowTime', state = true}}},
     playerSpellNameOffsetX = {value = 0, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 10, description = 'Spell name X position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowSpellName', state = true}}},
-    playerSpellNameOffsetY = {value = -14, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 11, description = 'Spell name Y position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowSpellName', state = true}}},
+    playerSpellNameOffsetY = {value = -15, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 11, description = 'Spell name Y position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowSpellName', state = true}}},
     playerTimeOffsetX = {value = 0, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 12, description = 'Cast time X position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowTime', state = true}}},
-    playerTimeOffsetY = {value = -14, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 13, description = 'Cast time Y position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowTime', state = true}}},
+    playerTimeOffsetY = {value = -15, metadata = {element = 'slider', category = 'Player Text', indexInCategory = 13, description = 'Cast time Y position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'playerShowTime', state = true}}},
     playerFillDirection = {value = 'left', metadata = {element = 'dropdown', category = 'Player Behavior', indexInCategory = 1, description = 'Direction the castbar fills', options = {'left', 'right', 'center', 'centerreversed'}, dependency = {key = 'showPlayerCastbar', state = true}}},
     playerSparkTrail = {value = true, metadata = {element = 'checkbox', category = 'Player Behavior', indexInCategory = 2, description = 'Enable spark trail effect', dependency = {key = 'showPlayerCastbar', state = true}}},
     playerTrailMaxCount = {value = 25, metadata = {element = 'slider', category = 'Player Behavior', indexInCategory = 3, description = 'Maximum number of trail sparks', min = 5, max = 30, stepSize = 1, dependency = {key = 'playerSparkTrail', state = true}}},
@@ -79,7 +79,7 @@ AU:NewModule('castbar', 2, 'PLAYER_LOGIN', function()
     castBar.frame:SetPoint('CENTER', UIParent, 'CENTER', 0, -150)
 
     local targetCastBar = AU.lib.CreateCastBar('target')
-    targetCastBar.frame:SetPoint('CENTER', UIParent, 'CENTER', 160, -50)
+    targetCastBar.frame:SetPoint('TOPLEFT', UIParent, 'TOPLEFT', 260, -130)
 
 
     -- callbacks

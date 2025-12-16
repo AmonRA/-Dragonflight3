@@ -10,7 +10,7 @@ AU:NewDefaults('xprep', {
 
     xpBarEnabled = {value = true, metadata = {element = 'checkbox', category = 'XP General', indexInCategory = 1, description = 'Toggle visibility of the experience bar'}},
     xpBarFadeOutDelay = {value = 0, metadata = {element = 'slider', category = 'XP General', indexInCategory = 2, description = 'Seconds before fading out after mouse leaves (0 = disabled)', min = 0, max = 10, stepSize = 0.5, dependency = {key = 'xpBarEnabled', state = true}}},
-    xpBarWidth = {value = 250, metadata = {element = 'slider', category = 'XP Size', indexInCategory = 1, description = 'Width of the experience bar', min = 100, max = 800, stepSize = 10, dependency = {key = 'xpBarEnabled', state = true}}},
+    xpBarWidth = {value = 350, metadata = {element = 'slider', category = 'XP Size', indexInCategory = 1, description = 'Width of the experience bar', min = 100, max = 800, stepSize = 10, dependency = {key = 'xpBarEnabled', state = true}}},
     xpBarHeight = {value = 6, metadata = {element = 'slider', category = 'XP Size', indexInCategory = 2, description = 'Height of the experience bar', min = 2, max = 32, stepSize = 1, dependency = {key = 'xpBarEnabled', state = true}}},
     xpBarAlpha = {value = 1, metadata = {element = 'slider', category = 'XP Appearance', indexInCategory = 1, description = 'Transparency of the experience bar', min = 0, max = 1, stepSize = 0.1, dependency = {key = 'xpBarEnabled', state = true}}},
     xpBarColour = {value = {0.6, 0.2, 0.8, 1}, metadata = {element = 'colorpicker', category = 'XP Appearance', indexInCategory = 2, description = 'Color of the experience bar', dependency = {key = 'xpBarEnabled', state = true}}},
@@ -24,7 +24,7 @@ AU:NewDefaults('xprep', {
     xpBarTextAnchor = {value = 'CENTER', metadata = {element = 'dropdown', category = 'XP Text', indexInCategory = 6, description = 'Text anchor position', options = {'LEFT', 'CENTER', 'RIGHT'}, dependency = {key = 'xpBarShowText', state = true}}},
     xpBarTextOffsetX = {value = 0, metadata = {element = 'slider', category = 'XP Text', indexInCategory = 7, description = 'X offset for XP text', min = -100, max = 100, stepSize = 1, dependency = {key = 'xpBarShowText', state = true}}},
     xpBarTextOffsetY = {value = 0, metadata = {element = 'slider', category = 'XP Text', indexInCategory = 8, description = 'Y offset for XP text', min = -100, max = 100, stepSize = 1, dependency = {key = 'xpBarShowText', state = true}}},
-    xpBarShowTextOnGainOnly = {value = false, metadata = {element = 'checkbox', category = 'XP Text', indexInCategory = 9, description = 'Show text only for 10 seconds after gaining XP', dependency = {key = 'xpBarShowText', state = true}}},
+    xpBarShowTextOnGainOnly = {value = true, metadata = {element = 'checkbox', category = 'XP Text', indexInCategory = 9, description = 'Show text only for 10 seconds after gaining XP', dependency = {key = 'xpBarShowText', state = true}}},
     xpBarShowRested = {value = true, metadata = {element = 'checkbox', category = 'XP Rested', indexInCategory = 1, description = 'Show rested XP on the bar', dependency = {key = 'xpBarEnabled', state = true}}},
     xpBarRestedFormat = {value = 'value + percent', metadata = {element = 'dropdown', category = 'XP Rested', indexInCategory = 2, description = 'Text format for rested XP', options = {'value', 'value + percent', 'percent'}, dependency = {key = 'xpBarShowRested', state = true}}},
     xpBarRestedFont = {value = 'font:PT-Sans-Narrow-Bold.ttf', metadata = {element = 'dropdown', category = 'XP Rested', indexInCategory = 3, description = 'Font for rested XP text', options = media.fonts, dependency = {key = 'xpBarShowRested', state = true}}},
@@ -36,7 +36,7 @@ AU:NewDefaults('xprep', {
 
     repBarEnabled = {value = true, metadata = {element = 'checkbox', category = 'Rep General', indexInCategory = 1, description = 'Toggle visibility of the reputation bar'}},
     repBarFadeOutDelay = {value = 0, metadata = {element = 'slider', category = 'Rep General', indexInCategory = 2, description = 'Seconds before fading out after mouse leaves (0 = disabled)', min = 0, max = 10, stepSize = 0.5, dependency = {key = 'repBarEnabled', state = true}}},
-    repBarWidth = {value = 250, metadata = {element = 'slider', category = 'Rep Size', indexInCategory = 1, description = 'Width of the reputation bar', min = 100, max = 800, stepSize = 10, dependency = {key = 'repBarEnabled', state = true}}},
+    repBarWidth = {value = 200, metadata = {element = 'slider', category = 'Rep Size', indexInCategory = 1, description = 'Width of the reputation bar', min = 100, max = 800, stepSize = 10, dependency = {key = 'repBarEnabled', state = true}}},
     repBarHeight = {value = 6, metadata = {element = 'slider', category = 'Rep Size', indexInCategory = 2, description = 'Height of the reputation bar', min = 2, max = 32, stepSize = 1, dependency = {key = 'repBarEnabled', state = true}}},
     repBarAlpha = {value = 1, metadata = {element = 'slider', category = 'Rep Appearance', indexInCategory = 1, description = 'Transparency of the reputation bar', min = 0, max = 1, stepSize = 0.1, dependency = {key = 'repBarEnabled', state = true}}},
     repBarPulse = {value = true, metadata = {element = 'checkbox', category = 'Rep Appearance', indexInCategory = 2, description = 'Enable pulse animation on reputation gain', dependency = {key = 'repBarEnabled', state = true}}},
@@ -51,7 +51,7 @@ AU:NewDefaults('xprep', {
     repBarTextAnchor = {value = 'CENTER', metadata = {element = 'dropdown', category = 'Rep Text', indexInCategory = 6, description = 'Text anchor position', options = {'LEFT', 'CENTER', 'RIGHT'}, dependency = {key = 'repBarShowText', state = true}}},
     repBarTextOffsetX = {value = 0, metadata = {element = 'slider', category = 'Rep Text', indexInCategory = 7, description = 'X offset for reputation text', min = -100, max = 100, stepSize = 1, dependency = {key = 'repBarShowText', state = true}}},
     repBarTextOffsetY = {value = 0, metadata = {element = 'slider', category = 'Rep Text', indexInCategory = 8, description = 'Y offset for reputation text', min = -100, max = 100, stepSize = 1, dependency = {key = 'repBarShowText', state = true}}},
-    repBarShowTextOnGainOnly = {value = false, metadata = {element = 'checkbox', category = 'Rep Text', indexInCategory = 9, description = 'Show text only for 10 seconds after gaining reputation', dependency = {key = 'repBarShowText', state = true}}},
+    repBarShowTextOnGainOnly = {value = true, metadata = {element = 'checkbox', category = 'Rep Text', indexInCategory = 9, description = 'Show text only for 10 seconds after gaining reputation', dependency = {key = 'repBarShowText', state = true}}},
     repBarShowFactionName = {value = true, metadata = {element = 'checkbox', category = 'Rep Faction', indexInCategory = 1, description = 'Show faction name on the bar', dependency = {key = 'repBarEnabled', state = true}}},
     repBarFactionNameFont = {value = 'font:PT-Sans-Narrow-Bold.ttf', metadata = {element = 'dropdown', category = 'Rep Faction', indexInCategory = 2, description = 'Font for faction name', options = media.fonts, dependency = {key = 'repBarShowFactionName', state = true}}},
     repBarFactionNameSize = {value = 12, metadata = {element = 'slider', category = 'Rep Faction', indexInCategory = 3, description = 'Font size for faction name', min = 6, max = 20, stepSize = 1, dependency = {key = 'repBarShowFactionName', state = true}}},
@@ -64,7 +64,7 @@ AU:NewDefaults('xprep', {
 AU:NewModule('xprep', 1, 'PLAYER_ENTERING_WORLD', function()
     local xpbar = AU.animations.CreateStatusBar(UIParent, AU.profile['xprep']['xpBarWidth'], AU.profile['xprep']['xpBarHeight'], {pulse = AU.profile['xprep']['xpBarPulse']}, 'AU_XPBar')
     xpbar:SetTextures(media['tex:generic:xpbar_1.blp'], media['tex:generic:xpbar_1_bg.blp'])
-    xpbar:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOM', -250, 4)
+    xpbar:SetPoint('BOTTOM', UIParent, 'BOTTOM', -0, 135)
     local color = AU.profile['xprep']['xpBarColour']
     xpbar:SetFillColor(color[1], color[2], color[3], color[4])
     local pulseColor = AU.profile['xprep']['xpBarPulseColour']
@@ -98,7 +98,7 @@ AU:NewModule('xprep', 1, 'PLAYER_ENTERING_WORLD', function()
 
     local repbar = AU.animations.CreateStatusBar(UIParent, AU.profile['xprep']['repBarWidth'], AU.profile['xprep']['repBarHeight'], {pulse = AU.profile['xprep']['repBarPulse']}, 'AU_RepBar')
     repbar:SetTextures(media['tex:generic:xpbar_1.blp'], media['tex:generic:xpbar_1_bg.blp'])
-    repbar:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 250, 4)
+    repbar:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 250, 15)
     repbar:SetAlpha(AU.profile['xprep']['repBarAlpha'])
     local repPulseColor = AU.profile['xprep']['repBarPulseColour']
     repbar:SetPulseColor(repPulseColor[1], repPulseColor[2], repPulseColor[3], repPulseColor[4])
@@ -129,7 +129,8 @@ AU:NewModule('xprep', 1, 'PLAYER_ENTERING_WORLD', function()
     repFactionText:SetTextColor(factionColor[1], factionColor[2], factionColor[3], factionColor[4])
 
     local lastXP = UnitXP('player')
-    local lastRep = 0
+    local name, standing, min, max, value = GetWatchedFactionInfo()
+    local lastRep = value or 0
     local xpTextHideTimer = nil
     local repTextHideTimer = nil
 

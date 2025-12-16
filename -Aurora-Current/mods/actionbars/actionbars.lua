@@ -7,6 +7,17 @@ local defaults = {
     gui = {},
 }
 
+local barConfigs = {
+    {name = 'mainBar', displayName = 'Main Bar', subtab = 'mainbar', maxButtons = 12},
+    {name = 'multibar1', displayName = 'Multi Bar 1', subtab = 'multibar1', maxButtons = 12},
+    {name = 'multibar2', displayName = 'Multi Bar 2', subtab = 'multibar2', maxButtons = 12},
+    {name = 'multibar3', displayName = 'Multi Bar 3', subtab = 'multibar3', maxButtons = 12},
+    {name = 'multibar4', displayName = 'Multi Bar 4', subtab = 'multibar4', maxButtons = 12},
+    {name = 'multibar5', displayName = 'Multi Bar 5', subtab = 'multibar5', maxButtons = 12},
+    {name = 'petBar', displayName = 'Pet Bar', subtab = 'petbar', maxButtons = 10},
+    {name = 'stanceBar', displayName = 'Stance Bar', subtab = 'stancebar', maxButtons = 10},
+}
+
 local catGenSettings = 'General Settings'
 local catHotkeys = 'Hotkeys'
 local catMacros = 'Macros'
@@ -55,15 +66,68 @@ defaults.altSelfCast = {value = false, metadata = {element = 'checkbox', categor
 defaults.rightSelfCast = {value = false, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 3, description = 'Right click casts on self'}}
 defaults.animationTrigger = {value = 'keypress', metadata = {element = 'dropdown', category = catBehavior, indexInCategory = 4, description = 'Animation trigger mode', options = {'none', 'keypress'}}}
 
-local barConfigs = {
-    {name = 'mainBar', displayName = 'Main Bar', subtab = 'mainbar', maxButtons = 12},
-    {name = 'multibar1', displayName = 'Multi Bar 1', subtab = 'multibar1', maxButtons = 12},
-    {name = 'multibar2', displayName = 'Multi Bar 2', subtab = 'multibar2', maxButtons = 12},
-    {name = 'multibar3', displayName = 'Multi Bar 3', subtab = 'multibar3', maxButtons = 12},
-    {name = 'multibar4', displayName = 'Multi Bar 4', subtab = 'multibar4', maxButtons = 12},
-    {name = 'multibar5', displayName = 'Multi Bar 5', subtab = 'multibar5', maxButtons = 12},
-    {name = 'petBar', displayName = 'Pet Bar', subtab = 'petbar', maxButtons = 10},
-    {name = 'stanceBar', displayName = 'Stance Bar', subtab = 'stancebar', maxButtons = 10},
+-- Bar-specific overrides - customize individual bars here because easier to edit than loop exceptions
+local barOverrides = {
+    mainBar = {
+        -- Main bar uses default button size because it matches multibar1 and multibar2
+        gradientDirection = 'none',
+        minAlpha = 0.4,
+        -- Main bar gets paging buttons because it's the primary action bar
+        hasPaging = true,
+        -- Main bar gets background texture because it's not stance bar
+        hasBgTexture = true,
+        -- Main bar shows gryphons on both sides because it's the primary bar
+        decorationPosition = 'both',
+    },
+    multibar1 = {
+        -- Multi bar 1 uses default button size because it matches mainbar and multibar2
+        gradientDirection = 'none',
+        minAlpha = 0.4,
+        hasBgTexture = true,
+    },
+    multibar2 = {
+        -- Multi bar 2 uses default button size because it matches mainbar and multibar1
+        gradientDirection = 'none',
+        minAlpha = 0.4,
+        hasBgTexture = true,
+    },
+    multibar3 = {
+        -- Multi bar 3 gets smaller buttons because it's vertical on the right side
+        buttonSize = 24,
+        gradientDirection = 'none',
+        minAlpha = 0.3,
+        hasBgTexture = true,
+        -- Multi bar 3 has 1 button per row because it's vertical
+        buttonsPerRow = 1,
+    },
+    multibar4 = {
+        -- Multi bar 4 is disabled because not needed
+        enabled = false,
+        buttonSize = 24,
+        gradientDirection = 'none',
+        minAlpha = 0.3,
+        hasBgTexture = true,
+        buttonsPerRow = 1,
+    },
+    multibar5 = {
+        -- Multi bar 5 is disabled because not needed
+        enabled = false,
+        buttonSize = 24,
+        gradientDirection = 'none',
+        minAlpha = 0.3,
+        hasBgTexture = true,
+        buttonsPerRow = 1,
+    },
+    petBar = {
+        -- Pet bar gets background texture because it's not stance bar
+        hasBgTexture = true,
+        buttonSize = 20,
+    },
+    stanceBar = {
+        -- Stance bar doesn't get background texture because it's special
+        hasBgTexture = false,
+        buttonSize = 20,
+    },
 }
 
 for i = 1, table.getn(barConfigs) do
@@ -75,43 +139,39 @@ for i = 1, table.getn(barConfigs) do
     local catAppearance = bar.displayName..' Appearance'
     table.insert(defaults.gui, {tab = 'actionbars', subtab = bar.subtab, catGeneral, catLayout, catVisibility, catDecorations, catAppearance})
 
-    local buttonSize = 28
-    if bar.name == 'mainBar' or bar.name == 'multibar3' then
-        buttonSize = 32
-    end
+    -- Get default values because all bars start with same base settings
+    local buttonSize = 32
     local maxButtons = bar.maxButtons
     local isPetOrStance = bar.name == 'petBar' or bar.name == 'stanceBar'
-
     local gradientDirection = 'none'
     local minAlpha = 0.07
-    if bar.name == 'mainBar' then
-        gradientDirection = 'leftToRight'
-        minAlpha = 0.4
-    elseif bar.name == 'multibar1' then
-        gradientDirection = 'leftToRight'
-        minAlpha = 0.4
-    elseif bar.name == 'multibar2' then
-        gradientDirection = 'leftToRight'
-        minAlpha = 0.4
-    elseif bar.name == 'multibar3' then
-        gradientDirection = 'rightToLeft'
-        minAlpha = 0.3
-    elseif bar.name == 'multibar4' then
-        gradientDirection = 'rightToLeft'
-        minAlpha = 0.3
-    elseif bar.name == 'multibar5' then
-        gradientDirection = 'rightToLeft'
-        minAlpha = 0.3
+    local hasPaging = false
+    local hasBgTexture = true
+    local decorationPosition = 'none'
+    local buttonsPerRow = maxButtons
+    local enabled = true
+
+    -- Apply bar-specific overrides because individual bars need custom settings
+    local overrides = barOverrides[bar.name]
+    if overrides then
+        buttonSize = overrides.buttonSize or buttonSize
+        gradientDirection = overrides.gradientDirection or gradientDirection
+        minAlpha = overrides.minAlpha or minAlpha
+        hasPaging = overrides.hasPaging or hasPaging
+        hasBgTexture = overrides.hasBgTexture ~= nil and overrides.hasBgTexture or hasBgTexture
+        decorationPosition = overrides.decorationPosition or decorationPosition
+        buttonsPerRow = overrides.buttonsPerRow or buttonsPerRow
+        enabled = overrides.enabled ~= nil and overrides.enabled or enabled
     end
 
-    defaults[bar.name..'Enabled'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 1, description = 'Toggle bar visibility'}}
+    defaults[bar.name..'Enabled'] = {value = enabled, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 1, description = 'Toggle bar visibility'}}
     if not isPetOrStance then
         defaults[bar.name..'ButtonsToShow'] = {value = maxButtons, metadata = {element = 'slider', category = catGeneral, indexInCategory = 2, description = 'Number of buttons to show', min = 1, max = maxButtons, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
         defaults[bar.name..'HideEmptyButtons'] = {value = false, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 3, description = 'Hide empty buttons', dependency = {key = bar.name..'Enabled', state = true}}}
         defaults[bar.name..'ConcatenateEnabled'] = {value = false, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 4, description = 'Auto-concatenate filled buttons', dependency = {{key = bar.name..'ButtonsPerRow', state = maxButtons}, {key = bar.name..'Enabled', state = true}}}}
         defaults[bar.name..'ConcatenateDirection'] = {value = 'left', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 5, description = 'Concatenate direction', options = {'left', 'right'}, dependency = {{key = bar.name..'ConcatenateEnabled', state = true}, {key = bar.name..'Enabled', state = true}}}}
     end
-    defaults[bar.name..'ButtonsPerRow'] = {value = maxButtons, metadata = {element = 'slider', category = catLayout, indexInCategory = 1, description = 'Buttons per row', min = 1, max = maxButtons, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
+    defaults[bar.name..'ButtonsPerRow'] = {value = buttonsPerRow, metadata = {element = 'slider', category = catLayout, indexInCategory = 1, description = 'Buttons per row', min = 1, max = maxButtons, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'ButtonSize'] = {value = buttonSize, metadata = {element = 'slider', category = catLayout, indexInCategory = 2, description = 'Button size in pixels', min = 20, max = 50, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'ButtonSpacing'] = {value = 3, metadata = {element = 'slider', category = catLayout, indexInCategory = 3, description = 'Spacing between buttons', min = 0, max = 10, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'Alpha'] = {value = 1, metadata = {element = 'slider', category = catVisibility, indexInCategory = 1, description = 'Bar transparency', min = 0, max = 1, stepSize = 0.1, dependency = {{key = bar.name..'FadeOutDelay', state = 0}, {key = bar.name..'GradientDirection', state = 'none'}, {key = bar.name..'Enabled', state = true}}}}
@@ -119,22 +179,42 @@ for i = 1, table.getn(barConfigs) do
     defaults[bar.name..'GradientDirection'] = {value = gradientDirection, metadata = {element = 'dropdown', category = catVisibility, indexInCategory = 3, description = 'Gradient alpha direction', options = {'none', 'leftToRight', 'rightToLeft', 'centerOut'}, dependency = {{key = bar.name..'FadeOutDelay', state = 0}, {key = bar.name..'Enabled', state = true}}}}
     defaults[bar.name..'MinAlpha'] = {value = minAlpha, metadata = {element = 'slider', category = catVisibility, indexInCategory = 4, description = 'Minimum alpha for gradient', min = 0, max = 1, stepSize = 0.01, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationTexture'] = {value = 'gryphon', metadata = {element = 'dropdown', category = catDecorations, indexInCategory = 1, description = 'Decoration texture', options = {'wyvern', 'gryphon', 'horde', 'alliance'}, dependency = {key = bar.name..'Enabled', state = true}}}
-    defaults[bar.name..'DecorationPosition'] = {value = 'none', metadata = {element = 'dropdown', category = catDecorations, indexInCategory = 2, description = 'Decoration position', options = {'none', 'left', 'right', 'both'}, dependency = {key = bar.name..'Enabled', state = true}}}
+    defaults[bar.name..'DecorationPosition'] = {value = decorationPosition, metadata = {element = 'dropdown', category = catDecorations, indexInCategory = 2, description = 'Decoration position', options = {'none', 'left', 'right', 'both'}, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationSize'] = {value = 180, metadata = {element = 'slider', category = catDecorations, indexInCategory = 3, description = 'Decoration size', min = 20, max = 200, stepSize = 5, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationColour'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catDecorations, indexInCategory = 4, description = 'Decoration color', dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationFlipped'] = {value = false, metadata = {element = 'checkbox', category = catDecorations, indexInCategory = 5, description = 'Flip decoration texture', dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationStrata'] = {value = 'BACKGROUND', metadata = {element = 'dropdown', category = catDecorations, indexInCategory = 6, description = 'Decoration frame strata', options = {'BACKGROUND', 'LOW', 'MEDIUM', 'HIGH', 'DIALOG', 'FULLSCREEN', 'FULLSCREEN_DIALOG', 'TOOLTIP'}, dependency = {key = bar.name..'Enabled', state = true}}}
-    if bar.name ~= 'stanceBar' then
+    defaults[bar.name..'DecorationX'] = {value = 45, metadata = {element = 'slider', category = catDecorations, indexInCategory = 7, description = 'Horizontal position offset for decorations', min = -20, max = 20, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
+    defaults[bar.name..'DecorationY'] = {value = 0, metadata = {element = 'slider', category = catDecorations, indexInCategory = 8, description = 'Vertical position offset for decorations', min = -20, max = 20, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
+
+    -- Add background texture setting because most bars need it except stance bar
+    if hasBgTexture then
         defaults[bar.name..'BgTexture'] = {value = 'alliance', metadata = {element = 'dropdown', category = catAppearance, indexInCategory = 1, description = 'Button background texture', options = {'alliance', 'horde'}, dependency = {key = bar.name..'Enabled', state = true}}}
     end
+
     defaults[bar.name..'BorderColour'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catAppearance, indexInCategory = 2, description = 'Button border color', dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'BgColour'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catAppearance, indexInCategory = 3, description = 'Button background color', dependency = {key = bar.name..'Enabled', state = true}}}
 
-    if bar.name == 'mainBar' then
+    if bar.name == 'petBar' then
+        defaults.petAutocastAlpha = {value = 0.8, metadata = {element = 'slider', category = catAppearance, indexInCategory = 4, description = 'Pet autocast alpha', min = 0, max = 1, stepSize = 0.1, dependency = {key = bar.name..'Enabled', state = true}}}
+    end
+
+    -- Add paging settings because only main bar needs them
+    if hasPaging then
         defaults.pagingShow = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 6, description = 'Show paging buttons'}}
         defaults.pagingButtonSize = {value = 20, metadata = {element = 'slider', category = catGeneral, indexInCategory = 7, description = 'Paging button size', min = 10, max = 40, stepSize = 1, dependency = {key = 'pagingShow', state = true}}}
         defaults.pagingFontSize = {value = 10, metadata = {element = 'slider', category = catGeneral, indexInCategory = 8, description = 'Paging number font size', min = 6, max = 20, stepSize = 1, dependency = {key = 'pagingShow', state = true}}}
         defaults.pagingColour = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catGeneral, indexInCategory = 9, description = 'Paging color (buttons and text)', dependency = {key = 'pagingShow', state = true}}}
+    end
+end
+
+-- Apply any additional bar-specific overrides that weren't handled in the loop because some settings need post-processing
+for barName, overrides in barOverrides do
+    for settingName, value in overrides do
+        local fullKey = barName .. string.upper(string.sub(settingName, 1, 1)) .. string.sub(settingName, 2)
+        if defaults[fullKey] and defaults[fullKey].value ~= value then
+            defaults[fullKey].value = value
+        end
     end
 end
 
@@ -152,31 +232,31 @@ AU:NewModule('actionbars', 1, 'PLAYER_ENTERING_WORLD', function()
     AU.common.KillFrame(BonusActionBarFrame)
 
     setup.mainBar = setup:CreateActionBar(UIParent, 'AuroraMainBar', 12, 1)
-    setup.mainBar:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOM', -90, 95)
+    setup.mainBar:SetPoint('BOTTOM', UIParent, 'BOTTOM', -0, 95)
     setup:InitializeBar(setup.mainBar)
 
     setup.multiBars[1] = setup:CreateActionBar(UIParent, 'AuroraMultiBar1', 12, 61)
-    setup.multiBars[1]:SetPoint('BOTTOM', setup.mainBar, 'TOP', 45, 5)
+    setup.multiBars[1]:SetPoint('BOTTOM', setup.mainBar, 'TOP', 0, 25)
     setup:InitializeBar(setup.multiBars[1])
     -- setup.multiBars[1]:Hide()
 
     setup.multiBars[2] = setup:CreateActionBar(UIParent, 'AuroraMultiBar2', 12, 49)
-    setup.multiBars[2]:SetPoint('TOP', setup.mainBar, 'BOTTOM', 45, -5)
+    setup.multiBars[2]:SetPoint('TOP', setup.mainBar, 'BOTTOM', 0, -5)
     setup:InitializeBar(setup.multiBars[2])
     -- setup.multiBars[2]:Hide()
 
     setup.multiBars[3] = setup:CreateActionBar(UIParent, 'AuroraMultiBar3', 12, 37)
-    setup.multiBars[3]:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOM', 90, 95)
+    setup.multiBars[3]:SetPoint('RIGHT', UIParent, 'RIGHT', -10, -80)
     setup:InitializeBar(setup.multiBars[3])
     -- setup.multiBars[3]:Hide()
 
     setup.multiBars[4] = setup:CreateActionBar(UIParent, 'AuroraMultiBar4', 12, 25)
-    setup.multiBars[4]:SetPoint('BOTTOM', setup.multiBars[3], 'TOP', -45, 5)
+    setup.multiBars[4]:SetPoint('RIGHT', setup.multiBars[3], 'LEFT', -5, 0)
     setup:InitializeBar(setup.multiBars[4])
     -- setup.multiBars[4]:Hide()
 
     setup.multiBars[5] = setup:CreateActionBar(UIParent, 'AuroraMultiBar5', 12, 13)
-    setup.multiBars[5]:SetPoint('TOP', setup.multiBars[3], 'BOTTOM', -45, -5)
+    setup.multiBars[5]:SetPoint('RIGHT', setup.multiBars[4], 'LEFT', -5, -0)
     setup:InitializeBar(setup.multiBars[5])
     -- setup.multiBars[5]:Hide()
 
@@ -823,6 +903,16 @@ AU:NewModule('actionbars', 1, 'PLAYER_ENTERING_WORLD', function()
             for i = 1, table.getn(barFrame.buttons) do
                 barFrame.buttons[i]:SetWidth(value)
                 barFrame.buttons[i]:SetHeight(value)
+                if barName == 'petBar' and barFrame.buttons[i].autocast then
+                    barFrame.buttons[i].autocast:ClearAllPoints()
+                    -- barFrame.buttons[i].autocast:SetPoint('TOPLEFT', barFrame.buttons[i], 'TOPLEFT', 0, 0)
+                    -- barFrame.buttons[i].autocast:SetPoint('BOTTOMRIGHT', barFrame.buttons[i], 'BOTTOMRIGHT', 0, 0)
+                    barFrame.buttons[i].autocast:SetAllPoints(barFrame.buttons[i])
+                    barFrame.buttons[i].autocast:SetScale(value / 25)
+                    -- debugframe(barFrame.buttons[i])
+                    -- debugframe(barFrame.buttons[i].autocast)
+                    -- print"asd"
+                end
             end
             helpers.RepositionButtons(barFrame, barFrame.buttons, AU.profile['actionbars'][barName..'ButtonsPerRow'], value, AU.profile['actionbars'][barName..'ButtonSpacing'])
             if barName == 'mainBar' then
@@ -959,6 +1049,28 @@ AU:NewModule('actionbars', 1, 'PLAYER_ENTERING_WORLD', function()
             end
             if barFrame.decorationRightFrame then
                 barFrame.decorationRightFrame:SetFrameStrata(value)
+            end
+        end
+
+        callbacks[barName..'DecorationX'] = function(value)
+            if barFrame.decorationLeftFrame then
+                barFrame.decorationLeftFrame:ClearAllPoints()
+                barFrame.decorationLeftFrame:SetPoint('RIGHT', barFrame, 'LEFT', value, AU.profile['actionbars'][barName..'DecorationY'])
+            end
+            if barFrame.decorationRightFrame then
+                barFrame.decorationRightFrame:ClearAllPoints()
+                barFrame.decorationRightFrame:SetPoint('LEFT', barFrame, 'RIGHT', -value, AU.profile['actionbars'][barName..'DecorationY'])
+            end
+        end
+
+        callbacks[barName..'DecorationY'] = function(value)
+            if barFrame.decorationLeftFrame then
+                barFrame.decorationLeftFrame:ClearAllPoints()
+                barFrame.decorationLeftFrame:SetPoint('RIGHT', barFrame, 'LEFT', AU.profile['actionbars'][barName..'DecorationX'], value)
+            end
+            if barFrame.decorationRightFrame then
+                barFrame.decorationRightFrame:ClearAllPoints()
+                barFrame.decorationRightFrame:SetPoint('LEFT', barFrame, 'RIGHT', -AU.profile['actionbars'][barName..'DecorationX'], value)
             end
         end
 

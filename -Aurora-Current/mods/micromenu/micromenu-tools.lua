@@ -88,11 +88,19 @@ function setup:CreateMicroMenu()
         end
     end
 
-    frame.expandButton = AU.ui.ExpandButton(frame, 23, 14, media['tex:bags:expand.tga'], function()
+    frame.expandButtonLeft = AU.ui.ExpandButton(frame, 23, 14, media['tex:bags:expand.tga'], function()
         local checked = this:GetChecked() and true or false
         AU:SetConfig('micro', 'expandButtons', checked)
-    end, 'AuroraMicroMenuExpand', true)
-    frame.expandButton:SetPoint('RIGHT', frame, 'LEFT', -2, 0)
+    end, 'AuroraMicroMenuExpandLeft', true)
+    frame.expandButtonLeft:SetPoint('RIGHT', frame, 'LEFT', 3, 0)
+
+    frame.expandButtonRight = AU.ui.ExpandButton(frame, 23, 14, media['tex:bags:expand.tga'], function()
+        local checked = this:GetChecked() and true or false
+        AU:SetConfig('micro', 'expandButtons', checked)
+    end, 'AuroraMicroMenuExpandRight', false)
+    frame.expandButtonRight:SetPoint('LEFT', frame, 'RIGHT', 6, 0)
+
+    frame.expandButton = frame.expandButtonLeft
 
     return frame
 end

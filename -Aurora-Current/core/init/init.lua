@@ -4,12 +4,12 @@ local init = {eventGroups = {}, pendingEvents = {}, loadingBar = nil, loadingQue
 
 AU.others.blacklist = {
     'DragonflightReloaded',
-    '--Debugger',
+    -- '--Debugger',
 }
 
 AU.others.blacklistFound = false
 
-AU.others.dbversion = 2
+AU.others.dbversion = 3
 
 -- private
 function init:DetectServer()
@@ -92,10 +92,27 @@ function init:CheckDBVersion()
             'DB version mismatch.\n\nReset all settings?',
             'Reset',
             function()
-                _G.AU_GlobalDB = {}
-                _G.AU_GlobalDB.meta = {}
-                _G.AU_GlobalDB.meta.dbversion = AU.others.dbversion
-                ReloadUI()
+                local bar = AU.animations.CreateStatusBar(UIParent, 300, 20, {barAnim = false, pulse = false, cutout = false})
+                bar:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
+                bar:SetFillColor(0.2, 0.6, 1, 1)
+                bar:SetBgColor(0.1, 0.1, 0.1, 0.8)
+                bar:SetValue(0, true)
+                bar.text = AU.ui.Font(bar, 12, 'Resetting database...', {1, 1, 1}, 'CENTER')
+                bar.text:SetPoint('CENTER', bar, 'CENTER', 0, 0)
+                
+                bar:SetScript('OnUpdate', function()
+                    _G.AU_GlobalDB = {}
+                    _G.AU_GlobalDB.meta = {}
+                    _G.AU_GlobalDB.meta.dbversion = AU.others.dbversion
+                    AU_GlobalDB.profiles = {}
+                    AU_GlobalDB.meta.characterProfiles = {}
+                    AU_GlobalDB.meta.autoAssigned = {}
+                    AU_GlobalDB.profiles['.defaults'] = {}
+                    init:ApplyDefaults('.defaults')
+                    init:SetupProfile()
+                    bar:Hide()
+                    init:ExecModules(true)
+                end)
             end,
             'Cancel',
             function()
@@ -224,9 +241,8 @@ function init:InitAU()
     AU_GlobalDB.meta.characterProfiles = AU_GlobalDB.meta.characterProfiles or {}
     AU_GlobalDB.meta.autoAssigned = AU_GlobalDB.meta.autoAssigned or {}
 
-    if not AU_GlobalDB.profiles['.defaults'] then
-        init:ApplyDefaults('.defaults')
-    end
+    AU_GlobalDB.profiles['.defaults'] = {}
+    init:ApplyDefaults('.defaults')
 
     if init:CheckBlacklist() then return end
     if init:CheckDBVersion() then return end

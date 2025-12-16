@@ -22,6 +22,7 @@ AU:NewDefaults('bagbar', {
     freeSlotsColour = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Free Slots', indexInCategory = 6, description = 'Color of free slots text', dependency = {key = 'colorizedFreeSlots', state = false}}},
     freeSlotsX = {value = 0, metadata = {element = 'slider', category = 'Free Slots', indexInCategory = 7, description = 'Horizontal position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'showFreeSlots', state = true}}},
     freeSlotsY = {value = 2, metadata = {element = 'slider', category = 'Free Slots', indexInCategory = 8, description = 'Vertical position offset', min = -50, max = 50, stepSize = 1, dependency = {key = 'showFreeSlots', state = true}}},
+    borderColour = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = 'Appearance', indexInCategory = 5, description = 'Color of bag frame borders', dependency = {key = 'showBags', state = true}}},
 })
 
 AU:NewModule('bagbar', 1, 'PLAYER_LOGIN', function()
@@ -35,7 +36,7 @@ AU:NewModule('bagbar', 1, 'PLAYER_LOGIN', function()
     local keyRing = setup.keyRing
     local expandButton = setup.expandButton
 
-    container:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -90, 9)
+    container:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -10, 40)
     container:SetFrameStrata('BACKGROUND')
 
     mainBag:SetPoint('RIGHT', container, 'RIGHT', 0, 0)
@@ -378,6 +379,14 @@ AU:NewModule('bagbar', 1, 'PLAYER_LOGIN', function()
 
     callbacks.fadeOutDelay = function()
         helpers.SetupBarFade()
+    end
+
+    callbacks.borderColour = function(value)
+        mainBag.border:SetVertexColor(value[1], value[2], value[3], value[4])
+        for i = 0, 3 do
+            smallBags[i].border:SetVertexColor(value[1], value[2], value[3], value[4])
+        end
+        keyRing.border:SetVertexColor(value[1], value[2], value[3], value[4])
     end
 
     setup.callbacks = callbacks
