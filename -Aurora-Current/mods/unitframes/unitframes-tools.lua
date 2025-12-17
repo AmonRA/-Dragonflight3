@@ -564,6 +564,10 @@ end
 
 function setup:UpdateLeaderIcon(unitFrame)
     if not unitFrame.leaderIcon then return end
+    if GetNumPartyMembers() == 0 then
+        unitFrame.leaderIcon:Hide()
+        return
+    end
     if unitFrame.unit == 'player' then
         if GetPartyLeaderIndex() == 0 then
             unitFrame.leaderIcon:Show()
