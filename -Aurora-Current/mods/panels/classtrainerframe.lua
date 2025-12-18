@@ -32,14 +32,14 @@ AU:NewModule('classtrainerframe', 1, function()
         -- customBg:SetVertexColor(0, 0, 0, 0.5)
         -- customBg:SetAlpha(0.5)
 
-        local topWood = customBg:CreateTexture(nil, 'BACKGROUND')
+        local topWood = customBg:CreateTexture(nil, 'BORDER')
         topWood:SetTexture(media['tex:panels:spellbook_top_wood.blp'])
         topWood:SetPoint('TOPLEFT', customBg, 'TOPLEFT', 0, -10)
         topWood:SetPoint('RIGHT', customBg, 'RIGHT', 0, -60)
         topWood:SetSize(customBg:GetWidth()-10, 64)
 
         ClassTrainerFramePortrait:SetParent(customBg)
-        ClassTrainerFramePortrait:SetDrawLayer('BORDER', 0)
+        ClassTrainerFramePortrait:SetDrawLayer('ARTWORK', 0)
         ClassTrainerFramePortrait:ClearAllPoints()
         ClassTrainerFramePortrait:SetPoint('TOPLEFT', customBg, 'TOPLEFT', -4, 7)
 

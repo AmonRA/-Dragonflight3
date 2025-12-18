@@ -1155,7 +1155,7 @@ function AU.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
     bgTexture:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
     frame.Bg = bgTexture
 
-    local topLeft = frame:CreateTexture(nil, "ARTWORK")
+    local topLeft = frame:CreateTexture(nil, "OVERLAY")
     topLeft:SetTexture('Interface\\AddOns\\-Aurora-BIOS\\media\\tex\\interface\\'..metalTex)
     topLeft:SetSize(75, 75)
     topLeft:SetPoint("TOPLEFT", frame, "TOPLEFT", -13, 16)

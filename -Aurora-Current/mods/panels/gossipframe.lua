@@ -33,14 +33,14 @@ AU:NewModule('gossipframe', 1, function()
     customBg:SetPoint('BOTTOMRIGHT', GossipFrame, 'BOTTOMRIGHT', -32, 70)
     customBg:SetFrameLevel(GossipFrame:GetFrameLevel() - 1)
 
-    local topWood = customBg:CreateTexture(nil, 'BACKGROUND')
+    local topWood = customBg:CreateTexture(nil, 'BORDER')
     topWood:SetTexture(media['tex:panels:spellbook_top_wood.blp'])
     topWood:SetPoint('TOPLEFT', customBg, 'TOPLEFT', 0, -10)
     topWood:SetPoint('RIGHT', customBg, 'RIGHT', 0, -60)
     topWood:SetSize(customBg:GetWidth()-10, 64)
 
     GossipFramePortrait:SetParent(customBg)
-    GossipFramePortrait:SetDrawLayer('BORDER', 0)
+    GossipFramePortrait:SetDrawLayer('ARTWORK', 0)
     GossipFramePortrait:ClearAllPoints()
     GossipFramePortrait:SetPoint('TOPLEFT', customBg, 'TOPLEFT', -4, 7)
 
