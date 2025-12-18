@@ -36,7 +36,7 @@ AU:NewModule('questframe', 1, function()
     topWood:SetSize(customBg:GetWidth()-10, 64)
 
     QuestFramePortrait:SetParent(customBg)
-    QuestFramePortrait:SetDrawLayer('BORDER', 0)
+    QuestFramePortrait:SetDrawLayer('ARTWORK', 0)
     QuestFramePortrait:ClearAllPoints()
     QuestFramePortrait:SetPoint('TOPLEFT', customBg, 'TOPLEFT', -4, 7)
 
