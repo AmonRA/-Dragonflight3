@@ -1,4 +1,4 @@
-# Aurora
+# Dragonflight 3
 
 A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
@@ -16,26 +16,26 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
 <table>
 <tr>
-<td><img src="screenshots/prev0.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev1.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev2.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev0.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev1.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev2.PNG" width="300" height="200" style="object-fit: cover;"></td>
 </tr>
 <tr>
-<td><img src="screenshots/prev3.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev4.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev5.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev3.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev4.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev5.PNG" width="300" height="200" style="object-fit: cover;"></td>
 </tr>
 <tr>
-<td><img src="screenshots/prev6.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev7.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td><img src="screenshots/prev8.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev6.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev7.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev8.PNG" width="300" height="200" style="object-fit: cover;"></td>
 </tr>
 </table>
 
 ## Installation
 
 1. Download or clone this repository
-2. Copy both `-Aurora-BIOS` and `-Aurora-Current` folders into your `Interface/AddOns` directory
+2. Copy `-Dragonflight3` folder into your `Interface/AddOns` directory
 3. Restart WoW or reload UI (`/reload`)
 
 ## Requirements
@@ -46,4 +46,4 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
 ## Usage
 
-/au
+/df help
