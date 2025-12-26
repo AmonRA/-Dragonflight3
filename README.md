@@ -2,11 +2,13 @@
 
 A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
+**⚠️ Independent Project: <span style="color:red">Solo developer, no affiliations with any server or organization, no monetization.</span> Free and open-source for all Vanilla 1.12.1 clients.**
+
 **⚠️ Requires [SuperWoW 1.5+](https://github.com/balakethelock/SuperWoW) and [UnitXP SP3](https://codeberg.org/konaka/UnitXP_SP3)**
 
 ## Features
 
-- 900+ customizable options
+- 1000+ customizable options
 - Many animations and transitions
 - 2-way edit mode
 - Unique features and enhancements
