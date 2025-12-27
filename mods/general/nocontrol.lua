@@ -185,8 +185,8 @@ DF:NewModule('nocontrol', 1, function()
         ['Escape Artist'] = {name = 'Escape Artist', breaks = {ROOT, SNARE}, priority = 1}, -- 1min
         ['Will of the Forsaken'] = {name = 'Will of the Forsaken', breaks = {CHARM, FEAR, SLEEP}, priority = 2}, -- 2min
         -- items
-        ['Insignia of the Alliance'] = {name = 'PvP Trinket', breaks = {CC, FEAR, CHARM}, priority = 4, isItem = true},
-        ['Insignia of the Horde'] = {name = 'PvP Trinket', breaks = {CC, FEAR, CHARM}, priority = 4, isItem = true},
+        ['Insignia of the Alliance'] = {name = 'PvP Trinket', breaks = {CC, DISORIENT, INCAP, FEAR, CHARM, SLEEP}, priority = 4, isItem = true},
+        ['Insignia of the Horde'] = {name = 'PvP Trinket', breaks = {CC, DISORIENT, INCAP, FEAR, CHARM, SLEEP}, priority = 4, isItem = true},
     }
 
     local spellSlotCache = {}
