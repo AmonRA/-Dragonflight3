@@ -407,6 +407,7 @@ DF:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
         for tabIndex = 1, numTabs do
             local name, texture, offset, numSpells = GetSpellTabInfo(tabIndex)
             if numSpells > 0 then
+                name = string.gsub(name, ' Combat', '')
                 local capturedIndex = tabIndex
                 local spacing = 2
                 if tabIndex == 2 then
@@ -417,7 +418,7 @@ DF:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
                     spellbook.selectedTabIndex = capturedIndex
                     spellbook.currentPage = 1
                     spellbook:UpdateSpellDisplay()
-                end, 80, spacing)
+                end, 90, spacing)
             end
         end
 
