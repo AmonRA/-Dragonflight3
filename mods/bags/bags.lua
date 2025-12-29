@@ -17,12 +17,12 @@ defaults.oneBagMode = {value = false, metadata = {element = 'checkbox', category
 defaults.oneBagButtonsPerRow = {value = 6, metadata = {element = 'slider', category = catGeneral, indexInCategory = 2, description = 'Buttons per row in unified bag', min = 5, max = 16, stepSize = 1, dependency = {key = 'oneBagMode', state = true}}}
 defaults.bagScale = {value = 0.75, metadata = {element = 'slider', category = catGeneral, indexInCategory = 3, description = 'Bag scale', min = 0.5, max = 1.5, stepSize = 0.05}}
 
-defaults.showItemRarity = {value = false, metadata = {element = 'checkbox', category = catDisplay, indexInCategory = 1, description = 'Show colored borders around items by quality'}}
-defaults.showQuestItems = {value = false, metadata = {element = 'checkbox', category = catDisplay, indexInCategory = 2, description = 'Show icon on quest items'}}
+defaults.showItemRarity = {value = true, metadata = {element = 'checkbox', category = catDisplay, indexInCategory = 1, description = 'Show colored borders around items by quality'}}
+defaults.showQuestItems = {value = true, metadata = {element = 'checkbox', category = catDisplay, indexInCategory = 2, description = 'Show icon on quest items'}}
 defaults.questIconSize = {value = 22, metadata = {element = 'slider', category = catDisplay, indexInCategory = 3, description = 'Quest icon size', min = 10, max = 40, stepSize = 1, dependency = {key = 'showQuestItems', state = true}}}
 defaults.showUnusableItems = {value = 'none', metadata = {element = 'dropdown', category = catDisplay, indexInCategory = 4, description = 'Highlight items you cannot use', options = {'none', 'border', 'icon', 'both'}}}
 
-defaults.searchMode = {value = false, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 1, description = 'Show search box'}}
+defaults.searchMode = {value = true, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 1, description = 'Show search box'}}
 defaults.searchClearOnEscape = {value = true, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 2, description = 'Clear search text on escape', dependency = {key = 'searchMode', state = true}}}
 defaults.repairButton = {value = false, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 3, description = 'Show repair button in bag'}}
 defaults.autoSellGrey = {value = false, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 4, description = 'Auto-sell grey items at merchant'}}

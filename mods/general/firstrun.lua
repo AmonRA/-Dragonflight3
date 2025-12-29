@@ -3,9 +3,6 @@ UNLOCKDRAGONFLIGHT()
 DF:NewDefaults('firstrun', {
     enabled = {value = true},
     version = {value = '1.0'},
-    gui = {
-        {tab = 'firstrun', subtab = 'mainbar', categories = 'General'},
-    },
 })
 
 DF:NewModule('firstrun', 1, function()
@@ -78,6 +75,5 @@ DF:NewModule('firstrun', 1, function()
 
     -- callbacks
     local callbacks = {}
-
     DF:NewCallbacks('firstrun', callbacks)
 end)

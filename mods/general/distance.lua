@@ -8,23 +8,24 @@ DF:NewDefaults('distance', {
         {tab = 'extras', subtab = 'distance', 'General', 'Bars'},
     },
 
-    attackableOnly = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 1, description = 'Show only for attackable units'}},
-    showPortrait = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 2, description = 'Show target portrait'}},
-    showDecimals = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 3, description = 'Show decimal places'}},
-    textSize = {value = 21, metadata = {element = 'slider', category = 'General', indexInCategory = 4, description = 'Text size', min = 8, max = 24, stepSize = 1}},
-    textFont = {value = 'font:PT-Sans-Narrow-Bold.ttf', metadata = {element = 'dropdown', category = 'General', indexInCategory = 5, description = 'Distance text font', options = media.fonts}},
-    bgAlpha = {value = 0.2, metadata = {element = 'slider', category = 'General', indexInCategory = 6, description = 'Background opacity', min = 0, max = 1, stepSize = 0.05}},
-    portraitSpacing = {value = 0.1, metadata = {element = 'slider', category = 'General', indexInCategory = 7, description = 'Portrait spacing', min = 0.1, max = 5, stepSize = 0.1}},
-    showBars = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 1, description = 'Show side bars'}},
-    barWidth = {value = 30, metadata = {element = 'slider', category = 'Bars', indexInCategory = 2, description = 'Bar width', min = 10, max = 100, stepSize = 5, dependency = {key = 'showBars', state = true}}},
-    barHeight = {value = 10, metadata = {element = 'slider', category = 'Bars', indexInCategory = 3, description = 'Bar height', min = 5, max = 30, stepSize = 1, dependency = {key = 'showBars', state = true}}},
-    barRepeat = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 4, description = 'Repeat bar animation', dependency = {key = 'showBars', state = true}}},
-    barAnimInterval = {value = 0.05, metadata = {element = 'slider', category = 'Bars', indexInCategory = 5, description = 'Animation smoothness (lower = smoother)', min = 0.01, max = 0.1, stepSize = 0.01, }},
-    barInstant = {value = false, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 6, description = 'Instant bar fill (no animation)', dependency = {key = 'barRepeat', state = false}}},
-    barColorByRange = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 7, description = 'Color bars by distance range', dependency = {key = 'showBars', state = true}}},
-    distanceMode = {value = 'Melee', metadata = {element = 'dropdown', category = 'Bars', indexInCategory = 8, description = 'Distance color mode', options = {'Melee', 'Ranged'}, dependency = {key = 'barColorByRange', state = true}}},
-    extendedRange = {value = false, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 9, description = 'Extended range (20-40 yards green)', dependency = {key = 'distanceMode', state = 'Ranged'}}},
-    colorText = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 10, description = 'Color distance text by range', dependency = {key = 'barColorByRange', state = true}}},
+    showDistance = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 1, description = 'Enable distance frame'}},
+    attackableOnly = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 2, description = 'Show only for attackable units', dependency = {key = 'showDistance', state = true}}},
+    showPortrait = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 3, description = 'Show target portrait', dependency = {key = 'showDistance', state = true}}},
+    showDecimals = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 4, description = 'Show decimal places', dependency = {key = 'showDistance', state = true}}},
+    textSize = {value = 21, metadata = {element = 'slider', category = 'General', indexInCategory = 5, description = 'Text size', min = 8, max = 24, stepSize = 1, dependency = {key = 'showDistance', state = true}}},
+    textFont = {value = 'font:PT-Sans-Narrow-Bold.ttf', metadata = {element = 'dropdown', category = 'General', indexInCategory = 6, description = 'Distance text font', options = media.fonts, dependency = {key = 'showDistance', state = true}}},
+    bgAlpha = {value = 0.2, metadata = {element = 'slider', category = 'General', indexInCategory = 7, description = 'Background opacity', min = 0, max = 1, stepSize = 0.05, dependency = {key = 'showDistance', state = true}}},
+    portraitSpacing = {value = 0.1, metadata = {element = 'slider', category = 'General', indexInCategory = 8, description = 'Portrait spacing', min = 0.1, max = 5, stepSize = 0.1, dependency = {key = 'showDistance', state = true}}},
+    showBars = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 1, description = 'Show side bars', dependency = {key = 'showDistance', state = true}}},
+    barWidth = {value = 30, metadata = {element = 'slider', category = 'Bars', indexInCategory = 2, description = 'Bar width', min = 10, max = 100, stepSize = 5, dependency = {{key = 'showDistance', state = true}, {key = 'showBars', state = true}}}},
+    barHeight = {value = 10, metadata = {element = 'slider', category = 'Bars', indexInCategory = 3, description = 'Bar height', min = 5, max = 30, stepSize = 1, dependency = {{key = 'showDistance', state = true}, {key = 'showBars', state = true}}}},
+    barRepeat = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 4, description = 'Repeat bar animation', dependency = {{key = 'showDistance', state = true}, {key = 'showBars', state = true}}}},
+    barAnimInterval = {value = 0.05, metadata = {element = 'slider', category = 'Bars', indexInCategory = 5, description = 'Animation smoothness (lower = smoother)', min = 0.01, max = 0.1, stepSize = 0.01, dependency = {key = 'showDistance', state = true}}},
+    barInstant = {value = false, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 6, description = 'Instant bar fill (no animation)', dependency = {{key = 'showDistance', state = true}, {key = 'barRepeat', state = false}}}},
+    barColorByRange = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 7, description = 'Color bars by distance range', dependency = {{key = 'showDistance', state = true}, {key = 'showBars', state = true}}}},
+    distanceMode = {value = 'Melee', metadata = {element = 'dropdown', category = 'Bars', indexInCategory = 8, description = 'Distance color mode', options = {'Melee', 'Ranged'}, dependency = {{key = 'showDistance', state = true}, {key = 'barColorByRange', state = true}}}},
+    extendedRange = {value = false, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 9, description = 'Extended range (20-40 yards green)', dependency = {{key = 'showDistance', state = true}, {key = 'distanceMode', state = 'Ranged'}}}},
+    colorText = {value = true, metadata = {element = 'checkbox', category = 'Bars', indexInCategory = 10, description = 'Color distance text by range', dependency = {{key = 'showDistance', state = true}, {key = 'barColorByRange', state = true}}}},
 
 })
 
@@ -166,6 +167,22 @@ DF:NewModule('distance', 1, function()
 
     -- callbacks
     local callbacks = {}
+
+    callbacks.showDistance = function(value)
+        if value then
+            distFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+            if UnitExists('target') and not UnitIsUnit('target', 'player') then
+                distFrame:Show()
+            end
+        else
+            distFrame:UnregisterEvent('PLAYER_TARGET_CHANGED')
+            if distFrame.fillTimer then
+                DF.timers.cancel(distFrame.fillTimer)
+                distFrame.fillTimer = nil
+            end
+            distFrame:Hide()
+        end
+    end
 
     callbacks.barRepeat = function(value)
         distFrame.barRepeat = value

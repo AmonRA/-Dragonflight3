@@ -5,7 +5,7 @@ DF:NewDefaults('talents', {
     version = {value = '1.0'},
 })
 
-DF:NewModule('talents', 1, function()
+DF:NewModule('talents', 1, function() -- TODO: needs total rewrite
     local frame
     local treeFrames = {}
     local talentButtons = {}
