@@ -459,8 +459,9 @@ end
 
 function setup:HideEmptyButtons()
     self.isDragging = false
+    local bonusOffset = GetBonusBarOffset()
     local barNames = {'mainBar', 'multibar1', 'multibar2', 'multibar3', 'multibar4', 'multibar5'}
-    local barFrames = {self.mainBar, self.multiBars[1], self.multiBars[2], self.multiBars[3], self.multiBars[4], self.multiBars[5]}
+    local barFrames = {bonusOffset > 0 and self.bonusBars[bonusOffset] or self.mainBar, self.multiBars[1], self.multiBars[2], self.multiBars[3], self.multiBars[4], self.multiBars[5]}
     for idx = 1, table.getn(barNames) do
         local barName = barNames[idx]
         local barFrame = barFrames[idx]
@@ -475,7 +476,8 @@ function setup:HideEmptyButtons()
                 DF.setups.helpers.actionbars.UpdateBarConcatenate(targetFrame, barName)
             end
         elseif DF.profile['actionbars'][barName..'HideEmptyButtons'] then
-            for i = 1, 12 do
+            local buttonsToShow = DF.profile['actionbars'][barName..'ButtonsToShow']
+            for i = 1, buttonsToShow do
                 if HasAction(barFrame.buttons[i]:GetID()) then
                     barFrame.buttons[i]:Show()
                 else
@@ -1081,6 +1083,7 @@ function setup:OnEvent()
         end
     elseif event == 'UPDATE_BONUS_ACTIONBAR' then
         setup:UpdateBonusBarVisibility()
+        setup.hideEmptyTimer = 0.15
     elseif event == 'PET_BAR_UPDATE' or event == 'PET_BAR_UPDATE_COOLDOWN' then
         for i = 1, table.getn(setup.petButtons) do
             local button = setup.petButtons[i]

@@ -907,7 +907,18 @@ DF:NewModule('actionbars', 1, 'PLAYER_LOGIN', function()
 
         if barName ~= 'petBar' and barName ~= 'stanceBar' then
             callbacks[barName..'HideEmptyButtons'] = function(value)
-                setup:HideEmptyButtons()
+                if value then
+                    setup:HideEmptyButtons()
+                else
+                    local targetFrame = barFrame
+                    if barName == 'mainBar' and setup.currentPageBar and setup.currentPageBar ~= setup.mainBar then
+                        targetFrame = setup.currentPageBar
+                    end
+                    local buttonsToShow = DF.profile['actionbars'][barName..'ButtonsToShow']
+                    for i = 1, buttonsToShow do
+                        targetFrame.buttons[i]:Show()
+                    end
+                end
             end
         end
 
