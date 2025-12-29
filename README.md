@@ -48,8 +48,9 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
 1. Download or clone this repository
 2. Copy `-Dragonflight3` folder into your `Interface/AddOns` directory
-3. Restart WoW or reload UI (`/reload`)
+3. Restart WoW
 
 ## Usage
 
 /df help
+/dragonflight help
