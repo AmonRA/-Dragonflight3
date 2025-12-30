@@ -318,6 +318,19 @@ function plates:SetupOnUpdate(frame) -- v1
     local healthbar = frame.custom.healthbar
 
     frame.custom.frame:SetScript('OnUpdate', function()
+        -- hide friendly NPCs check
+        local currentGuid = frame:GetName(1)
+        if plates.hideFriendlyNpcs and currentGuid then
+            if not UnitIsPlayer(currentGuid) then
+                local reaction = UnitReaction('player', currentGuid)
+                if reaction and reaction >= 5 then
+                    frame:Hide()
+                    return
+                end
+            end
+        end
+        frame:Show()
+
         -- overlay parented to WorldFrame for overlap feature, must sync alpha manually
         -- blizzard fades non-targeted nameplates by setting alpha on parent frame
         frame.custom.frame:SetAlpha(frame:GetAlpha())

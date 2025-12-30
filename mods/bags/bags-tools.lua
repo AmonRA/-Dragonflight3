@@ -56,33 +56,32 @@ function setup:CreateSlotButton(parent, frameName, slotIndex, bagID, buttonSize,
     btn.count:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMRIGHT', -2, 2)
     btn.count:Hide()
 
-btn:SetScript('OnClick', function()
-    if arg1 == 'LeftButton' then
-        if IsControlKeyDown() then
-            DressUpItemLink(GetContainerItemLink(btn.bagID, btn.slotID))
-        elseif IsShiftKeyDown() then
-            if ChatFrameEditBox:IsShown() then
-                ChatFrameEditBox:Insert(GetContainerItemLink(btn.bagID, btn.slotID))
-            else
-                local texture, itemCount, locked = GetContainerItemInfo(btn.bagID, btn.slotID)
-                if not locked then
-                    btn.SplitStack = function(button, split)
-                        SplitContainerItem(button.bagID, button.slotID, split)
+    btn:SetScript('OnClick', function()
+        if arg1 == 'LeftButton' then
+            if IsControlKeyDown() then
+                DressUpItemLink(GetContainerItemLink(btn.bagID, btn.slotID))
+            elseif IsShiftKeyDown() then
+                if ChatFrameEditBox:IsShown() then
+                    ChatFrameEditBox:Insert(GetContainerItemLink(btn.bagID, btn.slotID))
+                else
+                    local texture, itemCount, locked = GetContainerItemInfo(btn.bagID, btn.slotID)
+                    if not locked then
+                        btn.SplitStack = function(button, split)
+                            SplitContainerItem(button.bagID, button.slotID, split)
+                        end
+                        OpenStackSplitFrame(itemCount, btn, 'BOTTOMRIGHT', 'TOPRIGHT')
                     end
-                    OpenStackSplitFrame(itemCount, btn, 'BOTTOMRIGHT', 'TOPRIGHT')
                 end
+            else
+                PickupContainerItem(btn.bagID, btn.slotID)
             end
-        else
-            PickupContainerItem(btn.bagID, btn.slotID)
+        elseif arg1 == 'RightButton' then
+            if MerchantFrame:IsShown() and MerchantFrame.selectedTab == 2 then
+                return
+            end
+            UseContainerItem(btn.bagID, btn.slotID)
         end
-    elseif arg1 == 'RightButton' then
-        if MerchantFrame:IsShown() and MerchantFrame.selectedTab == 2 then
-            return
-        end
-        UseContainerItem(btn.bagID, btn.slotID)
-    end
-end)
-
+    end)
 
     local origOnEnter = btn:GetScript('OnEnter')
     btn:SetScript('OnEnter', function()

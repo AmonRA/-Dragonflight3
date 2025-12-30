@@ -130,7 +130,10 @@ function init:CheckDBVersion()
             end,
             'Cancel',
             function()
-            end
+            end,
+            nil,
+            nil,
+            140
         )
         return true
     end
@@ -154,7 +157,7 @@ function init:CheckModuleVersions()
         for _, mod in pairs(mismatchModules) do
             msg = msg .. '- ' .. mod .. '\n'
         end
-        msg = msg .. '\nReset all?'
+        msg = msg .. '\nReset detected module(s)?'
 
         DF.ui.StaticPopup_Show(msg,
             'Reset',
@@ -177,7 +180,10 @@ function init:CheckModuleVersions()
             end,
             'Cancel',
             function()
-            end
+            end,
+            nil,
+            nil,
+            140
         )
         return true
     end

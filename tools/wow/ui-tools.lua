@@ -1935,9 +1935,9 @@ function DF.ui.CollapsibleSection(parent, headerText, width, startExpanded)
     return section
 end
 
-function DF.ui.StaticPopup_Show(text, btn1Text, btn1Callback, btn2Text, btn2Callback, parent)
+function DF.ui.StaticPopup_Show(text, btn1Text, btn1Callback, btn2Text, btn2Callback, parent, width, height)
     if not DF.ui.staticPopup then
-        local frame = DF.ui.CreatePaperDollFrame('DF_StaticPopup', parent or UIParent, 280, 100, 3)
+        local frame = DF.ui.CreatePaperDollFrame('DF_StaticPopup', parent or UIParent, width or 280, height or 100, 3)
         frame:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
         frame:SetFrameStrata('DIALOG')
         frame:Hide()
