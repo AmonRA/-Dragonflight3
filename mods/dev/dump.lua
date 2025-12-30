@@ -212,3 +212,49 @@
 
 
 
+-------------------------------------------
+-- dottted lines on uiparent
+-- -- 1. CREATE DOTS (in nameplate creation function)
+-- local lineDots = {}
+-- for i = 1, 50 do
+--     local dot = UIParent:CreateTexture(nil, 'OVERLAY')
+--     dot:SetTexture('Interface\\Buttons\\WHITE8X8')
+--     dot:SetSize(2, 2)
+--     dot:SetVertexColor(1, 1, 1, 1)
+--     dot:Hide()
+--     lineDots[i] = dot
+-- end
+
+-- -- 2. HIDE ON NAMEPLATE HIDE
+-- overlay:SetScript('OnHide', function()
+--     for i = 1, 50 do lineDots[i]:Hide() end
+-- end)
+
+-- -- 3. STORE REFERENCE
+-- frame.custom.lineDots = lineDots
+
+-- -- 4. UPDATE IN OnUpdate (when target detected)
+-- if targetGuid == currentGuid then
+--     -- dotted line
+--     local npx, npy = frame.custom.frame:GetCenter()
+--     if npx and npy then
+--         local scale = frame.custom.frame:GetScale()
+--         local screenW = GetScreenWidth()
+--         local screenH = GetScreenHeight()
+--         local ux = screenW / 2
+--         local uy = screenH / 2
+--         npx = (npx * scale) + 80  -- X offset
+--         npy = (npy * scale) + 100 -- Y offset
+--         for i = 1, 50 do
+--             local t = (i - 1) / 49
+--             local px = ux + (npx - ux) * t
+--             local py = uy + (npy - uy) * t
+--             frame.custom.lineDots[i]:ClearAllPoints()
+--             frame.custom.lineDots[i]:SetPoint('CENTER', UIParent, 'BOTTOMLEFT', px, py)
+--             frame.custom.lineDots[i]:Show()
+--         end
+--     end
+-- else
+--     -- 5. HIDE WHEN NOT TARGETED
+--     for i = 1, 50 do frame.custom.lineDots[i]:Hide() end
+-- end

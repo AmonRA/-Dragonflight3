@@ -8,9 +8,10 @@ local init = {
 }
 
 DF.others.blacklist = {
-    'DragonflightReloaded',
+    '-DragonflightReloaded',
     'ShaguTweaks',
-    'pfUI',
+    'ShaguTweaks-extras',
+    'ShaguTweaks-mods',
 }
 
 DF.others.blacklistFound = false

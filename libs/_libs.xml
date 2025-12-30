@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Include file="libevents.lua"/>
     <Include file="libtipscan.lua"/>
     <Include file="libspell.lua"/>
     <Include file="libcast.lua"/>

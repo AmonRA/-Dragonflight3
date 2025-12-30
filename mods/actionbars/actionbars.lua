@@ -184,8 +184,8 @@ for i = 1, table.getn(barConfigs) do
     defaults[bar.name..'DecorationColour'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catDecorations, indexInCategory = 4, description = 'Decoration color', dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationFlipped'] = {value = false, metadata = {element = 'checkbox', category = catDecorations, indexInCategory = 5, description = 'Flip decoration texture', dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationStrata'] = {value = 'BACKGROUND', metadata = {element = 'dropdown', category = catDecorations, indexInCategory = 6, description = 'Decoration frame strata', options = {'BACKGROUND', 'LOW', 'MEDIUM', 'HIGH', 'DIALOG', 'FULLSCREEN', 'FULLSCREEN_DIALOG', 'TOOLTIP'}, dependency = {key = bar.name..'Enabled', state = true}}}
-    defaults[bar.name..'DecorationX'] = {value = 45, metadata = {element = 'slider', category = catDecorations, indexInCategory = 7, description = 'Horizontal position offset for decorations', min = -20, max = 20, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
-    defaults[bar.name..'DecorationY'] = {value = 0, metadata = {element = 'slider', category = catDecorations, indexInCategory = 8, description = 'Vertical position offset for decorations', min = -20, max = 20, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
+    defaults[bar.name..'DecorationX'] = {value = 45, metadata = {element = 'slider', category = catDecorations, indexInCategory = 7, description = 'Horizontal position offset for decorations', min = -60, max = 60, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
+    defaults[bar.name..'DecorationY'] = {value = 0, metadata = {element = 'slider', category = catDecorations, indexInCategory = 8, description = 'Vertical position offset for decorations', min = -60, max = 60, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
 
     -- Add background texture setting because most bars need it except stance bar
     if hasBgTexture then

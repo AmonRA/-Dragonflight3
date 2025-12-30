@@ -42,22 +42,23 @@ DF:NewDefaults('nameplates', {
     portraitScale = {value = 1, metadata = {element = 'slider', category = 'Portrait', indexInCategory = 2, description = 'Portrait scale', min = 0.5, max = 2, stepSize = 0.1, dependency = {key = 'showPortrait', state = true}}},
     portraitBorderColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Portrait', indexInCategory = 3, description = 'Portrait border color', dependency = {key = 'showPortrait', state = true}}},
     showDebuffs = {value = true, metadata = {element = 'checkbox', category = 'Debuffs', indexInCategory = 1, description = 'Show debuffs on nameplates'}},
-    colorTagged = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 1, description = 'Color tagged units gray'}},
+    colorTagged = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 1, description = 'Color tagged units gray - Priority 1'}},
     colorTaggedColor = {value = {0.5, 0.5, 0.5}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 2, description = 'Tagged unit color', dependency = {key = 'colorTagged', state = true}}},
-    colorTargeted = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 3, description = 'Color targeted nameplate differently'}},
+    colorTargeted = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 3, description = 'Color targeted nameplate differently - Priority 2'}},
     colorTargetedMode = {value = 'HP Value', metadata = {element = 'dropdown', category = 'Healthbar Colors', indexInCategory = 4, description = 'Targeted color mode', options = {'Distance', 'HP Value', 'Reaction'}, dependency = {key = 'colorTargeted', state = true}}},
-    colorDistance = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 5, description = 'Color by distance (range/melee)'}},
+    colorDistance = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 5, description = 'Color by distance for range/melee - Priority 3'}},
     colorDistanceMode = {value = 'Range', metadata = {element = 'dropdown', category = 'Healthbar Colors', indexInCategory = 6, description = 'Distance mode', options = {'Range', 'Melee'}, dependency = {key = 'colorDistance', state = true}}},
     colorDistanceInRange = {value = {0.4, 0.85, 0.4}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 7, description = 'In range color', dependency = {key = 'colorDistance', state = true}}},
     colorDistanceOutRange = {value = {0.5, 0.6, 0.9}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 8, description = 'Out of range color', dependency = {key = 'colorDistance', state = true}}},
-    colorHpValue = {value = false, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 9, description = 'Color by HP value'}},
+    colorHpValue = {value = false, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 9, description = 'Color by HP value - Priority 4'}},
     colorHpValueLow = {value = {0.9, 0.2, 0.2}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 10, description = 'Low HP color (0%)', dependency = {key = 'colorHpValue', state = true}}},
     colorHpValueMid = {value = {0.9, 0.8, 0.2}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 11, description = 'Mid HP color (50%)', dependency = {key = 'colorHpValue', state = true}}},
     colorHpValueHigh = {value = {0.4, 0.85, 0.4}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 12, description = 'High HP color (100%)', dependency = {key = 'colorHpValue', state = true}}},
-    colorReaction = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 13, description = 'Color by reaction (hostile/neutral/friendly)'}},
+    colorReaction = {value = true, metadata = {element = 'checkbox', category = 'Healthbar Colors', indexInCategory = 13, description = 'Color by reaction - Priority 5'}},
     colorReactionFriendly = {value = {0.4, 0.85, 0.4}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 14, description = 'Friendly color', dependency = {key = 'colorReaction', state = true}}},
     colorReactionNeutral = {value = {0.9, 0.8, 0.2}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 15, description = 'Neutral color', dependency = {key = 'colorReaction', state = true}}},
     colorReactionHostile = {value = {0.9, 0.2, 0.2}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 16, description = 'Hostile color', dependency = {key = 'colorReaction', state = true}}},
+    colorFallback = {value = {0, 1, 0}, metadata = {element = 'colorpicker', category = 'Healthbar Colors', indexInCategory = 17, description = 'Fallback color'}},
 })
 
 DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
@@ -87,7 +88,8 @@ DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
         reaction = true,
         reactionFriendly = nil,
         reactionNeutral = nil,
-        reactionHostile = nil
+        reactionHostile = nil,
+        fallbackColor = nil
     }
 
     callbackHelper.GetDistanceColor = function(guid)
@@ -192,7 +194,8 @@ DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
         end
 
         -- Default fallback
-        hp:SetStatusBarColor(0, 1, 0, 1)
+        local c = states.distance and states.distanceInRange or states.fallbackColor
+        hp:SetStatusBarColor(c[1], c[2], c[3], 1)
     end
 
     callbacks.overlapNameplates = function(value)
@@ -327,6 +330,10 @@ DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
 
     callbacks.colorReactionHostile = function(value)
         callbackHelper.colorStates.reactionHostile = value
+    end
+
+    callbacks.colorFallback = function(value)
+        callbackHelper.colorStates.fallbackColor = value
     end
 
     callbacks.scaleNameplates = function(value)

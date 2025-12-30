@@ -1,0 +1,96 @@
+-- UNLOCKDRAGONFLIGHT() -- TODO continue
+-- local customEvents = {
+--     ['PLAYER_AFTER_ENTERING_WORLD'] = {
+--         triggerEvent = 'PLAYER_ENTERING_WORLD',
+--         delay = 1,
+--         condition = nil,
+--         fired = false
+--     },
+--     ['PLAYERMODEL_READY'] = {
+--         triggerEvent = nil,
+--         delay = nil,
+--         frame = CreateFrame('PlayerModel'),
+--         fired = false,
+--         condition = function(self)
+--             self.frame:SetUnit('player')
+--             return self.frame:GetModel() ~= nil
+--         end
+--     }
+-- }
+
+-- local registeredFrames = {}
+-- local eventSystem = CreateFrame('Frame')
+
+-- for eventName, customEvent in pairs(customEvents) do
+--     if customEvent.triggerEvent then
+--         eventSystem:RegisterEvent(customEvent.triggerEvent)
+--     end
+-- end
+
+-- local _CreateFrame = CreateFrame
+-- CreateFrame = function(frameType, name, parent, template)
+--     local frame = _CreateFrame(frameType, name, parent, template)
+
+--     local _RegisterEvent = frame.RegisterEvent
+--     local _SetScript = frame.SetScript
+
+--     frame.RegisterEvent = function(self, event)
+--         if customEvents[event] then
+--             registeredFrames[event] = registeredFrames[event] or {}
+--             table.insert(registeredFrames[event], self)
+--         else
+--             return _RegisterEvent(self, event)
+--         end
+--     end
+
+--     frame.SetScript = function(self, scriptType, handler)
+--         return _SetScript(self, scriptType, handler)
+--     end
+
+--     return frame
+-- end
+
+-- eventSystem:SetScript('OnEvent', function()
+--     for customEventName, customEvent in pairs(customEvents) do
+--         if customEvent.triggerEvent == event then
+--             customEvent.startTime = GetTime()
+--             customEvent.active = true
+--         end
+--     end
+-- end)
+
+-- eventSystem:SetScript('OnUpdate', function()
+--     for eventName, customEvent in pairs(customEvents) do
+--         if not customEvent.fired and (customEvent.active or not customEvent.triggerEvent) then
+--             local ready = false
+
+--             if customEvent.delay then
+--                 if GetTime() - customEvent.startTime >= customEvent.delay then
+--                     ready = true
+--                 end
+--             elseif customEvent.condition then
+--                 if customEvent.condition(customEvent) then
+--                     ready = true
+--                 end
+--             end
+
+--             if ready then
+--                 customEvent.active = false
+--                 customEvent.fired = true
+--                 -- debugprint('Custom event fired: ' .. eventName)
+--                 local frames = registeredFrames[eventName]
+--                 if frames then
+--                     for _, frame in pairs(frames) do
+--                         local handler = frame:GetScript('OnEvent')
+--                         if handler then
+--                             local oldEvent = event
+--                             event = eventName
+--                             handler()
+--                             event = oldEvent
+--                         end
+--                     end
+--                 end
+--             end
+--         end
+--     end
+-- end)

@@ -51,7 +51,7 @@ DF:NewModule('gui-base', 1, function()
         setup.tabConfig = filtered
     end
 
-    setup.mainframe = DF.ui.CreatePaperDollFrame('DF_GUI', UIParent, setup.basic.width, setup.basic.height, 2)
+    setup.mainframe = DF.ui.CreatePaperDollFrame('DF_GUI', UIParent, setup.basic.width, setup.basic.height, 1)
     setup.mainframe:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
     setup.mainframe:SetFrameStrata('HIGH')
     setup.mainframe:EnableMouse(true)
@@ -59,6 +59,11 @@ DF:NewModule('gui-base', 1, function()
     setup.mainframe:RegisterForDrag('LeftButton')
     setup.mainframe:SetScript('OnDragStart', function() this:StartMoving() end)
     setup.mainframe:SetScript('OnDragStop', function() this:StopMovingOrSizing() end)
+
+    local logo = setup.mainframe:CreateTexture(nil, 'ARTWORK')
+    logo:SetTexture(media['tex:interface:logo.blp'])
+    logo:SetSize(64, 64)
+    logo:SetPoint('TOPLEFT', setup.mainframe, 'TOPLEFT', -7, 10)
     setup.skipHideCheck = false
     setup.mainframe:SetScript('OnShow', function()
         this:ClearAllPoints()
@@ -78,7 +83,7 @@ DF:NewModule('gui-base', 1, function()
     tinsert(UISpecialFrames, 'DF_GUI')
 
     setup.titleText = DF.ui.Font(setup.mainframe, 12, info.addonNameColor)
-    setup.titleText:SetPoint('TOPLEFT', setup.mainframe, 'TOPLEFT', 10, -5)
+    setup.titleText:SetPoint('TOPLEFT', setup.mainframe, 'TOPLEFT', 60, -6)
 
     setup.closeBtn = DF.ui.CreateRedButton(setup.mainframe, 'close', function()
         setup.mainframe:Hide()
@@ -113,7 +118,7 @@ DF:NewModule('gui-base', 1, function()
     setup.tabframe:SetPoint('TOPLEFT', setup.headerframe, 'BOTTOMLEFT', 4, 0)
     local tabTex = setup.tabframe:CreateTexture(nil, 'BACKGROUND')
     tabTex:SetTexture('Interface\\Buttons\\WHITE8X8')
-    tabTex:SetPoint("TOPLEFT", setup.mainframe, "TOPLEFT", 0, -23)
+    tabTex:SetPoint("TOPLEFT", setup.mainframe, "TOPLEFT", 2, -53)
     tabTex:SetPoint("BOTTOMRIGHT", setup.tabframe, "BOTTOMRIGHT", 5, 5)
     tabTex:SetVertexColor(0,0,0,.4)
     -- debugframe(setup.tabframe)

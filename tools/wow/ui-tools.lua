@@ -1436,13 +1436,6 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
             if onClick then onClick() end
         end)
 
-        tab:SetScript('OnEnter', function()
-            -- DF.lib.ShowSimpleTooltip(this, text)
-        end)
-        tab:SetScript('OnLeave', function()
-            -- DF.lib.HideActionTooltip()
-        end)
-
         table.insert(frame.Tabs, tab)
 
         if numTabs == 0 then
