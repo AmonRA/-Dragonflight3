@@ -61,7 +61,7 @@ function setup:CreateUnitFrame(unit, width, height)
     local unitFrame = CreateFrame('Button', frameName, UIParent)
     unitFrame:SetSize(width, height)
     unitFrame.unit = unit
-    unitFrame:SetFrameStrata('BACKGROUND')
+    unitFrame:SetFrameStrata('MEDIUM')
 
     unitFrame.portraitFrame = CreateFrame('Frame', nil, unitFrame)
     unitFrame.portraitFrame:SetSize(80, 80)
@@ -205,8 +205,8 @@ function setup:CreateUnitFrame(unit, width, height)
             unitFrame.pvpIconFrame:SetAllPoints(unitFrame.portraitFrame)
             unitFrame.pvpIcon:SetPoint('CENTER', unitFrame.portraitFrame, 'RIGHT', 12, -3)
         end
-        unitFrame.hpBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar_reversed.tga'])
-        unitFrame.powerBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar_reversed.tga'])
+        unitFrame.hpBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar.tga'])
+        unitFrame.powerBar.fill:SetTexture(media['tex:unitframes:aurora_hpbar.tga'])
     else
         unitFrame.portraitFrame:SetPoint('LEFT', unitFrame, 'LEFT', 0, 0)
         unitFrame.hpBar:SetFillDirection('RIGHT_TO_LEFT')
@@ -1456,6 +1456,8 @@ function setup:GenerateDefaults()
             hasNameAbbreviation = true,
             hasNameReactionColoring = true,
             hasPvPIcon = true,
+            healthBarTexture = 'aurora_hpbar',
+            manaBarTexture = 'aurora_hpbar',
         },
         targettarget = {
             hasNameAbbreviation = true,
@@ -1463,6 +1465,8 @@ function setup:GenerateDefaults()
             hasPvPIcon = true,
             portraitBorderTexture = 'portrait_border_base',
             scale = 0.8,
+            showHealthText = false,
+            showManaText = false,
         },
         pet = {
             hasPvPIcon = false,
@@ -1521,6 +1525,11 @@ function setup:GenerateDefaults()
         local portraitBorderTexture = 'portrait_border_edge'
         local scale = 1
 
+        local healthBarTexture = 'aurora_hpbar_reversed'
+        local manaBarTexture = 'aurora_hpbar_reversed'
+        local showHealthText = true
+        local showManaText = true
+
         local overrides = frameOverrides[frame.key]
         if overrides then
             healthBarFillDirection = overrides.healthBarFillDirection or healthBarFillDirection
@@ -1534,6 +1543,10 @@ function setup:GenerateDefaults()
             hasHappinessIcon = overrides.hasHappinessIcon or hasHappinessIcon
             portraitBorderTexture = overrides.portraitBorderTexture or portraitBorderTexture
             scale = overrides.scale or scale
+            healthBarTexture = overrides.healthBarTexture or healthBarTexture
+            manaBarTexture = overrides.manaBarTexture or manaBarTexture
+            if overrides.showHealthText ~= nil then showHealthText = overrides.showHealthText end
+            if overrides.showManaText ~= nil then showManaText = overrides.showManaText end
         end
 
         defaults[frame.key..'Enabled'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 1, description = 'Show or hide the '..frame.name..' frame'}}
@@ -1551,7 +1564,7 @@ function setup:GenerateDefaults()
         defaults[frame.key..'InfoBgHeight'] = {value = 16, metadata = {element = 'slider', category = catGeneral, indexInCategory = 11, description = 'Name bar height', min = 8, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarWidth'] = {value = 120, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 1, description = 'Health bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarHeight'] = {value = 20, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 2, description = 'Health bar height', min = 10, max = 50, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'HealthBarTexture'] = {value = 'aurora_hpbar_reversed', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 3, description = 'Health bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'HealthBarTexture'] = {value = healthBarTexture, metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 3, description = 'Health bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
 
         defaults[frame.key..'HealthBarFillDirection'] = {value = healthBarFillDirection, metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 4, description = 'Health bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
         local colorModeOptions = hasPlayerFeatures and {'class', 'reaction', 'custom', 'mirror'} or (frame.key == 'pet' and {'class', 'reaction', 'custom', 'mirror'} or {'class', 'reaction', 'custom'})
@@ -1562,10 +1575,10 @@ function setup:GenerateDefaults()
         defaults[frame.key..'HealthBarPulseColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catHealthBar, indexInCategory = 9, description = 'Health bar pulse color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'HealthBarEnablePulse', state = true}}}}
         defaults[frame.key..'HealthBarEnableCutout'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 10, description = 'Enable health bar cutout', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarCutoutColor'] = {value = {1, 0.2, 0.2, 1}, metadata = {element = 'colorpicker', category = catHealthBar, indexInCategory = 11, description = 'Health bar cutout color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'HealthBarEnableCutout', state = true}}}}
-        defaults[frame.key..'ShowHealthText'] = {value = true, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 12, description = 'Show health text', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ShowHealthText'] = {value = showHealthText, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 12, description = 'Show health text', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextFormat'] = {value = 'cur/max', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 13, description = 'Health text format', options = {'current', 'cur/max', 'none'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextShowPercent'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 14, description = 'Show health percentage', dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'HealthTextAbbreviate'] = {value = false, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 15, description = 'Abbreviate health numbers', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'HealthTextAbbreviate'] = {value = true, metadata = {element = 'checkbox', category = catHealthBar, indexInCategory = 15, description = 'Abbreviate health numbers', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextAnchor'] = {value = 'center', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 16, description = 'Health text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 17, description = 'Health text font', options = media.fonts, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthTextSize'] = {value = 10, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 18, description = 'Health text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
@@ -1583,17 +1596,17 @@ function setup:GenerateDefaults()
         end
         defaults[frame.key..'ManaBarWidth'] = {value = 120, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 1, description = 'Power bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarHeight'] = {value = 12, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 2, description = 'Power bar height', min = 6, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ManaBarTexture'] = {value = 'aurora_hpbar_reversed', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 3, description = 'Power bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ManaBarTexture'] = {value = manaBarTexture, metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 3, description = 'Power bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarFillDirection'] = {value = manaBarFillDirection, metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 4, description = 'Power bar fill direction', options = {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarSmoothTransition'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 5, description = 'Smooth power bar transition', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarEnablePulse'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 6, description = 'Enable power bar pulse', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarPulseColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catPowerBar, indexInCategory = 7, description = 'Power bar pulse color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ManaBarEnablePulse', state = true}}}}
         defaults[frame.key..'ManaBarEnableCutout'] = {value = false, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 8, description = 'Enable power bar cutout', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaBarCutoutColor'] = {value = {1, 0.2, 0.2, 1}, metadata = {element = 'colorpicker', category = catPowerBar, indexInCategory = 9, description = 'Power bar cutout color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ManaBarEnableCutout', state = true}}}}
-        defaults[frame.key..'ShowManaText'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 10, description = 'Show power text', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ShowManaText'] = {value = showManaText, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 10, description = 'Show power text', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextFormat'] = {value = 'cur/max', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 11, description = 'Power text format', options = {'current', 'cur/max', 'none'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextShowPercent'] = {value = false, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 12, description = 'Show power percentage', dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'ManaTextAbbreviate'] = {value = false, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 13, description = 'Abbreviate power numbers', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ManaTextAbbreviate'] = {value = true, metadata = {element = 'checkbox', category = catPowerBar, indexInCategory = 13, description = 'Abbreviate power numbers', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextAnchor'] = {value = 'center', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 14, description = 'Power text anchor', options = {'left', 'center', 'right'}, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextFont'] = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = catPowerBar, indexInCategory = 15, description = 'Power text font', options = media.fonts, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ManaTextSize'] = {value = 10, metadata = {element = 'slider', category = catPowerBar, indexInCategory = 16, description = 'Power text size', min = 6, max = 20, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}

@@ -29,6 +29,7 @@ function minimap:CreateMinimapCluster()
     frame:SetHeight(self.config.height)
     frame:SetWidth(self.config.width)
     frame:SetPoint('TOPRIGHT', UIParent, 'TOPRIGHT', -50, -70)
+    frame:SetFrameStrata('MEDIUM')
     return frame
 end
 
@@ -122,7 +123,8 @@ function minimap:SetupMinimap(cluster)
     Minimap:SetPoint('CENTER', cluster, 'CENTER', 0, -10)
     Minimap:SetHeight(150)
     Minimap:SetWidth(150)
-    Minimap:SetFrameLevel(1)
+    Minimap:SetFrameStrata('MEDIUM')
+    Minimap:SetFrameLevel(5)
 
     local border = Minimap:CreateTexture(nil, 'ARTWORK')
     border:SetPoint('TOPLEFT', Minimap, 'TOPLEFT', -12, 13)
@@ -284,7 +286,7 @@ function DF.lib.CreateCustomPlayerArrow()
     arrowFrame:SetWidth(32)
     arrowFrame:SetHeight(32)
     arrowFrame:SetPoint('CENTER', Minimap, 'CENTER', 1, 1)
-    arrowFrame:SetFrameStrata('HIGH')
+    arrowFrame:SetFrameStrata('MEDIUM')
 
     local arrowTex = arrowFrame:CreateTexture(nil, 'OVERLAY')
     arrowTex:SetTexture(media['tex:minimap:MinimapArrow.blp'])
