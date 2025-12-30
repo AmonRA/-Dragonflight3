@@ -526,14 +526,19 @@ function setup:UpdateBarText(unitFrame)
     end
     unitFrame.hpBar.pctText:SetText(unitFrame.healthTextShowPercent and hpPct..'%' or '')
 
-    if manaFormat == 'current' then
-        unitFrame.powerBar.text:SetText(abbrev(mana))
-    elseif manaFormat == 'none' then
+    if unitFrame.unit ~= 'player' and not UnitIsPlayer(unitFrame.unit) and maxMana == 0 then
         unitFrame.powerBar.text:SetText('')
+        unitFrame.powerBar.pctText:SetText('')
     else
-        unitFrame.powerBar.text:SetText(abbrev(mana)..'/'..abbrev(maxMana))
+        if manaFormat == 'current' then
+            unitFrame.powerBar.text:SetText(abbrev(mana))
+        elseif manaFormat == 'none' then
+            unitFrame.powerBar.text:SetText('')
+        else
+            unitFrame.powerBar.text:SetText(abbrev(mana)..'/'..abbrev(maxMana))
+        end
+        unitFrame.powerBar.pctText:SetText(unitFrame.manaTextShowPercent and manaPct..'%' or '')
     end
-    unitFrame.powerBar.pctText:SetText(unitFrame.manaTextShowPercent and manaPct..'%' or '')
 
     unitFrame.hpBar.text:ClearAllPoints()
     if hpAnchor == 'center' then
