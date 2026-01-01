@@ -183,8 +183,9 @@ DF:NewModule('tweaks', 1, function()
             local frame = getglobal('ChatFrame'..i)
             if frame then
                 if value then
-                    if not DF.hooks.IsHooked(frame, 'AddMessage') then
-                        DF.hooks.Hook(frame, 'AddMessage', function(self, text, r, g, b, id, hold)
+                    if not chatcolor.hooked[frame] then
+                        chatcolor.hooked[frame] = frame.AddMessage
+                        frame.AddMessage = function(self, text, r, g, b, id, hold)
                             if text then
                                 for name in string.gfind(text, '|Hplayer:(.-)|h') do
                                     local parts = DF.data.split(name, ':')
@@ -200,11 +201,14 @@ DF:NewModule('tweaks', 1, function()
                                     text = string.gsub(text, '|Hplayer:'..name..'|h%['..real..'%]|h', '|r['..hex..'|Hplayer:'..name..'|h'..hex..real..'|h|r]|r')
                                 end
                             end
-                            DF.hooks.registry[frame]['AddMessage'](self, text, r, g, b, id, hold)
-                        end)
+                            chatcolor.hooked[frame](self, text, r, g, b, id, hold)
+                        end
                     end
                 else
-                    DF.hooks.Unhook(frame, 'AddMessage')
+                    if chatcolor.hooked[frame] then
+                        frame.AddMessage = chatcolor.hooked[frame]
+                        chatcolor.hooked[frame] = nil
+                    end
                 end
             end
         end

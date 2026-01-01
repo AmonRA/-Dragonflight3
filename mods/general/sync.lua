@@ -447,13 +447,13 @@ if isAdmin then
             local statusColor = syncLoaded and {0, 1, 0} or {1, 0, 0}
 
             local warningText = DF.ui.Font(UIParent, 16, statusText, statusColor, 'CENTER')
-            warningText:SetPoint('CENTER', UIParent, 'CENTER', 0, -130)
+            warningText:SetPoint('TOP', UIParent, 'TOP', 0, -20)
 
             local adminPanel = DF.ui.Frame(UIParent, 150, 30, .5, false)
             adminPanel:SetBackdropColor(1, 0, 0, .5)
             adminPanel:SetFrameStrata('BACKGROUND')
             adminPanel:SetFrameLevel(0)
-            adminPanel:SetPoint('CENTER', UIParent, 'CENTER', 0, -160)
+            adminPanel:SetPoint('TOP', warningText, 'BOTTOM', 0, -10)
             local adminText = DF.ui.Font(adminPanel, 10, 'ADMIN', {1, 1, 1}, 'CENTER')
             adminText:SetPoint('CENTER', adminPanel, 'CENTER', 0, 0)
         end
