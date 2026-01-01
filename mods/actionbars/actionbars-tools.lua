@@ -274,6 +274,8 @@ end
 function setup:CreatePagingButtons()
     self.pagingContainer = CreateFrame('Frame', 'DF_PagingContainer', UIParent)
     self.pagingContainer:SetSize(20, 60)
+    self.pagingContainer:SetFrameStrata('MEDIUM')
+    self.pagingContainer:SetFrameLevel(2)
     -- self.pagingContainer:SetPoint('RIGHT', mainBar.buttons[1], 'LEFT', -10, 0)
     -- debugframe(self.pagingContainer)
 
