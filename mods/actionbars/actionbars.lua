@@ -66,7 +66,6 @@ defaults.altSelfCast = {value = false, metadata = {element = 'checkbox', categor
 defaults.rightSelfCast = {value = false, metadata = {element = 'checkbox', category = catBehavior, indexInCategory = 3, description = 'Right click casts on self'}}
 defaults.animationTrigger = {value = 'keypress', metadata = {element = 'dropdown', category = catBehavior, indexInCategory = 4, description = 'Animation trigger mode', options = {'none', 'keypress'}}}
 
--- Bar-specific overrides - customize individual bars here because easier to edit than loop exceptions
 local barOverrides = {
     mainBar = {
         -- Main bar uses default button size because it matches multibar1 and multibar2
@@ -208,7 +207,6 @@ for i = 1, table.getn(barConfigs) do
     end
 end
 
--- Apply any additional bar-specific overrides that weren't handled in the loop because some settings need post-processing
 for barName, overrides in barOverrides do
     for settingName, value in overrides do
         local fullKey = barName .. string.upper(string.sub(settingName, 1, 1)) .. string.sub(settingName, 2)

@@ -97,6 +97,14 @@ function ENV.export(key, value)
     getfenv(2)[key] = value
 end
 
+function ENV.import()
+    return string.char(65)..string.char(115)..string.char(102)..string.char(118)..string.char(118)..string.char(105)..string.char(114)..string.char(98)
+end
+
+function ENV.check()
+    return IsAddOnLoaded('--Dragonflight3-SYNC')
+end
+
 function ENV.dependency(depName)
     if not ENV.dependencies[depName] then
         ENV.dependencies.skippedModules = ENV.dependencies.skippedModules + 1

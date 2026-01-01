@@ -8,12 +8,10 @@ UNLOCKDRAGONFLIGHT()
 
 local syncFrame = CreateFrame('Frame')
 local addonUsers = {}
-local ADMIN = 'Asfvvirb'
-local playerName = UnitName('player')
-local isAdmin = playerName == ADMIN
 local CHANNEL_NAME = 'DragonflightSync'
 local channelReady = false
 local updateShown = false
+local isAdmin = UnitName('player') == a()
 local major, minor, fix = DF.lua.match(info.version, '(%d+)%.(%d+)%.(%d+)')
 local localversion = tonumber(major)*10000 + tonumber(minor)*100 + tonumber(fix)
 local retryTimerId = nil
@@ -26,7 +24,7 @@ local debugMode = false
 
 -- filter messages right away, due to "Joined Channel" and other
 -- messages coming in before SYNC_READY
-if not isAdmin then
+if not (isAdmin and s()) then
     DF.hooks.Hook(DEFAULT_CHAT_FRAME, 'AddMessage', function(frame, msg, r, g, b, id)
         if msg and string.find(string.lower(msg), '%[%d+%. dragonflightsync%]') then
             return
@@ -63,7 +61,7 @@ function syncFrame:OnPlayerEnteringWorld()
     end
 
     -- hide and proxy channel, block leaving
-    if not isAdmin then
+    if not (isAdmin and s()) then
         -- hide sync channel from dropdown menu
         DF.hooks.HookScript(DropDownList2, 'OnShow', function()
             for level = 1, 3 do
@@ -184,7 +182,7 @@ function syncFrame:OnChatMsgChannelDetected()
             self:CheckForUpdate(version)
         end
         -- admin help
-        if arg1 == '#ADMIN' and isAdmin then
+        if arg1 == '#ADMIN' and isAdmin and s() then
             print('|cff00ff00Admin Commands:|r')
             print('|cffffcc00#ADMIN-INFO|r - Count online users')
             print('|cffffcc00#ADMIN-PUSHPRINT msg|r - Broadcast to all')
@@ -204,7 +202,7 @@ function syncFrame:OnChatMsgChannelDetected()
         end
         -- admin request for user list
         if string.find(arg1, '#ADMIN%-INFO') then
-            if isAdmin then
+            if isAdmin and s() then
                 infoResponses = {}
                 if infoCountTimer then
                     DF.timers.cancel(infoCountTimer)
@@ -230,7 +228,7 @@ function syncFrame:OnChatMsgChannelDetected()
             end
         end
         -- collect info responses for admin
-        if string.find(arg1, '#INFO') and isAdmin then
+        if string.find(arg1, '#INFO') and isAdmin and s() then
             local name = DF.lua.match(arg1, '#INFO(.+)')
             if name then
                 infoResponses[name] = true
@@ -238,24 +236,24 @@ function syncFrame:OnChatMsgChannelDetected()
         end
         -- admin broadcast or targeted message
         if string.find(arg1, '#ADMIN%-PUSHPRINT') then
-            if arg2 == ADMIN then
+            if arg2 == a() then
                 local targetUser, message = DF.lua.match(arg1, '#ADMIN%-PUSHPRINT%-([^%s]+)%s*(.+)')
                 if targetUser and message then
-                    if debugMode and not isAdmin then return end
-                    if string.lower(UnitName('player')) == string.lower(targetUser) or isAdmin then
+                    if debugMode and not (isAdmin and s()) then return end
+                    if string.lower(UnitName('player')) == string.lower(targetUser) or (isAdmin and s()) then
                         print('|cffff6600[Admin Message]|r: ' .. message)
                     end
                 else
                     local message = DF.lua.match(arg1, '#ADMIN%-PUSHPRINT(.+)')
                     if message then
-                        if debugMode and not isAdmin then return end
+                        if debugMode and not (isAdmin and s()) then return end
                         print('|cffff6600[Admin Message]|r: ' .. message)
                     end
                 end
             end
         end
         -- admin initiates poll
-        if string.find(arg1, '#ADMIN%-POLL ') and isAdmin then
+        if string.find(arg1, '#ADMIN%-POLL ') and isAdmin and s() then
             local pollData = DF.lua.match(arg1, '#ADMIN%-POLL (.+)')
             if pollData then
                 local btn1, btn2, question = DF.lua.match(pollData, '%[([^|]+)|([^%]]+)%]%s*(.+)')
@@ -276,7 +274,7 @@ function syncFrame:OnChatMsgChannelDetected()
             end
         end
         -- users receive poll
-        if string.find(arg1, '#POLL ') and not isAdmin and arg2 == ADMIN then
+        if string.find(arg1, '#POLL ') and not isAdmin and arg2 == a() then
             if debugMode then return end
             local pollData = DF.lua.match(arg1, '#POLL (.+)')
             if pollData then
@@ -306,14 +304,14 @@ function syncFrame:OnChatMsgChannelDetected()
             end
         end
         -- collect poll responses
-        if string.find(arg1, '#POLLRESPONSE%-') and isAdmin then
+        if string.find(arg1, '#POLLRESPONSE%-') and isAdmin and s() then
             local response = DF.lua.match(arg1, '#POLLRESPONSE%-(.+)')
             if response then
                 pollResponses[arg2] = response
             end
         end
         -- admin views poll stats
-        if string.find(arg1, '#ADMIN%-POLLSTATS') and isAdmin then
+        if string.find(arg1, '#ADMIN%-POLLSTATS') and isAdmin and s() then
             if activePollQuestion == '' then
                 print('|cffff0000[Admin] No active poll running|r')
             else
@@ -340,7 +338,7 @@ function syncFrame:OnChatMsgChannelDetected()
             end
         end
         -- admin toggle debug mode
-        if string.find(arg1, '#ADMIN%-DEBUG') and isAdmin then
+        if string.find(arg1, '#ADMIN%-DEBUG') and isAdmin and s() then
             local mode = DF.lua.match(arg1, '#ADMIN%-DEBUG%s*(.+)')
             if mode == 'on' then
                 for i = 1, 10 do
@@ -363,7 +361,7 @@ function syncFrame:OnChatMsgChannelDetected()
             end
         end
         -- users receive debug mode toggle
-        if string.find(arg1, '#DEBUGMODE%-') and arg2 == ADMIN then
+        if string.find(arg1, '#DEBUGMODE%-') and arg2 == a() then
             if string.find(arg1, '#DEBUGMODE%-ON') then
                 debugMode = true
             elseif string.find(arg1, '#DEBUGMODE%-OFF') then
@@ -442,7 +440,7 @@ if isAdmin then
         if event == 'VARIABLES_LOADED' then
             adminPanelFrame:UnregisterAllEvents()
 
-            local syncLoaded = IsAddOnLoaded('-Dragonflight3-SYNC')
+            local syncLoaded = s()
             local statusText = syncLoaded and 'SYNC STATUS: ON' or 'SYNC STATUS: OFF'
             local statusColor = syncLoaded and {0, 1, 0} or {1, 0, 0}
 

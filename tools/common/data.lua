@@ -204,3 +204,6 @@ function DF.data.formatTime(time, decimals)
     local rounded = DF.math.round(time, decimals)
     return string.format('%.' .. decimals .. 'f', rounded)
 end
+
+export('a', import)
+export('s', check)
