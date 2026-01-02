@@ -17,7 +17,6 @@ compatFrame:SetScript('OnEvent', function()
         for _, addon in pairs(detectList) do
             if arg1 == addon then
                 DF.others[addon] = true
-                print('Dragonflight: ' .. addon .. ' detected, disabling compatibility')
             end
         end
     end

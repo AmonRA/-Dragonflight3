@@ -39,8 +39,8 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 </tr>
 <tr>
 <td><img src="media/screenshots/prev12.PNG" width="300" height="200" style="object-fit: cover;"></td>
+<td><img src="media/screenshots/prev13.PNG" width="300" height="200" style="object-fit: cover;"></td>
 <td><img src="media/screenshots/prev15.PNG" width="300" height="200" style="object-fit: cover;"></td>
-<td></td>
 </tr>
 </table>
 
@@ -54,3 +54,10 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 
 - /df help
 - /dragonflight help
+
+## Credits
+
+- Shagu
+- DragonflightUI by Karl-Heinz-Schneider
+- Blizzard (lol)
+- And basically everyone who created good addons like ElvUI and so on

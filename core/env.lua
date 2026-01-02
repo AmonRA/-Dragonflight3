@@ -76,12 +76,23 @@ local originalDebugstack = debugstack
 function ENV:GetEnv()
     if debugstack ~= originalDebugstack then return end
 
-    local stack = debugstack()
+    local stack = debugstack(2)
 
-    if not string.find(stack, self.info.path, 1, true) then
-        error('DRAGONFLIGHT Access denied')
-        return
+    local pos = 1
+    while pos do
+        local lineStart = pos
+        local lineEnd = string.find(stack, '\n', pos)
+        local line = lineEnd and string.sub(stack, lineStart, lineEnd - 1) or string.sub(stack, lineStart)
+
+        local _, _, foundAddon = string.find(line, 'Interface\\AddOns\\([^\\]+)\\')
+        if foundAddon and foundAddon ~= addonName then
+            error('DRAGONFLIGHT Access denied')
+            return
+        end
+
+        pos = lineEnd and lineEnd + 1 or nil
     end
+
     setfenv(3, self)
 end
 

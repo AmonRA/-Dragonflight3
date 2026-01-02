@@ -7,6 +7,7 @@ UNLOCKDRAGONFLIGHT()
 -- and future features maybe, otherwise not invade peoples privacy.
 
 -- TODO pending polls to protect against showing up during combat
+-- we wont do any polls for now could kill a hardcore player :(
 
 local syncFrame = CreateFrame('Frame')
 local addonUsers = {}
@@ -358,7 +359,7 @@ function syncFrame:OnChatMsgChannelDetected()
 end
 
 function syncFrame:OnAddonMessage()
-    if arg1 == 'Dragonflight' then
+    if arg1 == info.addonName then
         local v, remoteversion = DF.lua.match(arg2, '(.+):(.+)')
         remoteversion = tonumber(remoteversion)
         if v == 'VERSION' and remoteversion then
@@ -384,8 +385,8 @@ end
 function syncFrame:OnPartyMembersChanged()
     local groupsize = GetNumRaidMembers() > 0 and GetNumRaidMembers() or GetNumPartyMembers() > 0 and GetNumPartyMembers() or 0
     if ( self.group or 0 ) < groupsize then
-        SendAddonMessage('Dragonflight', 'VERSION:' .. localversion, 'BATTLEGROUND')
-        SendAddonMessage('Dragonflight', 'VERSION:' .. localversion, 'RAID')
+        SendAddonMessage(info.addonName, 'VERSION:' .. localversion, 'BATTLEGROUND')
+        SendAddonMessage(info.addonName, 'VERSION:' .. localversion, 'RAID')
     end
     self.group = groupsize
 end
