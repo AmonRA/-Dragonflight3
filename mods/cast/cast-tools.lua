@@ -393,7 +393,11 @@ function DF.lib.CreateCastBar(unit)
 
             local remaining = (endTime - now) / 1000
             if self.config.showSpellName then
-                self.text:SetText(castName)
+                local displayName = castName
+                if string.find(castName, ' %- No Text') then
+                    displayName = string.gsub(castName, ' %- No Text', '')
+                end
+                self.text:SetText(displayName)
             else
                 self.text:SetText('')
             end
@@ -411,6 +415,8 @@ function DF.lib.CreateCastBar(unit)
                     else
                         self.timeText:SetTextColor(1, 1, 1)
                     end
+                else
+                    self.timeText:SetTextColor(1, 1, 1)
                 end
             else
                 self.timeText:SetText('')
@@ -445,7 +451,11 @@ function DF.lib.CreateCastBar(unit)
             self:UpdateProgress(progress, channelStart, channelEnd)
 
             if self.config.showSpellName then
-                self.text:SetText(channelName)
+                local displayName = channelName
+                if string.find(channelName, ' %- No Text') then
+                    displayName = string.gsub(channelName, ' %- No Text', '')
+                end
+                self.text:SetText(displayName)
             else
                 self.text:SetText('')
             end
@@ -464,6 +474,8 @@ function DF.lib.CreateCastBar(unit)
                     else
                         self.timeText:SetTextColor(1, 1, 1)
                     end
+                else
+                    self.timeText:SetTextColor(1, 1, 1)
                 end
             else
                 self.timeText:SetText('')
@@ -471,20 +483,16 @@ function DF.lib.CreateCastBar(unit)
             if channelIcon and self.config.showIcon then self.icon:SetTexture(channelIcon) self.icon:Show() else self.icon:Hide() end
 
         elseif self.state.lastCast then
-            local now = GetTime() * 1000
-            local lagTolerance = self.state.currentLag + 100
-            if self.state.lastEndTime and now < self.state.lastEndTime - lagTolerance then
-                self.state.interrupted = true
-            end
-
             self.state.fadeOut = true
             if self.state.interrupted then
                 self.bar:SetVertexColor(1, 0, 0)
                 self.flash:SetVertexColor(1, 0, 0)
                 self:SetColors(1, 0, 0, 1, 0, 0)
+                self.timeText:SetTextColor(1, 0, 0)
             else
                 self.flash:SetVertexColor(0, 1, 0)
                 self:SetColors(0, 1, 0, 0, 1, 0)
+                self.timeText:SetTextColor(0, 1, 0)
             end
             self.flash:SetAlpha(1)
             self.flash:Show()
@@ -506,6 +514,22 @@ function DF.lib.CreateCastBar(unit)
     cast:CreateCastFrame()
     cast.frame:SetScript('OnUpdate', function()
         cast:UpdateFrame(arg1)
+    end)
+
+    local castEventFrame = CreateFrame('Frame')
+    castEventFrame:RegisterEvent('UNIT_CASTEVENT')
+    castEventFrame:SetScript('OnEvent', function()
+        local casterGUID = arg1
+        local eventType = arg3
+        local casterName = UnitName(casterGUID)
+        local unitName = UnitName(cast.unit)
+        if casterName == unitName then
+            if eventType == 'FAIL' then
+                cast.state.interrupted = true
+            elseif eventType == 'CAST' then
+                cast.state.interrupted = false
+            end
+        end
     end)
 
     if cast.unit == 'target' then

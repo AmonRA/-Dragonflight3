@@ -82,9 +82,7 @@ DF:NewModule('castbar', 2, 'PLAYER_LOGIN', function()
     local targetCastBar = DF.lib.CreateCastBar('target')
     targetCastBar.frame:SetPoint('TOPLEFT', UIParent, 'TOPLEFT', 260, -130)
 
-
     -- callbacks
-    local helpers = {}
     local callbacks = {}
 
     callbacks.showPlayerCastbar = function(value)
