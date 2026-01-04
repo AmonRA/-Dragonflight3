@@ -94,3 +94,18 @@ function DF.common.CalculateLinearOffset(size, minSize, maxSize, minOffset, maxO
     return minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
 end
 
+-- CreateGoldString: formats copper amount into colorized gold/silver/copper string
+-- money (number) - amount in copper
+-- returns: formatted string with gold/silver/copper values
+function DF.common.CreateGoldString(money)
+    if type(money) ~= 'number' then return '-' end
+    local gold = floor(money / 100 / 100)
+    local silver = floor(math.mod((money / 100), 100))
+    local copper = floor(math.mod(money, 100))
+    local string = ''
+    if gold > 0 then string = string .. '|cffffffff' .. gold .. '|cffffd700g' end
+    if silver > 0 or gold > 0 then string = string .. '|cffffffff ' .. silver .. '|cffc7c7cfs' end
+    string = string .. '|cffffffff ' .. copper .. '|cffeda55fc'
+    return string
+end
+

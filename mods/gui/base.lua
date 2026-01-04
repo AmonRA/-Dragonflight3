@@ -3,8 +3,6 @@ DRAGONFLIGHT()
 DF:NewDefaults('gui-base', {
     version = {value = '1.0'},
     enabled = {value = true},
-
-
 })
 
 DF:NewModule('gui-base', 1, function()
@@ -14,6 +12,8 @@ DF:NewModule('gui-base', 1, function()
         basic = {width = 850, height = 600},
 
         panels = {},
+
+        noScrollTabs = {home = true, info = true, modules = true, performance = true, trouble = true, profiles = true, development = true},
 
         tabConfig = {
             {name = 'Home', key = 'home'},
@@ -113,7 +113,7 @@ DF:NewModule('gui-base', 1, function()
     -- headerTex:SetVertexColor(0,0,0,.4)
     -- debugframe(setup.headerframe)
 
-    local tabframeHeight = setup.basic.height - 60
+    local tabframeHeight = setup.basic.height - 61
     setup.tabframe = DF.ui.TabFrame(setup.mainframe, 110, tabframeHeight, 20, 10, 'DF_GUITabs')
     setup.tabframe:SetPoint('TOPLEFT', setup.headerframe, 'BOTTOMLEFT', 4, 0)
     local tabTex = setup.tabframe:CreateTexture(nil, 'BACKGROUND')
@@ -124,9 +124,25 @@ DF:NewModule('gui-base', 1, function()
     -- debugframe(setup.tabframe)
 
     setup.subframe = CreateFrame('Frame', nil, setup.mainframe)
-    setup.subframe:SetPoint('TOPLEFT', setup.tabframe, 'BOTTOMRIGHT', 0, 20)
-    setup.subframe:SetPoint('BOTTOMRIGHT', setup.mainframe, 'BOTTOMRIGHT', 0, 0)
+    setup.subframe:SetPoint('TOPLEFT', setup.tabframe, 'BOTTOMRIGHT', 4, 20)
+    setup.subframe:SetPoint('BOTTOMRIGHT', setup.mainframe, 'BOTTOMRIGHT', -3, 3)
+
     -- debugframe(setup.subframe)
+    local subTex = setup.subframe:CreateTexture(nil, 'BACKGROUND')
+    subTex:SetTexture('Interface\\Buttons\\WHITE8X8')
+    subTex:SetAllPoints(setup.subframe)
+    subTex:SetVertexColor(0,0,0,.4)
+
+    local hoverbindBtn = DF.ui.Button(setup.subframe, 'Hoverbind', 80, 20, false, {1, 0, 0})
+    hoverbindBtn:SetPoint('LEFT', setup.subframe, 'LEFT', 5, 0)
+    hoverbindBtn:SetScript('OnClick', function()
+        setup.mainframe:Hide()
+        if DF.setups.hover.mainFrame:IsShown() then
+            DF.setups.hover:Hide()
+        else
+            DF.setups.hover:Show()
+        end
+    end)
 
     local panelWidth = setup.basic.width - 170
     local panelHeight = setup.basic.height - 110
@@ -140,10 +156,8 @@ DF:NewModule('gui-base', 1, function()
     setup.normalframe:Hide()
     -- debugframe(setup.normalframe)
 
-    setup.noScrollTabs = {home = true, info = true, modules = true, performance = true, trouble = true, profiles = true}
-
     local subtabsLookup = {}
-    for moduleName, moduleData in pairs(DF.defaults) do
+    for _, moduleData in pairs(DF.defaults) do
         if moduleData.gui then
             for _, guiEntry in pairs(moduleData.gui) do
                 if guiEntry.tab and guiEntry.subtab then

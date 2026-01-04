@@ -39,18 +39,20 @@
     <Include file="general\error.lua"/>
     <Include file="general\firstrun.lua"/>
     <Include file="general\hoverbind.lua"/>
+    <Include file="general\itemcompare.lua"/>
     <Include file="general\nocontrol.lua"/>
     <Include file="general\questtracker.lua"/>
+    <Include file="general\sellvalue.lua"/>
     <Include file="general\sync.lua"/>
     <Include file="general\tweaks.lua"/>
     <Include file="general\uiparent.lua"/>
 
     <!-- GUI -->
     <Include file="gui\base.lua"/>
-    <Include file="gui\extrapanels.lua"/>
-    <Include file="gui\extrapanels2.lua"/>
+    <Include file="gui\homeinfo.lua"/>
+    <Include file="gui\performance.lua"/>
     <Include file="gui\profiles.lua"/>
-    <Include file="gui\extrapanels4.lua"/>
+    <Include file="gui\developement.lua"/>
     <Include file="gui\generator.lua"/>
 
     <!-- MICROMENU -->

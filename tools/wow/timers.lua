@@ -18,7 +18,7 @@ local function OnUpdate()
 
     for id, timer in pairs(registry) do
         hasTimers = true
-        if currentTime >= timer.endTime then
+        if not timer.paused and currentTime >= timer.endTime then
             -- pcall so one timer error doesn't break all
             -- TODO: proper error routing missing still
             local success, err = pcall(timer.func)
@@ -86,6 +86,35 @@ end
 function DF.timers.cancel(id)
     if registry[id] then
         registry[id] = nil
+        return true
+    end
+    return false
+end
+
+-- pause: pauses timer by id
+-- id (number) - timer id to pause
+-- returns: true if paused, false if not found
+function DF.timers.pause(id)
+    if registry[id] then
+        registry[id].paused = true
+        return true
+    end
+    return false
+end
+
+-- resume: resumes paused timer by id
+-- id (number) - timer id to resume
+-- returns: true if resumed, false if not found
+function DF.timers.resume(id)
+    if registry[id] and registry[id].paused then
+        registry[id].paused = false
+        local now = GetTime()
+        if registry[id].repeating then
+            registry[id].endTime = math.floor(now / registry[id].interval + 1) * registry[id].interval
+        else
+            registry[id].endTime = now + registry[id].interval
+        end
+        frame:SetScript('OnUpdate', OnUpdate)
         return true
     end
     return false

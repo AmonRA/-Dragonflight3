@@ -46,13 +46,13 @@ DF:NewModule('firstrun', 1, function()
     local block1 = DF.ui.Font(contentFrame, 12, '|cffff8000BETA BUILD|r - Expect bugs and frequent changes.', {1, 1, 1}, 'LEFT')
     block1:SetPoint('CENTER', contentFrame, 'TOP', 0, -70)
 
-    local block2 = DF.ui.Font(contentFrame, 12, '|cffffcc00Bug Reports:|r\n\n- You must use |cffffcc00/df safeboot|r before reporting.\n- This proves the bug is caused by Dragonflight only.\n- Focus on stability and polish during beta.', {1, 1, 1}, 'LEFT')
+    local block2 = DF.ui.Font(contentFrame, 12, '|cffffcc00Bug Reports:|r\n\n- You must use |cffffcc00/df safeboot|r before reporting.\n- This proves the bug is caused by ' .. info.addonNameColor .. ' only.\n- Explain how to reproduce the issue.\n- Include screenshots and error messages.', {1, 1, 1}, 'LEFT')
     block2:SetPoint('TOPLEFT', block1, 'BOTTOMLEFT', 0, -20)
 
-    local block3 = DF.ui.Font(contentFrame, 12, '|cffffcc00Please report:|r\n\n- Addon conflicts if reproducible with /df safeboot.\n- Any stability or performance issues.', {1, 1, 1}, 'LEFT')
+    local block3 = DF.ui.Font(contentFrame, 12, '|cffffcc00Do not report:|r\n\n- Addon compatibility issues.', {1, 1, 1}, 'LEFT')
     block3:SetPoint('TOPLEFT', block2, 'BOTTOMLEFT', 0, -20)
 
-    local block4 = DF.ui.Font(contentFrame, 12, 'So |cffffcc00UPDATE frequently|r or |cffffcc00suffer|r,\n\nGuzruul.', {1, 1, 1}, 'CENTER')
+    local block4 = DF.ui.Font(contentFrame, 12, 'So |cffffcc00update frequently|r or |cffffcc00suffer|r,\n\nGuzruul.', {1, 1, 1}, 'CENTER')
     block4:SetPoint('BOTTOM', contentFrame, 'BOTTOM', 0, 60)
 
     -- local function ApplyProfile(profileName)

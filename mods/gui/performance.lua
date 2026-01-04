@@ -1,11 +1,11 @@
 DRAGONFLIGHT()
 
-DF:NewDefaults('gui-extrapanels2', {
+DF:NewDefaults('gui-performance', {
     version = {value = '1.0'},
     enabled = {value = true},
 })
 
-DF:NewModule('gui-extrapanels2', 2, function()
+DF:NewModule('gui-performance', 2, function()
     local setup = DF.setups.guiBase
     if not setup then return end
 
@@ -487,10 +487,4 @@ DF:NewModule('gui-extrapanels2', 2, function()
 
     addonMem.content:SetHeight(math.max(400, yOffset))
     addonMem.updateScrollBar()
-
-    -- callbacks
-    local helpers = {}
-    local callbacks = {}
-
-    DF:NewCallbacks('gui-extrapanels2', callbacks)
 end)

@@ -1,11 +1,11 @@
 DRAGONFLIGHT()
 
-DF:NewDefaults('gui-extrapanels', {
+DF:NewDefaults('gui-homeinfo', {
     version = {value = '1.0'},
     enabled = {value = true},
 })
 
-DF:NewModule('gui-extrapanels', 2, function()
+DF:NewModule('gui-homeinfo', 2, function()
     local setup = DF.setups.guiBase
     if not setup then return end
 
@@ -460,10 +460,4 @@ DF:NewModule('gui-extrapanels', 2, function()
         end
         return false
     end
-
-    -- callbacks
-    local helpers = {}
-    local callbacks = {}
-
-    DF:NewCallbacks('gui-extrapanels', callbacks)
 end)

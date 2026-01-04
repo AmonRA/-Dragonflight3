@@ -24,14 +24,15 @@ function DF.hooks.Hook(tbl, name, handler)
 end
 
 -- modified Shagu code
--- HookSecureFunc: post-hook function that runs after original
+-- HookSecureFunc: hook function that runs before or after original
 -- tbl (table/string) - table containing function or global function name
 -- name (string) - function name in table
--- func (function) - your hook function to run after original
+-- func (function) - your hook function
+-- runBefore (boolean) - if true, runs before original; if false/nil, runs after original (default)
 -- returns: nothing
-function DF.hooks.HookSecureFunc(tbl, name, func)
+function DF.hooks.HookSecureFunc(tbl, name, func, runBefore)
     if type(tbl) == 'string' then
-        func, name, tbl = name, tbl, _G
+        runBefore, func, name, tbl = func, name, tbl, _G
     end
 
     local orig = tbl[name]
@@ -41,8 +42,13 @@ function DF.hooks.HookSecureFunc(tbl, name, func)
     DF.hooks.registry[tbl][name] = orig
 
     tbl[name] = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        if runBefore then
+            func(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        end
         local ret1, ret2, ret3, ret4, ret5 = orig(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-        func(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        if not runBefore then
+            func(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        end
         return ret1, ret2, ret3, ret4, ret5
     end
 end

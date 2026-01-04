@@ -349,8 +349,9 @@ function DF.ui.Scrollframe(parent, width, height, name)
 
     local scrollBarName = name and (name .. '_ScrollBar') or nil
     local scrollBar = CreateFrame('Slider', scrollBarName, scroll)
-    scrollBar:SetSize(2, height or 300)
-    scrollBar:SetPoint('TOPRIGHT', scroll, 'TOPRIGHT', 0, 0)
+    scrollBar:SetSize(4, height or 300)
+    scrollBar:SetPoint('TOPRIGHT', scroll, 'TOPRIGHT', 5, 0)
+    scrollBar:SetFrameLevel(scroll:GetFrameLevel() + 5)
     scrollBar:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8X8'})
     scrollBar:SetBackdropColor(0.2, 0.2, 0.2, 0.8)
     scrollBar:SetOrientation('VERTICAL')

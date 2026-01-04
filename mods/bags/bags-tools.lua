@@ -129,6 +129,18 @@ function setup:CreateSlotButton(parent, frameName, slotIndex, bagID, buttonSize,
     btn:SetScript('OnReceiveDrag', function()
         PickupContainerItem(btn.bagID, btn.slotID)
     end)
+    btn:SetScript('OnEvent', function()
+        if event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player' and MouseIsOver(btn) then
+            local texture = GetContainerItemInfo(btn.bagID, btn.slotID)
+            if texture and GameTooltip:IsOwned(btn) then
+                GameTooltip:Hide()
+                GameTooltip:SetOwner(btn, 'ANCHOR_RIGHT')
+                GameTooltip:SetBagItem(btn.bagID, btn.slotID)
+                GameTooltip:Show()
+            end
+        end
+    end)
+    btn:RegisterEvent('UNIT_INVENTORY_CHANGED')
     btn:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
     btn:RegisterForDrag('LeftButton')
 
