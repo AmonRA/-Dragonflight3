@@ -89,9 +89,14 @@ DF:NewModule('intellisense', 1, function()
     deleteBtnText:SetAllPoints(deleteBtn)
     deleteBtn:SetScript('OnClick', function()
         if currentMatch then
-            local firstLetter = string.sub(currentMatch, 1, 1)
+            local firstLetter = string.lower(string.sub(currentMatch, 1, 1))
             if DF_LearnedData[firstLetter] then
-                DF_LearnedData[firstLetter][currentMatch] = nil
+                local matchLower = string.lower(currentMatch)
+                for word, count in pairs(DF_LearnedData[firstLetter]) do
+                    if string.lower(word) == matchLower then
+                        DF_LearnedData[firstLetter][word] = nil
+                    end
+                end
             end
             currentMatch = nil
             suggest:Hide()
