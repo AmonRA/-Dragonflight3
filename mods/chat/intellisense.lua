@@ -526,7 +526,21 @@ DF:NewModule('intellisense', 1, function()
             else
                 local partial = this:GetCurrentWord()
                 local prefix = string.sub(text, 1, string.len(text) - string.len(partial))
-                this:SetText(prefix .. currentMatch .. ' ')
+                local word = currentMatch
+                if DF.profile.intellisense.autoCapitalize then
+                    if string.len(prefix) == 0 then
+                        word = string.upper(string.sub(word, 1, 1)) .. string.sub(word, 2)
+                    else
+                        local checkPos = string.len(prefix) - 1
+                        if checkPos > 0 then
+                            local prevChar = string.sub(prefix, checkPos, checkPos)
+                            if prevChar == '.' or prevChar == '!' or prevChar == '?' then
+                                word = string.upper(string.sub(word, 1, 1)) .. string.sub(word, 2)
+                            end
+                        end
+                    end
+                end
+                this:SetText(prefix .. word .. ' ')
             end
             suggest:Hide()
         end
