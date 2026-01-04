@@ -304,47 +304,51 @@ function setup:CreatePagingButtons()
     end)
 end
 
+function setup:HandleButtonPress(button, isDown, onSelf)
+    if isDown then
+        button.pushed:Show()
+        button.highlight:Show()
+    else
+        button.pushed:Hide()
+        button.highlight:Hide()
+    end
+    
+    local shouldExecute = (isDown and DF.profile['actionbars']['clickMode'] == 'down') or (not isDown and DF.profile['actionbars']['clickMode'] ~= 'down')
+    if shouldExecute then
+        if isDown then
+            setup.lastUsedAction = button:GetID()
+        end
+        if DF.profile['actionbars']['animationTrigger'] == 'keypress' and HasAction(button:GetID()) then
+            button.animation.active = 0
+            button.animation:Show()
+        end
+        UseAction(button:GetID(), 0, onSelf)
+    end
+end
+
 function setup:CreateKeyboardRouting(mainButtons, multiButtons, bonusButtons)
     self.activeMainButtons = mainButtons
 
     function _G.ActionButtonDown(id)
         local bonusOffset = GetBonusBarOffset()
-        if bonusOffset > 0 and bonusButtons then
-            if bonusButtons[bonusOffset] and bonusButtons[bonusOffset][id] then
-                local btn = bonusButtons[bonusOffset][id]
-                btn.pushed:Show()
-                btn.highlight:Show()
-            end
+        local btn
+        if bonusOffset > 0 and bonusButtons and bonusButtons[bonusOffset] and bonusButtons[bonusOffset][id] then
+            btn = bonusButtons[bonusOffset][id]
         elseif setup.activeMainButtons and setup.activeMainButtons[id] then
-            setup.activeMainButtons[id].pushed:Show()
-            setup.activeMainButtons[id].highlight:Show()
+            btn = setup.activeMainButtons[id]
         end
+        if btn then setup:HandleButtonPress(btn, true, nil) end
     end
 
     function _G.ActionButtonUp(id, onSelf)
         local bonusOffset = GetBonusBarOffset()
-        if bonusOffset > 0 and bonusButtons then
-            if bonusButtons[bonusOffset] and bonusButtons[bonusOffset][id] then
-                local btn = bonusButtons[bonusOffset][id]
-                setup.lastUsedAction = btn:GetID()
-                btn.pushed:Hide()
-                btn.highlight:Hide()
-                if DF.profile['actionbars']['animationTrigger'] == 'keypress' and HasAction(btn:GetID()) then
-                    btn.animation.active = 0
-                    btn.animation:Show()
-                end
-                UseAction(btn:GetID(), 0, onSelf)
-            end
+        local btn
+        if bonusOffset > 0 and bonusButtons and bonusButtons[bonusOffset] and bonusButtons[bonusOffset][id] then
+            btn = bonusButtons[bonusOffset][id]
         elseif setup.activeMainButtons and setup.activeMainButtons[id] then
-            setup.lastUsedAction = setup.activeMainButtons[id]:GetID()
-            setup.activeMainButtons[id].pushed:Hide()
-            setup.activeMainButtons[id].highlight:Hide()
-            if DF.profile['actionbars']['animationTrigger'] == 'keypress' and HasAction(setup.activeMainButtons[id]:GetID()) then
-                setup.activeMainButtons[id].animation.active = 0
-                setup.activeMainButtons[id].animation:Show()
-            end
-            UseAction(setup.activeMainButtons[id]:GetID(), 0, onSelf)
+            btn = setup.activeMainButtons[id]
         end
+        if btn then setup:HandleButtonPress(btn, false, onSelf) end
     end
 
     function _G.MultiActionButtonDown(bar, id)
@@ -355,9 +359,7 @@ function setup:CreateKeyboardRouting(mainButtons, multiButtons, bonusButtons)
         elseif bar == 'MultiBarLeft' then barNum = 4
         end
         if barNum and multiButtons[barNum] and multiButtons[barNum][id] then
-            local btn = multiButtons[barNum][id]
-            btn.pushed:Show()
-            btn.highlight:Show()
+            setup:HandleButtonPress(multiButtons[barNum][id], true, nil)
         end
     end
 
@@ -369,14 +371,7 @@ function setup:CreateKeyboardRouting(mainButtons, multiButtons, bonusButtons)
         elseif bar == 'MultiBarLeft' then barNum = 4
         end
         if barNum and multiButtons[barNum] and multiButtons[barNum][id] then
-            local btn = multiButtons[barNum][id]
-            btn.pushed:Hide()
-            btn.highlight:Hide()
-            if DF.profile['actionbars']['animationTrigger'] == 'keypress' and HasAction(btn:GetID()) then
-                btn.animation.active = 0
-                btn.animation:Show()
-            end
-            UseAction(btn:GetID(), 0, onSelf)
+            setup:HandleButtonPress(multiButtons[barNum][id], false, onSelf)
         end
     end
 end
