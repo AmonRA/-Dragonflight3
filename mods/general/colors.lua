@@ -7,7 +7,7 @@ DF:NewDefaults('colors', {
     -- Named keys (tab, subtab) define panel location, array elements define categories within that panel
     -- Each category groups related settings with a header, settings use category + indexInCategory for ordering
     gui = {
-        {tab = 'general', subtab = 'colors', 'Class Colors'},
+        {tab = 'general', subtab = 'colors', 'Class Colors', 'Power Colors'},
     },
 
     colorWarrior = {value = {0.78, 0.61, 0.43}, metadata = {element = 'colorpicker', category = 'Class Colors', indexInCategory = 1, description = 'Warrior class color'}},
@@ -19,6 +19,11 @@ DF:NewDefaults('colors', {
     colorPriest = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Class Colors', indexInCategory = 7, description = 'Priest class color'}},
     colorWarlock = {value = {0.58, 0.51, 0.79}, metadata = {element = 'colorpicker', category = 'Class Colors', indexInCategory = 8, description = 'Warlock class color'}},
     colorPaladin = {value = {0.96, 0.55, 0.73}, metadata = {element = 'colorpicker', category = 'Class Colors', indexInCategory = 9, description = 'Paladin class color'}},
+
+    colorMana = {value = {0.2, 0.4, 1}, metadata = {element = 'colorpicker', category = 'Power Colors', indexInCategory = 1, description = 'Mana power color'}},
+    colorRage = {value = {1, 0, 0}, metadata = {element = 'colorpicker', category = 'Power Colors', indexInCategory = 2, description = 'Rage power color'}},
+    colorFocus = {value = {1, 0.5, 0.25}, metadata = {element = 'colorpicker', category = 'Power Colors', indexInCategory = 3, description = 'Focus power color'}},
+    colorEnergy = {value = {1, 1, 0}, metadata = {element = 'colorpicker', category = 'Power Colors', indexInCategory = 4, description = 'Energy power color'}},
 
 })
 
@@ -50,6 +55,20 @@ DF:NewModule('colors', 1, function()
         end
     end
 
+    callbackHelper.UpdatePowerBarColors = function(powerType)
+        if DF.setups.unitframes and DF.setups.unitframes.portraits then
+            for i = 1, table.getn(DF.setups.unitframes.portraits) do
+                local portrait = DF.setups.unitframes.portraits[i]
+                if UnitExists(portrait.unit) then
+                    local unitPowerType = UnitPowerType(portrait.unit)
+                    if unitPowerType == powerType then
+                        DF.setups.unitframes:UpdatePowerBarColor(portrait)
+                    end
+                end
+            end
+        end
+    end
+
     callbacks.colorWarrior = function(value) DF.tables.classcolors['WARRIOR'] = value callbackHelper.UpdateUnitFrameColors('WARRIOR') end
     callbacks.colorMage = function(value) DF.tables.classcolors['MAGE'] = value callbackHelper.UpdateUnitFrameColors('MAGE') end
     callbacks.colorRogue = function(value) DF.tables.classcolors['ROGUE'] = value callbackHelper.UpdateUnitFrameColors('ROGUE') end
@@ -59,6 +78,11 @@ DF:NewModule('colors', 1, function()
     callbacks.colorPriest = function(value) DF.tables.classcolors['PRIEST'] = value callbackHelper.UpdateUnitFrameColors('PRIEST') end
     callbacks.colorWarlock = function(value) DF.tables.classcolors['WARLOCK'] = value callbackHelper.UpdateUnitFrameColors('WARLOCK') end
     callbacks.colorPaladin = function(value) DF.tables.classcolors['PALADIN'] = value callbackHelper.UpdateUnitFrameColors('PALADIN') end
+
+    callbacks.colorMana = function(value) DF.tables.powercolors[0] = value callbackHelper.UpdatePowerBarColors(0) end
+    callbacks.colorRage = function(value) DF.tables.powercolors[1] = value callbackHelper.UpdatePowerBarColors(1) end
+    callbacks.colorFocus = function(value) DF.tables.powercolors[2] = value callbackHelper.UpdatePowerBarColors(2) end
+    callbacks.colorEnergy = function(value) DF.tables.powercolors[3] = value callbackHelper.UpdatePowerBarColors(3) end
 
     DF:NewCallbacks('colors', callbacks)
 end)

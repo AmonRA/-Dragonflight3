@@ -10,7 +10,7 @@ DF:NewModule('gui-homeinfo', 2, function()
     if not setup then return end
 
     local homePanel = setup.panels['home']
-    homePanel:SetHeight(450)
+    -- homePanel:SetHeight(450)
     local homeText = DF.ui.Font(homePanel, 20, info.addonNameColor)
     homeText:SetPoint('CENTER', setup.mainframe, 'CENTER', 0, 100)
 

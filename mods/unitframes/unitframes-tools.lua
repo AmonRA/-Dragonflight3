@@ -432,16 +432,9 @@ end
 
 function setup:UpdatePowerBarColor(unitFrame)
     local powerType = UnitPowerType(unitFrame.unit)
-    if powerType == 0 then
-        unitFrame.powerBar:SetFillColor(0.2, 0.4, 1, 1)
-    elseif powerType == 1 then
-        unitFrame.powerBar:SetFillColor(1, 0, 0, 1)
-    elseif powerType == 2 then
-        unitFrame.powerBar:SetFillColor(1, 0.5, 0.25, 1)
-    elseif powerType == 3 then
-        unitFrame.powerBar:SetFillColor(1, 1, 0, 1)
-    else
-        unitFrame.powerBar:SetFillColor(0.2, 0.4, 1, 1)
+    local color = DF.tables['powercolors'][powerType]
+    if color then
+        unitFrame.powerBar:SetFillColor(color[1], color[2], color[3], 1)
     end
 end
 

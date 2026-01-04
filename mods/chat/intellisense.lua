@@ -44,6 +44,7 @@ DF:NewModule('intellisense', 1, function()
         bgFile = 'Interface\\Buttons\\WHITE8X8',
         edgeFile = 'Interface\\Tooltips\\UI-Tooltip-Border',
         edgeSize = 16,
+        insets = {left = 4, right = 4, top = 4, bottom = 4},
     })
     eb:SetBackdropColor(0, 0, 0, 0.5)
     eb:SetBackdropBorderColor(0, 0, 0, .5)
@@ -643,17 +644,10 @@ DF:NewModule('intellisense', 1, function()
     -- callbacks
     local callbacks = {}
 
-    callbacks.stickyMode = function(value)
-    end
-
-    callbacks.preserveCase = function(value)
-    end
-
-    callbacks.autoCapitalize = function(value)
-    end
-
-    callbacks.minWordLength = function(value)
-    end
+    callbacks.stickyMode = function() end
+    callbacks.preserveCase = function() end
+    callbacks.autoCapitalize = function() end
+    callbacks.minWordLength = function() end
 
     callbacks.arrowKeyNav = function(value)
         eb:SetAltArrowKeyMode(not value)
@@ -684,7 +678,7 @@ DF:NewModule('intellisense', 1, function()
 
     callbacks.width = function(value)
         eb:SetWidth(value)
-        suggest:SetWidth(value)
+        suggest:SetWidth(value-5)
     end
 
     callbacks.height = function(value)
