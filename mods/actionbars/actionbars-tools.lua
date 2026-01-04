@@ -312,7 +312,7 @@ function setup:HandleButtonPress(button, isDown, onSelf)
         button.pushed:Hide()
         button.highlight:Hide()
     end
-    
+
     local shouldExecute = (isDown and DF.profile['actionbars']['clickMode'] == 'down') or (not isDown and DF.profile['actionbars']['clickMode'] ~= 'down')
     if shouldExecute then
         if isDown then
@@ -519,8 +519,8 @@ function setup:UpdateButtonKeybind(button)
         if not useMainBarKeybind then
             if id >= 1 and id <= 12 then
                 key = GetBindingKey('ACTIONBUTTON'..id)
-            elseif id >= 73 and id <= 84 then
-                key = GetBindingKey('ACTIONBUTTON'..(id - 72))
+            elseif id >= 73 and id <= 120 then
+                key = GetBindingKey('ACTIONBUTTON'..(math.mod(id - 73, 12) + 1))
             elseif id >= 61 and id <= 72 then
                 key = GetBindingKey('MULTIACTIONBAR1BUTTON'..(id - 60))
             elseif id >= 49 and id <= 60 then
@@ -536,6 +536,8 @@ function setup:UpdateButtonKeybind(button)
 
         if key then
             key = GetBindingText(key, 'KEY_')
+            key = string.gsub(key, 'BUTTON1', 'L')
+            key = string.gsub(key, 'BUTTON2', 'R')
             key = string.gsub(key, 'Middle Mouse', 'M3')
             key = string.gsub(key, 'Mouse Wheel Up', 'MWU')
             key = string.gsub(key, 'Mouse Wheel Down', 'MWD')
@@ -825,6 +827,9 @@ function setup:UpdateBonusBarVisibility()
         for i = 1, 4 do
             if i == offset then
                 self.bonusBars[i]:Show()
+                for j = 1, table.getn(self.bonusBars[i].buttons) do
+                    self:UpdateButtonKeybind(self.bonusBars[i].buttons[j])
+                end
                 self.mainBar.decorationLeftFrame:SetParent(self.bonusBars[i])
                 self.mainBar.decorationRightFrame:SetParent(self.bonusBars[i])
                 if DF.profile['actionbars']['mainBarDecorationPosition'] ~= 'none' then

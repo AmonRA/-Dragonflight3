@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 DRAGONFLIGHT()
 
 local function ShowHelp()
@@ -5,6 +6,7 @@ local function ShowHelp()
     print('/df - Toggle Dragonflight GUI')
     print('/df reset [sense|profiles|all] - Wipe DB and reload')
     print('/df edit or /df editmode - Toggle Edit Mode')
+    print('/df hover or /df hoverbind - Toggle Hoverbind Mode')
     print('/df safeboot - Disable all addons except Dragonflight')
     print('/gm - Open GM Help')
     print('/load ADDONNAME - Load addon')
@@ -77,6 +79,14 @@ _G.SlashCmdList['DRAGONFLIGHT'] = function(msg)
                 frame:Hide()
             else
                 frame:Show()
+            end
+        end
+    elseif msg == 'hover' or msg == 'hoverbind' then
+        if DF.setups.hover then
+            if DF.setups.hover.mainFrame:IsShown() then
+                DF.setups.hover:Hide()
+            else
+                DF.setups.hover:Show()
             end
         end
     elseif msg == '' then

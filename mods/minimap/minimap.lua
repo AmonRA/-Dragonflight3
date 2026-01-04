@@ -90,13 +90,6 @@ DF:NewModule('minimap', 1, 'PLAYER_LOGIN', function()
 
     --callbacks
     local helpers = {
-        CalculateTexOffset = function(size)
-            local minSize, maxSize = 140, 350
-            local minOffset, maxOffset = 10, 26
-            local offset = minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
-            return offset
-        end,
-
         CreateRotatingTexture = function(layer, textureName, speed, size, alpha, strata, colorArray)
             local texPath = animTextures[textureName]
             if not texPath then return end
@@ -171,7 +164,7 @@ DF:NewModule('minimap', 1, 'PLAYER_LOGIN', function()
         Minimap:SetHeight(value)
         Minimap:SetWidth(value)
 
-        local offset = helpers.CalculateTexOffset(value)
+        local offset = DF.common.CalculateLinearOffset(value, 140, 350, 10, 26)
         border:SetPoint('TOPLEFT', Minimap, 'TOPLEFT', -offset, offset)
         border:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMRIGHT', offset, -offset)
 

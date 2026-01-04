@@ -90,3 +90,7 @@ function DF.common.MakeFrameMovable(targetFrame)
     end)
 end
 
+function DF.common.CalculateLinearOffset(size, minSize, maxSize, minOffset, maxOffset)
+    return minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
+end
+

@@ -38,6 +38,7 @@
     <Include file="general\editmode.lua"/>
     <Include file="general\error.lua"/>
     <Include file="general\firstrun.lua"/>
+    <Include file="general\hoverbind.lua"/>
     <Include file="general\nocontrol.lua"/>
     <Include file="general\questtracker.lua"/>
     <Include file="general\sync.lua"/>

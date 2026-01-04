@@ -1678,13 +1678,6 @@ function setup:GenerateDefaults()
     return defaults
 end
 
-local function GetPortraitModelOffset(size)
-    local minSize, maxSize = 40, 120
-    local minOffset, maxOffset = 17, 50
-    local offset = minOffset + (size - minSize) * (maxOffset - minOffset) / (maxSize - minSize)
-    return offset
-end
-
 function setup:GenerateCallbacks()
     local frames = {
         {key = 'player', name = 'Player'},
@@ -1917,7 +1910,7 @@ function setup:GenerateCallbacks()
             for j = 1, table.getn(setup.portraits) do
                 local portrait = setup.portraits[j]
                 if (frame.key == 'party' and string.find(portrait.unit, 'party')) or portrait.unit == frame.key then
-                    local offset = GetPortraitModelOffset(value)
+                    local offset = DF.common.CalculateLinearOffset(value, 40, 120, 17, 50)
                     local glowOffset = math.floor(value * 0.2)
                     portrait.portraitFrame:SetSize(value, value)
                     portrait.borderBg:SetSize(value, value)

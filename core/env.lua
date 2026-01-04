@@ -2,15 +2,8 @@ local startTime = GetTime()
 local _, _, addonName = string.find(debugstack(), 'AddOns\\([^\\]+)\\')
 
 local texPaths = {
-    'actionbars',
-    'micromenu',
-    'unitframes',
-    'minimap',
-    'interface',
-    'generic',
-    'bags',
-    'castbar',
-    'panels'
+    'actionbars', 'micromenu', 'unitframes', 'minimap', 'interface', 'generic',
+    'bags', 'castbar', 'panels'
 }
 
 local ENV = setmetatable({
@@ -29,21 +22,10 @@ local ENV = setmetatable({
         },
         media = setmetatable({
             fonts = {
-                'Fonts\\FRIZQT__.TTF',
-                'Fonts\\ARIALN.TTF',
-                'Fonts\\skurri.ttf',
-                'Fonts\\MORPHEUS.TTF',
-                'font:BigNoodleTitling.ttf',
-                'font:Continuum.ttf',
-                'font:DieDieDie.ttf',
-                'font:Expressway.ttf',
-                'font:Homespun.ttf',
-                'font:Hooge.ttf',
-                'font:Myriad-Pro.ttf',
-                'font:Prototype.ttf',
-                'font:PT-Sans-Narrow-Bold.ttf',
-                'font:PT-Sans-Narrow-Regular.ttf',
-                'font:RobotoMono.ttf'
+                'Fonts\\FRIZQT__.TTF', 'Fonts\\ARIALN.TTF', 'Fonts\\skurri.ttf', 'Fonts\\MORPHEUS.TTF',
+                'font:BigNoodleTitling.ttf', 'font:Continuum.ttf', 'font:DieDieDie.ttf', 'font:Expressway.ttf',
+                'font:Homespun.ttf', 'font:Hooge.ttf', 'font:Myriad-Pro.ttf', 'font:Prototype.ttf',
+                'font:PT-Sans-Narrow-Bold.ttf', 'font:PT-Sans-Narrow-Regular.ttf', 'font:RobotoMono.ttf'
             }
         }, { __index = function(tab,key)
             local value = tostring(key)
@@ -65,7 +47,7 @@ local ENV = setmetatable({
             rawset(tab,key,value)
             return value
         end}),
-}, {__index = getfenv()})
+}, {__index = _G})
 
 function ENV.print(msg)
     DEFAULT_CHAT_FRAME:AddMessage(ENV.info.addonNameColor .. ': ' .. tostring(msg))

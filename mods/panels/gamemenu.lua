@@ -82,8 +82,14 @@ DF:NewModule('gamemenu', 1, function()
         ShowUIPanel(KeyBindingFrame)
     end)
 
-    local hmBtn = DF.ui.Button(frame, '+', 21, buttonHeight)
+    local hmBtn = DF.ui.Button(frame, '+', 21, buttonHeight, nil, {.9, 0, 0})
     hmBtn:SetPoint('LEFT', keybindsBtn, 'RIGHT', -2, 0)
+    hmBtn:SetScript('OnClick', function()
+        frame:Hide()
+        if DF.setups.hover then
+            DF.setups.hover:Show()
+        end
+    end)
     yOffset = yOffset - buttonHeight - buttonSpacing
 
     local macrosBtn = DF.ui.Button(frame, 'Macros', 160, buttonHeight)
