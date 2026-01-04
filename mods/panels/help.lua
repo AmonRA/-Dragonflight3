@@ -29,6 +29,10 @@ DF:NewModule('help', 1, function()
     helpBg:SetPoint('BOTTOMRIGHT', customBg, 'BOTTOMRIGHT', -3, 3)
     helpBg:SetVertexColor(0, 0, 0, .3)
 
+    local title = customBg:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+    title:SetPoint('TOP', customBg, 'TOP', 0, -6)
+    title:SetText('Help')
+
     local closeButton = DF.ui.CreateRedButton(customBg, 'close', function() HideUIPanel(HelpFrame) end)
     closeButton:SetPoint('TOPRIGHT', customBg, 'TOPRIGHT', 0, -1)
     closeButton:SetSize(20, 20)

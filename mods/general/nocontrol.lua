@@ -553,7 +553,7 @@ DF:NewModule('nocontrol', 1, function()
         testUpdateFrame:Show()
     end
 
-    function NoControlStopTest()
+    function NoControlStopTest() -- TODO namespace
         testModeActive = false
         testUpdateFrame:Hide()
         frame:Hide()
@@ -566,7 +566,6 @@ DF:NewModule('nocontrol', 1, function()
         end
     end)
     testUpdateFrame:Hide()
-    -- end area
 
     -- callbacks
     local callbacks = {}
