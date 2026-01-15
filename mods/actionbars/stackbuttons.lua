@@ -217,6 +217,56 @@ DF:NewModule('stackbuttons', 2, 'PLAYER_LOGIN', function()
         local row = 0
         local col = 0
 
+        local charSlots = {13, 14, 19}
+        for _, invSlot in charSlots do
+            local texture = GetInventoryItemTexture('player', invSlot)
+            if texture then
+                local itemLink = GetInventoryItemLink('player', invSlot)
+                local itemName = itemLink
+                local btnName = 'DF_StackItemBtn' .. itemIndex
+                local btn = DF.ui.SlotButton(self.otherScroll.content, btnName, btnSize)
+                btn.bg:Hide()
+                btn.icon:SetTexture(texture)
+                btn:SetPoint('TOPLEFT', self.otherScroll.content, 'TOPLEFT', col * (btnSize + spacing), -row * (btnSize + spacing))
+                btn:RegisterForDrag('LeftButton')
+                btn.invSlot = invSlot
+                btn.border:SetBackdrop(nil)
+                local borderTex = btn.border:CreateTexture(nil, 'BACKGROUND')
+                borderTex:SetTexture(media['tex:actionbars:btn_border.blp'])
+                borderTex:SetAllPoints(btn.border)
+                btn.highlight:SetBackdrop(nil)
+                btn.highlightTex = btn.highlight:CreateTexture(nil, 'OVERLAY')
+                btn.highlightTex:SetTexture(media['tex:actionbars:btn_highlight_strong.blp'])
+                btn.highlightTex:SetPoint('TOPLEFT', btn.highlight, 'TOPLEFT', -4, 4)
+                btn.highlightTex:SetPoint('BOTTOMRIGHT', btn.highlight, 'BOTTOMRIGHT', 4, -4)
+                btn.countText = DF.ui.Font(btn, 10, '', {1, 1, 1}, 'RIGHT')
+                btn.countText:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMRIGHT', -2, 2)
+                btn:SetScript('OnEnter', function()
+                    this.highlight:Show()
+                    GameTooltip:SetOwner(this, 'ANCHOR_RIGHT')
+                    GameTooltip:SetInventoryItem('player', this.invSlot)
+                    GameTooltip:Show()
+                end)
+                btn:SetScript('OnLeave', function()
+                    this.highlight:Hide()
+                    GameTooltip:Hide()
+                end)
+                btn:SetScript('OnDragStart', function()
+                    PickupInventoryItem(this.invSlot)
+                    stack.draggedItem = {name = itemName, texture = texture, invSlot = invSlot}
+                end)
+                btn.itemName = string.lower(itemName or '')
+                table.insert(self.allItemButtons, btn)
+
+                col = col + 1
+                if col >= perRow then
+                    col = 0
+                    row = row + 1
+                end
+                itemIndex = itemIndex + 1
+            end
+        end
+
         for bag = 0, 4 do
             local numSlots = GetContainerNumSlots(bag)
             if numSlots then
