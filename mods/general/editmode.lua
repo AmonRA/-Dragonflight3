@@ -411,7 +411,7 @@ DF:NewModule('editmode', 2, 'PLAYER_AFTER_ENTERING_WORLD', function()
         lastDropdown = 'Combopoints'
         registry.elements = {}
         for i = 1, 5 do
-            RegisterFrame('AUComboFrame'..i, 'elements')
+            RegisterFrame('DF_ComboFrame'..i, 'elements')
         end
         ActivateMode('elements')
     end)

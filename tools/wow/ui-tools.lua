@@ -951,7 +951,7 @@ function DF.ui.PushFrame(parent, width, height, maxLines, font)
 
         local fontString = pushFrame.content:CreateFontString(nil, 'OVERLAY')
         local currentFont = pushFrame.font
-        if AU and DF.profile and DF.profile['gui-generator'] and DF.profile['gui-generator'].guifont then
+        if DF.profile and DF.profile['gui-generator'] and DF.profile['gui-generator'].guifont then
             currentFont = media[DF.profile['gui-generator'].guifont] or currentFont
         end
         fontString:SetFont(currentFont, 12, 'OUTLINE')

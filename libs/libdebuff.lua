@@ -1,7 +1,7 @@
 DRAGONFLIGHT()
 
 -- credit to shagu v1.0
-local libdebuff = CreateFrame('Frame', 'AUDebuffScanner', UIParent)
+local libdebuff = CreateFrame('Frame', 'DF_DebuffScanner', UIParent)
 local scanner = DF.lib.libtipscan:GetScanner('libdebuff')
 local _, playerClass = UnitClass('player')
 local cmatch = DF.lua.cmatch

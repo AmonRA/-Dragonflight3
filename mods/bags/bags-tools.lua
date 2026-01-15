@@ -61,7 +61,9 @@ function setup:CreateSlotButton(parent, frameName, slotIndex, bagID, buttonSize,
             if IsControlKeyDown() then
                 DressUpItemLink(GetContainerItemLink(btn.bagID, btn.slotID))
             elseif IsShiftKeyDown() then
-                if ChatFrameEditBox:IsShown() then
+                if getglobal('DF_IntelliSense') and getglobal('DF_IntelliSense'):IsShown() then
+                    getglobal('DF_IntelliSense'):Insert(GetContainerItemLink(btn.bagID, btn.slotID))
+                elseif ChatFrameEditBox:IsShown() then
                     ChatFrameEditBox:Insert(GetContainerItemLink(btn.bagID, btn.slotID))
                 else
                     local texture, itemCount, locked = GetContainerItemInfo(btn.bagID, btn.slotID)

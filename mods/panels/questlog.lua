@@ -80,6 +80,54 @@ DF:NewModule('questlog', 1, function()
         end
     end
 
+    -- hook questlog shift-click to support DF intellisense
+    DF.hooks.Hook('QuestLogTitleButton_OnClick', function(button)
+        local questIndex = this:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame)
+        if IsShiftKeyDown() then
+            if this.isHeader then
+                return
+            end
+            if getglobal('DF_IntelliSense') and getglobal('DF_IntelliSense'):IsShown() then
+                getglobal('DF_IntelliSense'):Insert(gsub(this:GetText(), ' *(.*)', '%1'))
+            elseif ChatFrameEditBox:IsVisible() then
+                ChatFrameEditBox:Insert(gsub(this:GetText(), ' *(.*)', '%1'))
+            else
+                if IsQuestWatched(questIndex) then
+                    tremove(QUEST_WATCH_LIST, questIndex)
+                    RemoveQuestWatch(questIndex)
+                    QuestWatch_Update()
+                else
+                    if GetNumQuestLeaderBoards(questIndex) == 0 then
+                        UIErrorsFrame:AddMessage(QUEST_WATCH_NO_OBJECTIVES, 1.0, 0.1, 0.1, 1.0)
+                        return
+                    end
+                    if GetNumQuestWatches() >= MAX_WATCHABLE_QUESTS then
+                        UIErrorsFrame:AddMessage(format(QUEST_WATCH_TOO_MANY, MAX_WATCHABLE_QUESTS), 1.0, 0.1, 0.1, 1.0)
+                        return
+                    end
+                    AutoQuestWatch_Insert(questIndex, QUEST_WATCH_NO_EXPIRE)
+                    QuestWatch_Update()
+                end
+            end
+        end
+        QuestLog_SetSelection(questIndex)
+        QuestLog_Update()
+    end)
+
+    DF.hooks.Hook('QuestLogRewardItem_OnClick', function()
+        if IsControlKeyDown() then
+            if this.rewardType ~= 'spell' then
+                DressUpItemLink(GetQuestLogItemLink(this.type, this:GetID()))
+            end
+        elseif IsShiftKeyDown() and this.rewardType ~= 'spell' then
+            if getglobal('DF_IntelliSense') and getglobal('DF_IntelliSense'):IsShown() then
+                getglobal('DF_IntelliSense'):Insert(GetQuestLogItemLink(this.type, this:GetID()))
+            elseif ChatFrameEditBox:IsVisible() then
+                ChatFrameEditBox:Insert(GetQuestLogItemLink(this.type, this:GetID()))
+            end
+        end
+    end)
+
     -- callbacks
     local helpers = {}
     local callbacks = {}

@@ -21,7 +21,7 @@ DF:NewModule('combopoints', 1, function()
         self.container = container
 
         for i = 1, 5 do
-            local frame = CreateFrame('Frame', 'AUComboFrame'..i, container)
+            local frame = CreateFrame('Frame', 'DF_ComboFrame'..i, container)
             frame:SetWidth(30)
             frame:SetHeight(30)
             frame:SetPoint('CENTER', container, 'CENTER', (i - 3) * 35, 0)

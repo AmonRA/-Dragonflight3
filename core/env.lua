@@ -3,8 +3,15 @@ local startTime = GetTime()
 local _, _, addonName = string.find(debugstack(), 'AddOns\\([^\\]+)\\')
 
 local texPaths = {
-    'actionbars', 'micromenu', 'unitframes', 'minimap', 'interface', 'generic',
-    'bags', 'castbar', 'panels'
+    'actionbars',
+    'micromenu',
+    'unitframes',
+    'minimap',
+    'interface',
+    'generic',
+    'bags',
+    'castbar',
+    'panels'
 }
 
 local ENV = setmetatable({

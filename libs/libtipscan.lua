@@ -109,7 +109,7 @@ end
 
 libtipscan.registry = setmetatable({}, {
     __index = function(t, name)
-        local tooltip = CreateFrame('GameTooltip', 'AUScan' .. name, nil, 'GameTooltipTemplate')
+        local tooltip = CreateFrame('GameTooltip', 'DF_Scan' .. name, nil, 'GameTooltipTemplate')
         tooltip:SetOwner(WorldFrame, 'ANCHOR_NONE')
         tooltip:SetScript('OnHide', function()
             this:SetOwner(WorldFrame, 'ANCHOR_NONE')

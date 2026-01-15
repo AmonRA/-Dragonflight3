@@ -43,3 +43,9 @@ function DF.mixins.AddInspectTalentTab(customBg)
         end
     end, true)
 end
+
+function DF.mixins.CleanTurtleTabName(name)
+    if DF.others.server ~= 'turtle' or not name then return name end
+    local cleaned = string.gsub(name, '^[Zz]+(%u)', '%1')
+    return cleaned
+end

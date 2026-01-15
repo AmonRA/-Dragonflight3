@@ -4,13 +4,13 @@ DRAGONFLIGHT()
 DF = CreateFrame'Frame'
 
 -- saved global vars
-_G.DF_Profiles = {}
-_G.DF_LearnedData = {}
-_G.DF_GlobalData = {}
-_G.DF_PlayerCache = {}
+_G.DF_Profiles = {}         -- module and module metadata data
+_G.DF_LearnedData = {}      -- intellisense data
+_G.DF_GlobalData = {}       -- general data like sync etc.
+_G.DF_PlayerCache = {}      -- name/class mapping data
 
 -- saved per-character vars
-_G.DF_CharData = {}
+_G.DF_CharData = {}         -- data like stackbuttons etc.
 
 -- core
 DF.tables = {}

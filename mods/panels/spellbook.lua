@@ -407,6 +407,7 @@ DF:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
         for tabIndex = 1, numTabs do
             local name, texture, offset, numSpells = GetSpellTabInfo(tabIndex)
             if numSpells > 0 then
+                name = DF.mixins.CleanTurtleTabName(name)
                 name = string.gsub(name, ' Combat', '')
                 local capturedIndex = tabIndex
                 local spacing = 2
