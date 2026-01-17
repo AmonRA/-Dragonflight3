@@ -598,7 +598,7 @@ end
 
 function setup:UpdateRaidIcon(unitFrame)
     local index = GetRaidTargetIndex(unitFrame.unit)
-    if index then
+    if index and index > 0 then
         local left = math.mod(index - 1, 4) * 0.25
         local right = left + 0.25
         local top = math.floor((index - 1) / 4) * 0.25
@@ -1097,40 +1097,45 @@ function setup:OnUpdate()
                             portrait:Hide()
                         end
                     else
-                        local name = UnitName(portrait.unit)
-                        if name ~= portrait.namebuf1 then
-                            portrait.namebuf1 = name
-                            if UnitExists(portrait.unit) then
-                                portrait.hpBar.max = UnitHealthMax(portrait.unit)
-                                portrait.powerBar.max = UnitManaMax(portrait.unit) > 0 and UnitManaMax(portrait.unit) or 1
-                                portrait.model.lastUnit = nil
-                            end
-                        elseif name ~= portrait.namebuf2 then
-                            portrait.namebuf2 = name
+                        local enabledKey = portrait.unit..'Enabled'
+                        if DF_Profiles and DF.profile['unitframes'] and not DF.profile['unitframes'][enabledKey] then
+                            portrait:Hide()
                         else
-                            if UnitExists(portrait.unit) then
-                                if not portrait:IsShown() then portrait:Show() end
-                                if UnitIsConnected(portrait.unit) then
-                                    local isNewTarget = portrait.model.lastUnit ~= name
-                                    if isNewTarget then
-                                        portrait.model.update = portrait.unit
-                                        portrait.model.lastUnit = name
-                                    end
-                                    setup:UpdatePortraitMode(portrait, portrait.unit)
-                                    setup:UpdateUnitHealth(portrait, isNewTarget)
-                                    setup:UpdateUnitMana(portrait, isNewTarget)
-                                    setup:UpdateHealthBarColor(portrait, portrait.unit)
-                                    setup:UpdateNameText(portrait)
-                                    setup:UpdateLevelColor(portrait)
-                                    setup:UpdatePvPIcon(portrait)
-                                    setup:UpdateRaidIcon(portrait)
-                                    setup:UpdateBarText(portrait)
-                                    setup:UpdateBarTextNumbers(portrait)
-                                    local visibleBuffs = setup:UpdateBuffs(portrait)
-                                    setup:UpdateDebuffs(portrait, math.ceil(visibleBuffs / 5))
+                            local name = UnitName(portrait.unit)
+                            if name ~= portrait.namebuf1 then
+                                portrait.namebuf1 = name
+                                if UnitExists(portrait.unit) then
+                                    portrait.hpBar.max = UnitHealthMax(portrait.unit)
+                                    portrait.powerBar.max = UnitManaMax(portrait.unit) > 0 and UnitManaMax(portrait.unit) or 1
+                                    portrait.model.lastUnit = nil
                                 end
+                            elseif name ~= portrait.namebuf2 then
+                                portrait.namebuf2 = name
                             else
-                                portrait:Hide()
+                                if UnitExists(portrait.unit) then
+                                    if not portrait:IsShown() then portrait:Show() end
+                                    if UnitIsConnected(portrait.unit) then
+                                        local isNewTarget = portrait.model.lastUnit ~= name
+                                        if isNewTarget then
+                                            portrait.model.update = portrait.unit
+                                            portrait.model.lastUnit = name
+                                        end
+                                        setup:UpdatePortraitMode(portrait, portrait.unit)
+                                        setup:UpdateUnitHealth(portrait, isNewTarget)
+                                        setup:UpdateUnitMana(portrait, isNewTarget)
+                                        setup:UpdateHealthBarColor(portrait, portrait.unit)
+                                        setup:UpdateNameText(portrait)
+                                        setup:UpdateLevelColor(portrait)
+                                        setup:UpdatePvPIcon(portrait)
+                                        setup:UpdateRaidIcon(portrait)
+                                        setup:UpdateBarText(portrait)
+                                        setup:UpdateBarTextNumbers(portrait)
+                                        local visibleBuffs = setup:UpdateBuffs(portrait)
+                                        setup:UpdateDebuffs(portrait, math.ceil(visibleBuffs / 5))
+                                    end
+                                else
+                                    portrait:Hide()
+                                end
                             end
                         end
                     end

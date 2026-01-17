@@ -118,9 +118,9 @@ f:SetScript('OnEvent', function()
     if event == 'VARIABLES_LOADED' then
         f:UnregisterAllEvents()
         f:SetScript('OnEvent', nil)
-        -- f = nil -- no idea if this does anything, need to check
         return
     end
+
     if arg1 == ENV.info.addonName then
         collectgarbage()
         local currentMem = gcinfo()
@@ -130,6 +130,7 @@ f:SetScript('OnEvent', function()
         lastMem = currentMem
         return
     end
+
     collectgarbage()
     local currentMem = gcinfo()
     local memUsed = currentMem - lastMem
