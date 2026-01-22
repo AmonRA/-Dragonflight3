@@ -70,18 +70,27 @@ DF:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
         if btn then btn:SetButtonState('NORMAL') end
     end)
 
+    if DF.profile['spellbook']['showPassive'] == nil then
+        DF.profile['spellbook']['showPassive'] = true
+    end
+    if DF.profile['spellbook']['showRanks'] == nil then
+        DF.profile['spellbook']['showRanks'] = false
+    end
+
     local showPassiveCheckbox = DF.ui.Checkbox(spellbook, "Show Passive", 15, 15)
     showPassiveCheckbox:SetPoint("TOPRIGHT", spellbook, "TOPRIGHT", -30, -35)
-    showPassiveCheckbox:SetChecked(true)
+    showPassiveCheckbox:SetChecked(DF.profile['spellbook']['showPassive'])
     showPassiveCheckbox:SetScript("OnClick", function()
+        DF.profile['spellbook']['showPassive'] = this:GetChecked() and true or false
         spellbook.currentPage = 1
         spellbook:UpdateSpellDisplay()
     end)
 
     local showRanksCheckbox = DF.ui.Checkbox(spellbook, "Show Spell Ranks", 15, 15)
     showRanksCheckbox:SetPoint("RIGHT", showPassiveCheckbox, "LEFT", -120, 0)
-    showRanksCheckbox:SetChecked(false)
+    showRanksCheckbox:SetChecked(DF.profile['spellbook']['showRanks'])
     showRanksCheckbox:SetScript("OnClick", function()
+        DF.profile['spellbook']['showRanks'] = this:GetChecked() and true or false
         spellbook.currentPage = 1
         spellbook:UpdateSpellDisplay()
     end)
@@ -522,11 +531,4 @@ DF:NewModule('spellbook', 1, 'PLAYER_ENTERING_WORLD', function()
     end
 
     table.insert(UISpecialFrames, spellbook:GetName())
-
-    -- callbacks
-    local helpers = {}
-    local callbacks = {}
-
-
-    DF:NewCallbacks('spellbook', callbacks)
 end)

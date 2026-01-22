@@ -12,7 +12,7 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 - Many animations and transitions
 - 2-way edit mode
 - Unique features and enhancements
-- Complete interface redesign (ALPHA PHASE / REPORT BUGS)
+- Complete interface redesign (BETA PHASE / REPORT BUGS)
 
 ## Screenshots
 
@@ -59,9 +59,15 @@ A comprehensive UI overhaul for World of Warcraft Vanilla 1.12.1.
 - /dragonflight help
 - /df help
 
+## Support
+
+If you enjoy this addon and want to support my work:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/guzruul)
+
 ## Credits
 
-- Shagu
+- Shagu (my master)
 - DragonflightUI by Karl-Heinz-Schneider
 - The original Blizzard from 2004-2008 (modern Blizzard is worthless)
 - And basically everyone who created good addons like ElvUI and so on

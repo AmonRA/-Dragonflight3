@@ -4,12 +4,15 @@ DRAGONFLIGHT()
 local function ShowHelp()
     redprint('Commands:')
     print('/df - Toggle Dragonflight GUI')
-    print('/df reset [sense|profiles|all] - Wipe DB and reload')
     print('/df edit or /df editmode - Toggle Edit Mode')
     print('/df hover or /df hoverbind - Toggle Hoverbind Mode')
     print('/df stacks - Toggle Stack Editor')
+    redprint('Trouble:')
+    print('/df inspect - Toggle Frame Inspector')
     print('/df safeboot - Disable all addons except Dragonflight')
+    print('/df reset [sense|profiles|all] - Wipe DB and reload')
     print('/gm - Open GM Help')
+    redprint('General:')
     print('/load ADDONNAME - Load addon')
     print('/unload ADDONNAME - Unload addon')
 end
@@ -91,6 +94,14 @@ _G.SlashCmdList['DRAGONFLIGHT'] = function(msg)
         end
     elseif msg == 'stacks' then
         ToggleStackPanel()
+    elseif msg == 'inspect' then
+        if DF.setups.frameinspect then
+            if DF.setups.frameinspect:IsShown() then
+                DF.setups.frameinspect:Hide()
+            else
+                DF.setups.frameinspect:Show()
+            end
+        end
     elseif msg == '' then
         DRAGONFLIGHTToggleGUI()
     else

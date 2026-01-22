@@ -205,5 +205,24 @@ function DF.data.formatTime(time, decimals)
     return string.format('%.' .. decimals .. 'f', rounded)
 end
 
+-- compareVersions: compares two semantic version strings
+-- v1 (string) - first version (e.g. '1.0.16')
+-- v2 (string) - second version (e.g. '1.0.15')
+-- returns: 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+function DF.data.compareVersions(v1, v2)
+    local v1parts = {}
+    for num in string.gfind(v1 or '', '%d+') do table.insert(v1parts, tonumber(num)) end
+    local v2parts = {}
+    for num in string.gfind(v2 or '', '%d+') do table.insert(v2parts, tonumber(num)) end
+
+    for i = 1, math.max(table.getn(v1parts), table.getn(v2parts)) do
+        local p1 = v1parts[i] or 0
+        local p2 = v2parts[i] or 0
+        if p1 > p2 then return 1 end
+        if p1 < p2 then return -1 end
+    end
+    return 0
+end
+
 export('a', import)
 export('s', check)

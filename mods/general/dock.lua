@@ -41,7 +41,7 @@ DF:NewDefaults('dock', {
     sector6Widget = {value = 'durability', metadata = {element = 'dropdown', category = 'Widgets', indexInCategory = 6, description = 'Sector 6 (bottom-right)', options = {'none', 'fps', 'exp', 'gold', 'zone', 'friends', 'guild', 'durability', 'ammo', 'bagspace', 'combat'}}}
 })
 
-DF:NewModule('dock', 1, function()
+DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
     local mainFrame = CreateFrame('Frame', 'DF_Dock', UIParent)
     mainFrame:SetFrameStrata'BACKGROUND'
     mainFrame:SetSize(300, 30)
@@ -82,22 +82,23 @@ DF:NewModule('dock', 1, function()
     end
 
     local leftFrame = CreateFrame('Frame', nil, mainFrame)
-    leftFrame:SetSize(90, 20)
+    leftFrame:SetSize(40, 20)
     leftFrame:SetPoint('RIGHT', mainFrame, 'LEFT', 3, 0)
     leftFrame:EnableMouse(true)
+    leftFrame:SetHitRectInsets(32, 0, 0, 0)
     local leftTex = leftFrame:CreateTexture(nil, 'BACKGROUND')
     leftTex:SetTexture(media['tex:interface:dock_metal.blp'])
     leftTex:SetAllPoints(leftFrame)
 
     local leftGlowTop = leftFrame:CreateTexture(nil, 'ARTWORK')
     leftGlowTop:SetTexture(media['tex:unitframes:barglow.blp'])
-    leftGlowTop:SetSize(45, 6)
+    leftGlowTop:SetSize(leftFrame:GetWidth() / 2, 6)
     leftGlowTop:SetPoint('BOTTOMRIGHT', leftFrame, 'TOPRIGHT', 0, -1)
     leftGlowTop:SetAlpha(0)
 
     local leftGlowBottom = leftFrame:CreateTexture(nil, 'ARTWORK')
     leftGlowBottom:SetTexture(media['tex:unitframes:barglow.blp'])
-    leftGlowBottom:SetSize(58, 6)
+    leftGlowBottom:SetSize(leftFrame:GetWidth() / 1.65, 6)
     leftGlowBottom:SetPoint('TOPRIGHT', leftFrame, 'BOTTOMRIGHT', 0, 1)
     leftGlowBottom:SetTexCoord(0, 1, 1, 0)
     leftGlowBottom:SetAlpha(0)
@@ -105,7 +106,7 @@ DF:NewModule('dock', 1, function()
     local leftBtn = CreateFrame('Button', nil, mainFrame)
     leftBtn:SetSize(25, 25)
     leftBtn:SetPoint('RIGHT', leftFrame, 'CENTER', 5, 0)
-    leftBtn:SetFrameLevel(mainFrame:GetFrameLevel() + 1)
+    leftBtn:SetFrameLevel(mainFrame:GetFrameLevel() + 2)
     local leftBtnTex = leftBtn:CreateTexture(nil, 'ARTWORK')
     leftBtnTex:SetTexture(media['tex:interface:dock_endcap.blp'])
     leftBtnTex:SetAllPoints(leftBtn)
@@ -114,10 +115,46 @@ DF:NewModule('dock', 1, function()
     leftBtnHighlight:SetAllPoints(leftBtn)
     leftBtnHighlight:SetBlendMode('ADD')
 
+    local musicSlider = CreateFrame('Slider', nil, leftFrame)
+    musicSlider:SetSize(70, 15)
+    musicSlider:SetPoint('RIGHT', leftFrame, 'RIGHT', -3, 0)
+    musicSlider:SetOrientation('HORIZONTAL')
+    musicSlider:SetThumbTexture('Interface\\Buttons\\UI-SliderBar-Button-Horizontal')
+    musicSlider:GetThumbTexture():SetSize(12, 16)
+    musicSlider:SetBackdrop({bgFile = 'Interface\\Buttons\\UI-SliderBar-Background', edgeFile = 'Interface\\Buttons\\UI-SliderBar-Border', tile = true, tileSize = 8, edgeSize = 8, insets = {left = 3, right = 3, top = 6, bottom = 6}})
+    musicSlider:SetMinMaxValues(0, 1)
+    musicSlider:SetValueStep(0.1)
+    musicSlider:SetValue(GetCVar('MusicVolume'))
+    musicSlider:Hide()
+    musicSlider:SetScript('OnValueChanged', function()
+        SetCVar('MusicVolume', this:GetValue())
+    end)
+
+    local musicLabel = DF.ui.Font(leftFrame, 9, 'Music', {1, 1, 1}, 'CENTER')
+    musicLabel:SetPoint('BOTTOM', musicSlider, 'TOP', 0, 2)
+    musicLabel:Hide()
+
+    local leftExpanded = false
+    leftBtn:SetScript('OnClick', function()
+        leftExpanded = not leftExpanded
+        local newWidth = leftExpanded and 160 or 40
+        leftFrame:SetWidth(newWidth)
+        leftGlowTop:SetWidth(newWidth / 2)
+        leftGlowBottom:SetWidth(newWidth / 1.65)
+        if leftExpanded then
+            musicSlider:Show()
+            musicLabel:Show()
+        else
+            musicSlider:Hide()
+            musicLabel:Hide()
+        end
+    end)
+
     local rightFrame = CreateFrame('Frame', nil, mainFrame)
-    rightFrame:SetSize(90, 20)
+    rightFrame:SetSize(40, 20)
     rightFrame:SetPoint('LEFT', mainFrame, 'RIGHT', -3, 0)
     rightFrame:EnableMouse(true)
+    rightFrame:SetHitRectInsets(0, 32, 0, 0)
     local rightTex = rightFrame:CreateTexture(nil, 'BACKGROUND')
     rightTex:SetTexture(media['tex:interface:dock_metal.blp'])
     rightTex:SetAllPoints(rightFrame)
@@ -125,13 +162,13 @@ DF:NewModule('dock', 1, function()
 
     local rightGlowTop = rightFrame:CreateTexture(nil, 'ARTWORK')
     rightGlowTop:SetTexture(media['tex:unitframes:barglow.blp'])
-    rightGlowTop:SetSize(45, 6)
+    rightGlowTop:SetSize(rightFrame:GetWidth() / 2, 6)
     rightGlowTop:SetPoint('BOTTOMLEFT', rightFrame, 'TOPLEFT', 0, -1)
     rightGlowTop:SetAlpha(0)
 
     local rightGlowBottom = rightFrame:CreateTexture(nil, 'ARTWORK')
     rightGlowBottom:SetTexture(media['tex:unitframes:barglow.blp'])
-    rightGlowBottom:SetSize(58, 6)
+    rightGlowBottom:SetSize(rightFrame:GetWidth() / 1.65, 6)
     rightGlowBottom:SetPoint('TOPLEFT', rightFrame, 'BOTTOMLEFT', 0, 1)
     rightGlowBottom:SetTexCoord(0, 1, 1, 0)
     rightGlowBottom:SetAlpha(0)
@@ -139,7 +176,7 @@ DF:NewModule('dock', 1, function()
     local rightBtn = CreateFrame('Button', nil, mainFrame)
     rightBtn:SetSize(25, 25)
     rightBtn:SetPoint('LEFT', rightFrame, 'CENTER', -5, 0)
-    rightBtn:SetFrameLevel(mainFrame:GetFrameLevel() + 1)
+    rightBtn:SetFrameLevel(mainFrame:GetFrameLevel() + 2)
     local rightBtnTex = rightBtn:CreateTexture(nil, 'ARTWORK')
     rightBtnTex:SetTexture(media['tex:interface:dock_endcap.blp'])
     rightBtnTex:SetAllPoints(rightBtn)
@@ -149,6 +186,41 @@ DF:NewModule('dock', 1, function()
     rightBtnHighlight:SetAllPoints(rightBtn)
     rightBtnHighlight:SetTexCoord(1, 0, 0, 1)
     rightBtnHighlight:SetBlendMode('ADD')
+
+    local soundSlider = CreateFrame('Slider', nil, rightFrame)
+    soundSlider:SetSize(70, 16)
+    soundSlider:SetPoint('LEFT', rightFrame, 'LEFT', 3, 0)
+    soundSlider:SetOrientation('HORIZONTAL')
+    soundSlider:SetThumbTexture('Interface\\Buttons\\UI-SliderBar-Button-Horizontal')
+    soundSlider:GetThumbTexture():SetSize(12, 16)
+    soundSlider:SetBackdrop({bgFile = 'Interface\\Buttons\\UI-SliderBar-Background', edgeFile = 'Interface\\Buttons\\UI-SliderBar-Border', tile = true, tileSize = 8, edgeSize = 8, insets = {left = 3, right = 3, top = 6, bottom = 6}})
+    soundSlider:SetMinMaxValues(0, 1)
+    soundSlider:SetValueStep(0.1)
+    soundSlider:SetValue(GetCVar('SoundVolume'))
+    soundSlider:Hide()
+    soundSlider:SetScript('OnValueChanged', function()
+        SetCVar('SoundVolume', this:GetValue())
+    end)
+
+    local soundLabel = DF.ui.Font(rightFrame, 9, 'Sound', {1, 1, 1}, 'CENTER')
+    soundLabel:SetPoint('BOTTOM', soundSlider, 'TOP', 0, 2)
+    soundLabel:Hide()
+
+    local rightExpanded = false
+    rightBtn:SetScript('OnClick', function()
+        rightExpanded = not rightExpanded
+        local newWidth = rightExpanded and 160 or 40
+        rightFrame:SetWidth(newWidth)
+        rightGlowTop:SetWidth(newWidth / 2)
+        rightGlowBottom:SetWidth(newWidth / 1.65)
+        if rightExpanded then
+            soundSlider:Show()
+            soundLabel:Show()
+        else
+            soundSlider:Hide()
+            soundLabel:Hide()
+        end
+    end)
 
     local glowManager = {
         activeCondition = nil,
@@ -553,25 +625,25 @@ DF:NewModule('dock', 1, function()
     eventFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
     eventFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     eventFrame:SetScript('OnEvent', function()
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'PLAYER_XP_UPDATE' then
+        if event == 'PLAYER_XP_UPDATE' then
             widget:EXP(sectors[2])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'PLAYER_MONEY' then
+        if event == 'PLAYER_MONEY' then
             widget:Gold(sectors[3])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'FRIENDLIST_UPDATE' then
-            -- widget:Friends(sectors[4])
+        if event == 'FRIENDLIST_UPDATE' then
+            widget:Friends(sectors[4])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'GUILD_ROSTER_UPDATE' or event == 'PLAYER_GUILD_UPDATE' then
-            -- widget:Guild(sectors[5])
+        if event == 'GUILD_ROSTER_UPDATE' or event == 'PLAYER_GUILD_UPDATE' then
+            widget:Guild(sectors[5])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'UPDATE_INVENTORY_DURABILITY' or (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') then
+        if event == 'UPDATE_INVENTORY_DURABILITY' or (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') then
             widget:Durability(sectors[6])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') or event == 'BAG_UPDATE' then
+        if (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') or event == 'BAG_UPDATE' then
             widget:Ammo(sectors[4])
         end
-        if event == 'PLAYER_ENTERING_WORLD' or event == 'BAG_UPDATE' then
+        if event == 'BAG_UPDATE' then
             widget:Bagspace(sectors[5])
         end
         if event == 'PLAYER_REGEN_DISABLED' then
@@ -582,7 +654,7 @@ DF:NewModule('dock', 1, function()
             if glowManager.combatGlowEnabled then
                 helpers.SetGlowCondition('combat', false)
             end
-        elseif event == 'PLAYER_UPDATE_RESTING' or event == 'PLAYER_ENTERING_WORLD' then
+        elseif event == 'PLAYER_UPDATE_RESTING' then
             if glowManager.restingGlowEnabled then
                 helpers.SetGlowCondition('resting', IsResting())
             end
@@ -623,10 +695,10 @@ DF:NewModule('dock', 1, function()
     callbacks.rightBtnScale = function(value) rightBtn:SetScale(value) end
     callbacks.font = function(value)
         local fontPath = media[value]
+        local size = DF.profile.dock.fontSize
         for i = 1, 6 do
             if sectors[i].text then
-                local _, size = sectors[i].text:GetFont()
-                sectors[i].text:SetFont(fontPath, size or 9)
+                sectors[i].text:SetFont(fontPath, size)
             end
         end
     end

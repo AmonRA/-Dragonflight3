@@ -1,5 +1,12 @@
 DRAGONFLIGHT()
 
+DF.tables['powercolors'] = {
+  [0] = {0.2, 0.4, 1}, -- mana
+  [1] = {1, 0, 0}, -- rage
+  [2] = {1, 0.5, 0.25}, -- focus
+  [3] = {1, 1, 0}, -- energy
+}
+
 DF.tables['distancecolors_melee'] = {
   {min = 0, max = 5, color = {0, 1, 0}}, -- green
   {min = 5, max = 10, color = {1, 1, 0}}, -- yellow

@@ -20,10 +20,11 @@ function init:DetectServer()
     local realmName = GetRealmName()
     if buildInfo > '1.12' and buildInfo < '2.0' then
         if realmName == 'Nordanaar' or realmName == 'Ambershire' or realmName == "Tel'Abim" then
-            return 'turtle'
+            DF.others.server = 'turtle'
+            return
         end
     end
-    return 'vanilla'
+    DF.others.server = 'vanilla'
 end
 
 function init:ApplyDefaults(profileName)
@@ -208,7 +209,7 @@ end
 function init:InitDF()
     if not DF.others.syncActive then return end
 
-    DF.others.server = init:DetectServer()
+    init:DetectServer()
 
     -- initialize saved variable structure if first time
     DF_Profiles.meta = DF_Profiles.meta or {}

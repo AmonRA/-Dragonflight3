@@ -1,4 +1,5 @@
 DRAGONFLIGHT()
+-- i will add some more features so i keep this seperated from init lua; for now its just a flag;
 
 local detectList = {'pfQuest'}
 

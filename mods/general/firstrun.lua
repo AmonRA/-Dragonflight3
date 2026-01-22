@@ -1,5 +1,4 @@
 DRAGONFLIGHT()
-if not dependency('UnitXP') then return end
 
 DF:NewDefaults('firstrun', {
     enabled = {value = true},

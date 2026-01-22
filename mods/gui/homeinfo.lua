@@ -24,6 +24,34 @@ DF:NewModule('gui-homeinfo', 2, function()
     local githubText = DF.ui.Font(homePanel, 10, info.github, {1, 1, 1})
     githubText:SetPoint('TOP', githubLabel, 'BOTTOM', 0, -6)
 
+    local donateBtn = DF.ui.Button(homePanel, 'Donate', 80, 22)
+    donateBtn:SetPoint('TOP', githubText, 'BOTTOM', 0, -40)
+
+    local donateFrame = DF.ui.CreatePaperDollFrame('DF_DonateFrame', homePanel, 300, 150, 2)
+    donateFrame:SetPoint('CENTER', setup.mainframe, 'CENTER', 0, 0)
+    donateFrame:Hide()
+
+    local donateEditBox = CreateFrame('EditBox', nil, donateFrame)
+    donateEditBox:SetWidth(260)
+    donateEditBox:SetHeight(30)
+    donateEditBox:SetPoint('TOP', donateFrame, 'TOP', 0, -30)
+    donateEditBox:SetBackdrop({bgFile = 'Interface\\Tooltips\\UI-Tooltip-Background', edgeFile = 'Interface\\Tooltips\\UI-Tooltip-Border', tile = true, tileSize = 8, edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}})
+    donateEditBox:SetBackdropColor(0.1, 0.1, 0.1, 1)
+    donateEditBox:SetFont('Fonts\\FRIZQT__.TTF', 10, 'OUTLINE')
+    donateEditBox:SetTextColor(1, 1, 1)
+    donateEditBox:SetAutoFocus(false)
+    donateEditBox:SetText(info.kofi)
+    donateEditBox:SetScript('OnEscapePressed', function() this:ClearFocus() end)
+
+    local donateLink = DF.ui.Font(donateFrame, 10, 'Thanks alot guys. Guzruul. :)', {0.5, 0.8, 1})
+    donateLink:SetPoint('TOP', donateEditBox, 'BOTTOM', 0, -15)
+
+    local closeBtn = DF.ui.Button(donateFrame, 'Close', 80, 22)
+    closeBtn:SetPoint('TOP', donateLink, 'BOTTOM', 0, -15)
+    closeBtn:SetScript('OnClick', function() donateFrame:Hide() end)
+
+    donateBtn:SetScript('OnClick', function() donateFrame:Show() end)
+
     DF.timers.every(1, function()
         timeText:SetText(DF.date.currentTimeWithSeconds)
         dateText:SetText(DF.date.currentDate)

@@ -37,6 +37,7 @@
     <Include file="general\editmode.lua"/>
     <Include file="general\error.lua"/>
     <Include file="general\firstrun.lua"/>
+    <Include file="general\framerate.lua"/>
     <Include file="general\hoverbind.lua"/>
     <Include file="general\itemcompare.lua"/>
     <Include file="general\nocontrol.lua"/>
@@ -45,6 +46,7 @@
     <Include file="general\sync.lua"/>
     <Include file="general\tweaks.lua"/>
     <Include file="general\uiparent.lua"/>
+    <Include file="general\whatsnew.lua"/>
 
     <!-- GUI -->
     <Include file="gui\base.lua"/>
@@ -92,6 +94,9 @@
 
     <!-- TOOLTIP -->
     <Include file="tooltip\tooltip.lua"/>
+
+    <!-- TROUBLE -->
+    <Include file="trouble\frameinspect.lua"/>
 
     <!-- UNITFRAMES -->
     <Include file="unitframes\unitframes-tools.lua"/>

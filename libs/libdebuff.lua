@@ -1,6 +1,8 @@
 DRAGONFLIGHT()
 
--- credit to shagu v1.0
+-- credit to shagu v1.1
+-- 1.1: switched over to superwow GUID debuffs for unique debufftimers on nameplates
+
 local libdebuff = CreateFrame('Frame', 'DF_DebuffScanner', UIParent)
 local scanner = DF.lib.libtipscan:GetScanner('libdebuff')
 local _, playerClass = UnitClass('player')
@@ -15,6 +17,7 @@ local REMOVE_PENDING = {
 }
 
 libdebuff.debuffs = {}
+libdebuff.debuffsByGuid = {}
 libdebuff.pending = {}
 libdebuff.queueFrame = CreateFrame('Frame')
 libdebuff.queueFrame.queue = {}
@@ -105,7 +108,7 @@ function libdebuff:UpdateDuration(unit, level, effect, duration)
     end
 end
 
-function libdebuff:AddPending(unit, level, effect, duration, caster)
+function libdebuff:AddPending(unit, level, effect, duration, caster, guid)
     if not unit or not effect or duration <= 0 then return end
     if not DF.tables['debuffs'] or not DF.tables['debuffs'][effect] then return end
     if self.pending[3] then return end
@@ -115,6 +118,7 @@ function libdebuff:AddPending(unit, level, effect, duration, caster)
     self.pending[3] = effect
     self.pending[4] = duration
     self.pending[5] = caster
+    self.pending[6] = guid
 
     self:QueueFunction(function() libdebuff:PersistPending() end)
 end
@@ -125,13 +129,14 @@ function libdebuff:RemovePending()
     self.pending[3] = nil
     self.pending[4] = nil
     self.pending[5] = nil
+    self.pending[6] = nil
 end
 
 function libdebuff:PersistPending(effect)
     if not libdebuff.pending[3] then return end
 
     if libdebuff.pending[3] == effect or (effect == nil and libdebuff.pending[3]) then
-        libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], libdebuff.pending[3], libdebuff.pending[4], libdebuff.pending[5])
+        libdebuff:AddEffect(libdebuff.pending[1], libdebuff.pending[2], libdebuff.pending[3], libdebuff.pending[4], libdebuff.pending[5], libdebuff.pending[6])
     end
 
     libdebuff:RemovePending()
@@ -143,7 +148,7 @@ function libdebuff:RevertLastAction()
     lastSpell.startOld = nil
 end
 
-function libdebuff:AddEffect(unit, level, effect, duration, caster)
+function libdebuff:AddEffect(unit, level, effect, duration, caster, guid)
     if not unit or not effect then return end
     level = level or 0
 
@@ -158,6 +163,15 @@ function libdebuff:AddEffect(unit, level, effect, duration, caster)
     self.debuffs[unit][level][effect].start = GetTime()
     self.debuffs[unit][level][effect].duration = duration or self:GetDuration(effect)
     self.debuffs[unit][level][effect].caster = caster
+
+    if guid then
+        if not self.debuffsByGuid[guid] then self.debuffsByGuid[guid] = {} end
+        if not self.debuffsByGuid[guid][effect] then self.debuffsByGuid[guid][effect] = {} end
+        self.debuffsByGuid[guid][effect].effect = effect
+        self.debuffsByGuid[guid][effect].start = GetTime()
+        self.debuffsByGuid[guid][effect].duration = duration or self:GetDuration(effect)
+        self.debuffsByGuid[guid][effect].caster = caster
+    end
 end
 
 libdebuff:RegisterEvent('CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE')
@@ -200,6 +214,7 @@ libdebuff:SetScript('OnEvent', function()
         end
 
     elseif (event == 'UNIT_AURA' and arg1 == 'target') or event == 'PLAYER_TARGET_CHANGED' then
+        local _, targetGuid = UnitExists('target')
         for i = 1, 16 do
             local effect, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff('target', i)
             if not texture then return end
@@ -208,7 +223,7 @@ libdebuff:SetScript('OnEvent', function()
                 local level = UnitLevel('target') or 0
                 local unit = UnitName('target')
                 if not libdebuff.debuffs[unit] or not libdebuff.debuffs[unit][level] or not libdebuff.debuffs[unit][level][effect] then
-                    libdebuff:AddEffect(unit, level, effect)
+                    libdebuff:AddEffect(unit, level, effect, nil, nil, targetGuid)
                 end
             end
         end
@@ -233,13 +248,15 @@ end)
 DF.hooks.HookSecureFunc('CastSpell', function(id, bookType)
     local effect, rank = DF.lib.libspell:GetSpellInfo(id, bookType)
     local duration = libdebuff:GetDuration(effect, rank)
-    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player')
+    local _, guid = UnitExists('target')
+    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player', guid)
 end)
 
 DF.hooks.HookSecureFunc('CastSpellByName', function(spellName, target)
     local effect, rank = DF.lib.libspell:GetSpellInfo(spellName)
     local duration = libdebuff:GetDuration(effect, rank)
-    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player')
+    local _, guid = UnitExists('target')
+    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player', guid)
 end)
 
 DF.hooks.HookSecureFunc('UseAction', function(slot, target, button)
@@ -247,7 +264,8 @@ DF.hooks.HookSecureFunc('UseAction', function(slot, target, button)
     scanner:SetAction(slot)
     local effect, rank = scanner:GetLine(1)
     local duration = libdebuff:GetDuration(effect, rank)
-    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player')
+    local _, guid = UnitExists('target')
+    libdebuff:AddPending(UnitName('target'), UnitLevel('target'), effect, duration, 'player', guid)
 end)
 
 function libdebuff:UnitDebuff(unit, id)
@@ -268,6 +286,32 @@ function libdebuff:UnitDebuff(unit, id)
     local data = self.debuffs[unitName] and self.debuffs[unitName][unitLevel]
     data = data or self.debuffs[unitName] and self.debuffs[unitName][0]
 
+    if data and data[effect] then
+        if data[effect].duration and data[effect].start and data[effect].duration + data[effect].start > GetTime() then
+            duration = data[effect].duration
+            timeleft = duration + data[effect].start - GetTime()
+            caster = data[effect].caster
+        else
+            data[effect] = nil
+        end
+    end
+
+    return effect, rank, texture, stacks, dtype, duration, timeleft, caster
+end
+
+function libdebuff:UnitDebuffByGuid(guid, id)
+    local texture, stacks, dtype = UnitDebuff(guid, id)
+    local duration, timeleft = nil, -1
+    local rank = nil
+    local caster = nil
+    local effect
+
+    if texture then
+        scanner:SetUnitDebuff(guid, id)
+        effect = scanner:GetLine(1) or ''
+    end
+
+    local data = self.debuffsByGuid[guid]
     if data and data[effect] then
         if data[effect].duration and data[effect].start and data[effect].duration + data[effect].start > GetTime() then
             duration = data[effect].duration

@@ -10,6 +10,7 @@ DF:NewDefaults('nameplates', {
     healthbarTexture = {value = 'Dragonflight', metadata = {element = 'dropdown', category = 'Appearance', indexInCategory = 1, description = 'Healthbar texture', options = {'Default', 'Dragonflight'}}},
     clickThrough = {value = false, metadata = {element = 'checkbox', category = 'Appearance', indexInCategory = 2, description = 'Click through nameplates (disable mouse)'}},
     hideFriendlyNpcs = {value = false, metadata = {element = 'checkbox', category = 'Appearance', indexInCategory = 3, description = 'Hide friendly NPCs - EXPERIMENTAL'}},
+    onlyShowPvpPlayers = {value = false, metadata = {element = 'checkbox', category = 'Appearance', indexInCategory = 4, description = 'Only show enemy PVP-flagged players (hides all other players)'}},
     overlapNameplates = {value = false, metadata = {element = 'checkbox', category = 'Layout & Size', indexInCategory = 1, description = 'Stack nameplates on top of each other (removes collision)'}},
     healthbarWidth = {value = 100, metadata = {element = 'slider', category = 'Layout & Size', indexInCategory = 2, description = 'Healthbar width', min = 50, max = 200, stepSize = 1}},
     healthbarHeight = {value = 18, metadata = {element = 'slider', category = 'Layout & Size', indexInCategory = 3, description = 'Healthbar height', min = 5, max = 30, stepSize = 1}},
@@ -65,6 +66,8 @@ DF:NewDefaults('nameplates', {
 
 DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
     local plates = DF.setups.plates
+
+    plates:Initialize()
 
     local scanner = CreateFrame('Frame')
     scanner:SetScript('OnUpdate', function()
@@ -510,6 +513,10 @@ DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
 
     callbacks.hideFriendlyNpcs = function(value)
         plates.hideFriendlyNpcs = value
+    end
+
+    callbacks.onlyShowPvpPlayers = function(value)
+        plates.onlyShowPvpPlayers = value
     end
 
     -- expose to tools SetupOnUpdate

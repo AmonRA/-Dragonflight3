@@ -1,5 +1,6 @@
 DRAGONFLIGHT()
 
+-- 1.1: full transition from pfui to superwow detection
 local libcast = {}
 local player = UnitName('player')
 local castframe = CreateFrame('Frame')

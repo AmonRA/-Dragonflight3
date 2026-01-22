@@ -189,6 +189,11 @@ function plates:CreateNameplate(frame) -- v2
         local icon = btn:CreateTexture(nil, 'ARTWORK')
         icon:SetAllPoints(btn)
 
+        local timer = btn:CreateFontString(nil, 'OVERLAY')
+        timer:SetFont(media[DF.profile.nameplates.textFont] or 'Fonts\\FRIZQT__.TTF', 9, 'OUTLINE')
+        timer:SetPoint('CENTER', btn, 'CENTER', 0, 0)
+        timer:SetText('')
+
         local row = math.floor((i - 1) / 5)
         local col = math.mod(i - 1, 5)
 
@@ -201,9 +206,38 @@ function plates:CreateNameplate(frame) -- v2
         end
 
         btn.icon = icon
+        btn.timer = timer
         btn:Hide()
         debuffs[i] = btn
     end
+
+    local raidIcon = overlay:CreateTexture(nil, 'OVERLAY')
+    raidIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+    raidIcon:SetSize(16, 16)
+    raidIcon:SetPoint('RIGHT', healthbar, 'LEFT', -2, 20)
+    raidIcon:Hide()
+
+    local castbar = CreateFrame('StatusBar', nil, overlay)
+    castbar:SetSize(hbWidth, 8)
+    castbar:SetPoint('TOP', healthbar, 'BOTTOM', 0, -2)
+    castbar:SetStatusBarTexture('Interface\\Buttons\\WHITE8X8')
+    castbar:SetStatusBarColor(1, 0.7, 0, 1)
+    castbar:Hide()
+
+    local castbarBg = castbar:CreateTexture(nil, 'BACKGROUND')
+    castbarBg:SetAllPoints(castbar)
+    castbarBg:SetTexture('Interface\\Buttons\\WHITE8X8')
+    castbarBg:SetVertexColor(0, 0, 0, 0.5)
+
+    local castbarText = castbar:CreateFontString(nil, 'OVERLAY')
+    castbarText:SetFont(media[DF.profile.nameplates.textFont] or 'Fonts\\FRIZQT__.TTF', 8, 'OUTLINE')
+    castbarText:SetPoint('CENTER', castbar, 'CENTER', 0, 0)
+    castbarText:SetText('')
+
+    local castbarTime = castbar:CreateFontString(nil, 'OVERLAY')
+    castbarTime:SetFont(media[DF.profile.nameplates.textFont] or 'Fonts\\FRIZQT__.TTF', 8, 'OUTLINE')
+    castbarTime:SetPoint('RIGHT', castbar, 'RIGHT', -2, 0)
+    castbarTime:SetText('')
 
     -- LEVEL HIDE
     --origLevel:Hide() -- using SetWidth instead - more efficient
@@ -231,11 +265,61 @@ function plates:CreateNameplate(frame) -- v2
         nameText = nameText,
         levelText = levelText,
         hpText = hpText,
+        raidIcon = raidIcon,
+        castbar = castbar,
+        castbarBg = castbarBg,
+        castbarText = castbarText,
+        castbarTime = castbarTime,
+        castStart = 0,
+        castDuration = 0,
         lastValue = -1,
         lastWidth = 0,
         lastGuid = guid,
         debuffs = debuffs,
     }
+end
+
+function plates:UpdateRaidIcon(frame, unit)
+    local index = GetRaidTargetIndex(unit)
+    if index and index > 0 then
+        local left = math.mod(index - 1, 4) * 0.25
+        local right = left + 0.25
+        local top = math.floor((index - 1) / 4) * 0.25
+        local bottom = top + 0.25
+        frame.custom.raidIcon:SetTexCoord(left, right, top, bottom)
+        frame.custom.raidIcon:Show()
+    else
+        frame.custom.raidIcon:Hide()
+    end
+end
+
+function plates:OnCastEvent()
+    local casterGuid = arg1
+    local eventType = arg3
+    local spellId = arg4
+    local duration = arg5
+
+    for frame in pairs(plates.registry) do
+        local currentGuid = frame:GetName(1)
+        if currentGuid == casterGuid then
+            if eventType == 'START' or eventType == 'CHANNEL' then
+                local spellName = SpellInfo(spellId)
+                if spellName and duration and duration > 0 then
+                    frame.custom.castStart = GetTime()
+                    frame.custom.castDuration = duration / 1000
+                    frame.custom.castbar:SetMinMaxValues(0, frame.custom.castDuration)
+                    frame.custom.castbar:SetValue(0)
+                    frame.custom.castbarText:SetText(spellName)
+                    frame.custom.castbar:Show()
+                end
+            elseif eventType == 'CAST' or eventType == 'FAIL' then
+                frame.custom.castbar:Hide()
+                frame.custom.castStart = 0
+                frame.custom.castDuration = 0
+            end
+            break
+        end
+    end
 end
 
 function plates:IsNamePlate(frame)
@@ -319,6 +403,7 @@ function plates:SetupOnUpdate(frame) -- v1
 
     frame.custom.frame:SetScript('OnUpdate', function() -- stupid design double setscrpt, but idk for now, will rewrite anyways
         -- hide friendly NPCs check
+        -- // HIDE FRIENDLY NPC - produces flickering on nameplates that come in, need pre scan of some sort.
         local currentGuid = frame:GetName(1)
         if plates.hideFriendlyNpcs and currentGuid then
             if not UnitIsPlayer(currentGuid) then
@@ -329,6 +414,19 @@ function plates:SetupOnUpdate(frame) -- v1
                 end
             end
         end
+
+        -- only show pvp players check
+        if plates.onlyShowPvpPlayers and currentGuid then
+            if UnitIsPlayer(currentGuid) then
+                local isEnemy = UnitCanAttack('player', currentGuid)
+                local isPvP = UnitIsPVP(currentGuid)
+                if not (isEnemy and isPvP) then
+                    frame:Hide()
+                    return
+                end
+            end
+        end
+
         frame:Show()
 
         -- overlay parented to WorldFrame for overlap feature, must sync alpha manually
@@ -487,9 +585,14 @@ function plates:SetupOnUpdate(frame) -- v1
         -- debuff updates
         if currentGuid and plates.showDebuffs then
             for i = 1, 16 do
-                local effect, rank, texture, stacks, dtype, duration, timeleft, caster = DF.lib.libdebuff:UnitDebuff(currentGuid, i)
+                local effect, rank, texture, stacks, dtype, duration, timeleft, caster = DF.lib.libdebuff:UnitDebuffByGuid(currentGuid, i)
                 if texture then
                     frame.custom.debuffs[i].icon:SetTexture(texture)
+                    if timeleft and timeleft > 0 then
+                        frame.custom.debuffs[i].timer:SetText(string.format('%.0f', timeleft))
+                    else
+                        frame.custom.debuffs[i].timer:SetText('')
+                    end
                     frame.custom.debuffs[i]:Show()
                 else
                     frame.custom.debuffs[i]:Hide()
@@ -498,6 +601,25 @@ function plates:SetupOnUpdate(frame) -- v1
         else
             for i = 1, 16 do
                 frame.custom.debuffs[i]:Hide()
+            end
+        end
+
+        -- raid icon update
+        if currentGuid then
+            plates:UpdateRaidIcon(frame, currentGuid)
+        end
+
+        -- castbar update
+        if frame.custom.castStart > 0 and frame.custom.castDuration > 0 then
+            local elapsed = GetTime() - frame.custom.castStart
+            if elapsed <= frame.custom.castDuration then
+                frame.custom.castbar:SetValue(elapsed)
+                local remaining = frame.custom.castDuration - elapsed
+                frame.custom.castbarTime:SetText(string.format('%.1f', remaining))
+            else
+                frame.custom.castbar:Hide()
+                frame.custom.castStart = 0
+                frame.custom.castDuration = 0
             end
         end
 
@@ -624,6 +746,14 @@ function plates:ScanNamePlates() -- v1 continuous scan for now, will improve per
         end
         plates.lastChildCount = count
     end
+end
+
+function plates:Initialize()
+    local eventFrame = CreateFrame('Frame')
+    eventFrame:RegisterEvent('UNIT_CASTEVENT')
+    eventFrame:SetScript('OnEvent', function()
+        plates:OnCastEvent()
+    end)
 end
 
 -- expose

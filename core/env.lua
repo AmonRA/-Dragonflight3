@@ -26,6 +26,7 @@ local ENV = setmetatable({
             patch = GetAddOnMetadata(addonName, 'X-Patch'),
             author = GetAddOnMetadata(addonName, 'Author'),
             github = 'github.com/Flaxic-LUA/-Dragonflight3',
+            kofi = 'https://ko-fi.com/guzruul',
             debugger = '!!!Debugger'
         },
         media = setmetatable({

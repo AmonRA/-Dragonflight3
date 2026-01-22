@@ -119,9 +119,8 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
 
     tinsert(UISpecialFrames, 'DF_CharacterCustomBg')
 
-    local originalToggleCharacter = _G.ToggleCharacter
-    _G.ToggleCharacter = function(tab)
-        originalToggleCharacter(tab)
+    DF.hooks.Hook('ToggleCharacter', function(tab)
+        DF.hooks.registry[_G]['ToggleCharacter'](tab)
         if CharacterFrame:IsVisible() and customBg.Tabs then
             local tabIndex = nil
             local hasPet = HasPetUI()
@@ -143,7 +142,17 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
                 selectedTab:GetScript('OnClick')()
             end
         end
-    end
+    end)
+
+    DF.hooks.Hook('PaperDollItemSlotButton_OnClick', function(button, ignoreModifiers)
+        if button == 'LeftButton' and IsShiftKeyDown() and not ignoreModifiers then
+            if getglobal('DF_IntelliSense') and getglobal('DF_IntelliSense'):IsShown() then
+                getglobal('DF_IntelliSense'):Insert(GetInventoryItemLink('player', this:GetID()))
+                return
+            end
+        end
+        DF.hooks.registry[_G]['PaperDollItemSlotButton_OnClick'](button, ignoreModifiers)
+    end)
 
     local slots = {'Head', 'Neck', 'Shoulder', 'Shirt', 'Chest', 'Waist', 'Legs', 'Feet', 'Wrist', 'Hands', 'Finger0', 'Finger1', 'Trinket0', 'Trinket1', 'Back', 'MainHand', 'SecondaryHand', 'Ranged', 'Tabard', 'Ammo'}
     local slotButtons = {}
@@ -209,4 +218,5 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
     end
 
     DF:NewCallbacks('characterframe', callbacks)
+
 end)

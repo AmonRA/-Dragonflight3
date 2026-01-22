@@ -2,12 +2,9 @@ DRAGONFLIGHT()
 
 -- dependent on: -Dragonflight3-SYNC
 -- sync gives dragonflight a custom hidden channel for communication, we can
--- send update notify, do polls, sent admin message to all or single users
+-- send update notify, sent admin message to all or single users
 -- and see usercount online on realm. we only want to cache names for troubleshooting
 -- and future features maybe, otherwise not invade peoples privacy.
-
--- TODO pending polls to protect against showing up during combat
--- we wont do any polls for now could kill a hardcore player :(
 
 local syncFrame = CreateFrame('Frame')
 local CHANNEL_NAME = 'DragonflightSync'
@@ -19,10 +16,7 @@ local retryTimerId = nil
 local isInChannel = false
 local infoResponses = {}
 local infoCountTimer = nil
-local pollResponses = {}
-local activePollQuestion = ''
 local debugMode = false
-local pendingPoll = nil
 
 -- filter messages right away, due to "Joined Channel" and other
 -- messages coming in before SYNC_READY
@@ -175,34 +169,6 @@ function syncFrame:SendPlayerInfo()
     end
 end
 
-function syncFrame:ShowPendingPoll()
-    if not pendingPoll then return end
-    if UnitAffectingCombat('player') then return end
-
-    local btn1, btn2, question = pendingPoll.btn1, pendingPoll.btn2, pendingPoll.question
-    pendingPoll = nil
-
-    DF.ui.StaticPopup_Show(question, btn1, function()
-        for i = 1, 10 do
-            local id, name = GetChannelName(i)
-            if name and string.find(name, CHANNEL_NAME) then
-                SendChatMessage('#POLLRESPONSE-' .. btn1, 'CHANNEL', nil, id)
-                break
-            end
-        end
-        print('|cffff6600[Admin Message]|r: Thank you for participating!')
-    end, btn2, function()
-        for i = 1, 10 do
-            local id, name = GetChannelName(i)
-            if name and string.find(name, CHANNEL_NAME) then
-                SendChatMessage('#POLLRESPONSE-' .. btn2, 'CHANNEL', nil, id)
-                break
-            end
-        end
-        print('|cffff6600[Admin Message]|r: Thank you for participating!')
-    end, nil, nil, 160, 'Live Admin Poll')
-end
-
 function syncFrame:OnChatMsgChannelDetected()
     if arg9 and string.find(arg9, CHANNEL_NAME) then
         -- version broadcast detection
@@ -216,8 +182,6 @@ function syncFrame:OnChatMsgChannelDetected()
             print('|cffffcc00#ADMIN-INFO|r - Count online users')
             print('|cffffcc00#ADMIN-PUSHPRINT msg|r - Broadcast to all')
             print('|cffffcc00#ADMIN-PUSHPRINT-user msg|r - Send to specific user')
-            print('|cffffcc00#ADMIN-POLL [opt1|opt2] question|r - Start poll')
-            print('|cffffcc00#ADMIN-POLLSTATS|r - View poll results')
             print('|cffffcc00#ADMIN-DEBUG on/off|r - Toggle debug mode')
         end
         -- player info confirmation
@@ -281,74 +245,6 @@ function syncFrame:OnChatMsgChannelDetected()
                 end
             end
         end
-        -- admin initiates poll
-        if string.find(arg1, '#ADMIN%-POLL ') and arg2 == a() and isAdmin and s() then
-            local pollData = DF.lua.match(arg1, '#ADMIN%-POLL (.+)')
-            if pollData then
-                local btn1, btn2, question = DF.lua.match(pollData, '%[([^|]+)|([^%]]+)%]%s*(.+)')
-                if not btn1 or not btn2 or not question then
-                    redprint('[Admin] Invalid poll format. Use: [option1|option2] question')
-                    return
-                end
-                pollResponses = {}
-                activePollQuestion = pollData
-                for i = 1, 10 do
-                    local id, name = GetChannelName(i)
-                    if name and string.find(name, CHANNEL_NAME) then
-                        SendChatMessage('#POLL ' .. pollData, 'CHANNEL', nil, id)
-                        break
-                    end
-                end
-                print('|cff00ff00[Admin] Poll started: ' .. pollData .. '|r')
-            end
-        end
-        -- users receive poll
-        if string.find(arg1, '#POLL ') and not isAdmin and arg2 == a() then
-            if debugMode then return end
-            local pollData = DF.lua.match(arg1, '#POLL (.+)')
-            if pollData then
-                local btn1, btn2, question = DF.lua.match(pollData, '%[([^|]+)|([^%]]+)%]%s*(.+)')
-                if btn1 and btn2 and question then
-                    btn2 = gsub(btn2, '|', '')
-                    pendingPoll = {btn1 = btn1, btn2 = btn2, question = question}
-                    self:ShowPendingPoll()
-                end
-            end
-        end
-        -- collect poll responses
-        if string.find(arg1, '#POLLRESPONSE%-') and isAdmin and s() then
-            local response = DF.lua.match(arg1, '#POLLRESPONSE%-(.+)')
-            if response then
-                pollResponses[arg2] = response
-            end
-        end
-        -- admin views poll stats
-        if string.find(arg1, '#ADMIN%-POLLSTATS') and arg2 == a() and isAdmin and s() then
-            if activePollQuestion == '' then
-                print('|cffff0000[Admin] No active poll running|r')
-            else
-                local btn1, btn2 = DF.lua.match(activePollQuestion, '%[([^|]+)|([^%]]+)%]')
-                if btn1 and btn2 then
-                    btn2 = gsub(btn2, '|', '')
-
-                    local responseCounts = {[btn1] = 0, [btn2] = 0}
-                    for name, response in pairs(pollResponses) do
-                        responseCounts[response] = (responseCounts[response] or 0) + 1
-                    end
-
-                    print('|cff00ff00[Poll Results]|r')
-                    print('Question: ' .. activePollQuestion)
-                    for response, count in pairs(responseCounts) do
-                        local names = ''
-                        for name, resp in pairs(pollResponses) do
-                            if resp == response then names = names .. name .. ', ' end
-                        end
-                        print('|cff00ff00' .. response .. ': ' .. count .. '|r - ' .. names)
-                    end
-                    print('Total: ' .. (responseCounts[btn1] + responseCounts[btn2]))
-                end
-            end
-        end
         -- admin toggle debug mode
         if string.find(arg1, '#ADMIN%-DEBUG') and arg2 == a() then
             local mode = DF.lua.match(arg1, '#ADMIN%-DEBUG%s*(.+)')
@@ -403,7 +299,6 @@ syncFrame:RegisterEvent('SYNC_READY')
 syncFrame:RegisterEvent('CHAT_MSG_CHANNEL')
 syncFrame:RegisterEvent('CHAT_MSG_ADDON')
 syncFrame:RegisterEvent('PARTY_MEMBERS_CHANGED')
-syncFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
 syncFrame:SetScript('OnEvent', function()
     if event == 'SYNC_READY' then
         syncFrame:UnregisterEvent('SYNC_READY')
@@ -421,10 +316,6 @@ syncFrame:SetScript('OnEvent', function()
 
     if event == 'PARTY_MEMBERS_CHANGED' then
         syncFrame:OnPartyMembersChanged()
-    end
-
-    if event == 'PLAYER_REGEN_ENABLED' then
-        syncFrame:ShowPendingPoll()
     end
 end)
 
