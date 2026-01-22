@@ -15,13 +15,14 @@ DF:NewDefaults('gui-generator', {
 
 DF:NewModule('gui-generator', 3, function()
     local setup = {
-        paddingLeft = 40,
+        paddingLeft = 10,
         paddingRight = 40,
         spacingHeader = 40,
         spacingCheckbox = 40,
         spacingDropdown = 40,
         spacingColorpicker = 40,
         initialYOffset = -70,
+        optionIndent = 10,
     }
 
     function setup:CollectMetadata()
@@ -192,8 +193,15 @@ DF:NewModule('gui-generator', 3, function()
                     local moduleName = element.moduleName
 
                     if element.category and element.category ~= lastCategory then
+                        local headerBg = panel:CreateTexture(nil, 'BACKGROUND')
+                        headerBg:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                        headerBg:SetPoint('TOPRIGHT', panel, 'TOP', -setup.paddingRight, yOffset)
+                        headerBg:SetHeight(20)
+                        headerBg:SetTexture('Interface\\Buttons\\WHITE8X8')
+                        headerBg:SetGradientAlpha('HORIZONTAL', 0, 0, 0, 1, 0, 0, 0, 0)
+
                         local header = DF.ui.Font(panel, 13, element.category, {1, 0.82, 0}, 'LEFT')
-                        header:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                        header:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft + 5, yOffset - 3)
                         yOffset = yOffset - setup.spacingHeader
                         lastCategory = element.category
                     end
@@ -204,7 +212,7 @@ DF:NewModule('gui-generator', 3, function()
                                 local dep = element.dependency
 
                                 local desc = DF.ui.Font(panel, 12, element.description, {.9, .9, .9}, 'LEFT')
-                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft + setup.optionIndent, yOffset)
 
                                 local checkbox = DF.ui.Checkbox(panel, setup:FormatKeyName(key))
                                 checkbox:SetPoint('TOPRIGHT', panel, 'TOPRIGHT', -setup.paddingRight, yOffset)
@@ -257,7 +265,7 @@ DF:NewModule('gui-generator', 3, function()
                                 local dep = element.dependency
 
                                 local desc = DF.ui.Font(panel, 12, element.description, {.9, .9, .9}, 'LEFT')
-                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft + setup.optionIndent, yOffset)
 
                                 local slider = DF.ui.Slider(panel, nil, setup:FormatKeyName(key), element.min, element.max, element.stepSize, '%.0f')
                                 slider:SetPoint('TOPRIGHT', panel, 'TOPRIGHT', -setup.paddingRight, yOffset)
@@ -323,7 +331,7 @@ DF:NewModule('gui-generator', 3, function()
                                 local dep = element.dependency
 
                                 local desc = DF.ui.Font(panel, 12, element.description, {.9, .9, .9}, 'LEFT')
-                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft + setup.optionIndent, yOffset)
 
                                 local dropdown = DF.ui.Dropdown(panel, setup:FormatKeyName(key))
                                 dropdown:SetPoint('TOPRIGHT', panel, 'TOPRIGHT', -setup.paddingRight, yOffset)
@@ -398,7 +406,7 @@ DF:NewModule('gui-generator', 3, function()
                                 local dep = element.dependency
 
                                 local desc = DF.ui.Font(panel, 12, element.description, {.9, .9, .9}, 'LEFT')
-                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft, yOffset)
+                                desc:SetPoint('TOPLEFT', panel, 'TOPLEFT', setup.paddingLeft + setup.optionIndent, yOffset)
 
                                 local colorpicker = DF.ui.ColorPicker(panel, DF.profile[mod][key], function(color)
                                     DF:SetConfig(mod, key, color)

@@ -12,7 +12,7 @@ _G.DF_PlayerCache = {}      -- name/class mapping data
 -- saved per-character vars
 _G.DF_CharData = {}         -- data like stackbuttons etc.
 
--- core
+-- main
 DF.tables = {}
 DF.defaults = {}
 DF.modules = {}
