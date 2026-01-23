@@ -12,8 +12,8 @@ DF:NewDefaults('cooldowns', {
     textFont = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = 'General', indexInCategory = 3, description = 'Cooldown text font', options = media.fonts, dependency = {key = 'showText', state = true}}},
     color0to10s = {value = {1, 0, 0}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 4, description = 'Color for cooldowns 0-10 seconds', dependency = {key = 'showText', state = true}}},
     color10to59s = {value = {1, 1, 0}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 5, description = 'Color for cooldowns 10-59 seconds', dependency = {key = 'showText', state = true}}},
-    color1to5m = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 6, description = 'Color for cooldowns 1-5 minutes', dependency = {key = 'showText', state = true}}},
-    color5mPlus = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 7, description = 'Color for cooldowns 5+ minutes', dependency = {key = 'showText', state = true}}},
+    color1to5m = {value = {0.4, 1, 0.1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 6, description = 'Color for cooldowns 1-5 minutes', dependency = {key = 'showText', state = true}}},
+    color5mPlus = {value = {0.1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 7, description = 'Color for cooldowns 5+ minutes', dependency = {key = 'showText', state = true}}},
     showSeconds = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 8, description = 'Show seconds for minutes (2:30 instead of 2m)', dependency = {key = 'showText', state = true}}},
 
 })
