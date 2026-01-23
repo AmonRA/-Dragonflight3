@@ -30,23 +30,24 @@ DF:NewDefaults('tooltip', {
 })
 
 DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
-    local origSetDefaultAnchor = _G.GameTooltip_SetDefaultAnchor
+    local anchor = CreateFrame('Frame', 'DF_TooltipAnchor', UIParent)
+    anchor:SetWidth(200)
+    anchor:SetHeight(100)
+    anchor:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -55, 105)
 
     GameTooltip:SetScript('OnShow', function()
         if GameTooltip:GetAnchorType() ~= 'ANCHOR_NONE' then return end
         GameTooltip:ClearAllPoints()
-        GameTooltip:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -25, 35)
+        GameTooltip:SetPoint('BOTTOMRIGHT', anchor, 'BOTTOMRIGHT', 0, 0)
     end)
 
     local cursorFrame = CreateFrame('Frame', nil, UIParent)
     cursorFrame:SetSize(1, 1)
 
-    local callbacks = {}
-    local callbackHelper = {definesomethinginheredirectly}
     local offsetX, offsetY
     local borderColor
     local borderAlpha, bgAlpha
-    local textFont, textColor, textPosition, textFormat
+    local textFormat
     local showTarget, showDistance
     local distanceLineIndex
     local hideCombat, inCombat
@@ -99,6 +100,8 @@ DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
         distanceLineIndex = nil
     end, true)
 
+    -- callbacks
+    local callbacks = {}
     callbacks.tooltipMouseAnchor = function(value)
         if value then
             cursorFrame:SetScript('OnUpdate', function()
@@ -107,13 +110,19 @@ DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
                 this:ClearAllPoints()
                 this:SetPoint('CENTER', UIParent, 'BOTTOMLEFT', x/scale, y/scale)
             end)
+            ---@diagnostic disable-next-line: duplicate-set-field
             _G.GameTooltip_SetDefaultAnchor = function(frame, parent)
                 frame:SetOwner(parent, 'ANCHOR_CURSOR')
                 frame:SetPoint('BOTTOMLEFT', cursorFrame, 'CENTER', offsetX or 0, offsetY or 0)
             end
         else
             cursorFrame:SetScript('OnUpdate', nil)
-            _G.GameTooltip_SetDefaultAnchor = origSetDefaultAnchor
+            ---@diagnostic disable-next-line: duplicate-set-field
+            _G.GameTooltip_SetDefaultAnchor = function(frame, parent)
+                frame:SetOwner(parent, 'ANCHOR_NONE')
+                frame:ClearAllPoints()
+                frame:SetPoint('BOTTOMRIGHT', anchor, 'BOTTOMRIGHT', 0, 0)
+            end
         end
     end
 

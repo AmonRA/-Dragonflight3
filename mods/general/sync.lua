@@ -20,15 +20,13 @@ local debugMode = false
 
 -- filter messages right away, due to "Joined Channel" and other
 -- messages coming in before SYNC_READY
-if not (isAdmin and s()) then
-    DF.hooks.Hook(DEFAULT_CHAT_FRAME, 'AddMessage', function(frame, msg, r, g, b, id)
-        if msg and string.find(string.lower(msg), '%[%d+%. dragonflightsync%]') then
-            return
-        end
-        local orig = DF.hooks.registry[DEFAULT_CHAT_FRAME]['AddMessage']
-        orig(frame, msg, r, g, b, id)
-    end)
-end
+DF.hooks.Hook(DEFAULT_CHAT_FRAME, 'AddMessage', function(frame, msg, r, g, b, id)
+    if msg and string.find(string.lower(msg), '%[%d+%. dragonflightsync%]') then
+        if not (isAdmin and s()) then return end
+    end
+    local orig = DF.hooks.registry[DEFAULT_CHAT_FRAME]['AddMessage']
+    orig(frame, msg, r, g, b, id)
+end)
 
 function syncFrame:OnPlayerEnteringWorld()
     -- check stored version and notify on login if update available

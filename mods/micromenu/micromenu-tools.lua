@@ -93,12 +93,28 @@ function setup:CreateMicroMenu()
         DF:SetConfig('micro', 'expandButtons', checked)
     end, 'DF_MicroMenuExpandLeft', true)
     frame.expandButtonLeft:SetPoint('RIGHT', frame, 'LEFT', 3, 0)
+    frame.expandButtonLeft:SetScript('OnEnter', function()
+        GameTooltip:SetOwner(frame.expandButtonLeft, 'ANCHOR_LEFT')
+        GameTooltip:SetText('Show/Hide')
+        GameTooltip:Show()
+    end)
+    frame.expandButtonLeft:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     frame.expandButtonRight = DF.ui.ExpandButton(frame, 23, 14, media['tex:bags:expand.tga'], function()
         local checked = this:GetChecked() and true or false
         DF:SetConfig('micro', 'expandButtons', checked)
     end, 'DF_MicroMenuExpandRight', false)
     frame.expandButtonRight:SetPoint('LEFT', frame, 'RIGHT', 6, 0)
+    frame.expandButtonRight:SetScript('OnEnter', function()
+        GameTooltip:SetOwner(frame.expandButtonRight, 'ANCHOR_LEFT')
+        GameTooltip:SetText('Show/Hide')
+        GameTooltip:Show()
+    end)
+    frame.expandButtonRight:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     frame.expandButton = frame.expandButtonLeft
 

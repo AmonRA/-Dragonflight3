@@ -29,6 +29,7 @@
     <!-- GENERAL -->
     <Include file="general\addons.lua"/>
     <Include file="general\ambient.lua"/>
+    <Include file="general\bubbles.lua"/>
     <Include file="general\colors.lua"/>
     <Include file="general\combopoints.lua"/>
     <Include file="general\cooldowns.lua"/>

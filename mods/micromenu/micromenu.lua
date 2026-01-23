@@ -45,6 +45,7 @@ DF:NewModule('micro', 1, 'PLAYER_LOGIN', function()
     end
 
     helpers.ShowButtonTooltip = function(button)
+        GameTooltip:SetOwner(button, 'ANCHOR_LEFT')
         local data = button.data
         local globalName = string.upper(data.name)..'_BUTTON'
         if data.name == 'Spellbook' then globalName = 'SPELLBOOK_ABILITIES_BUTTON' end
@@ -54,9 +55,13 @@ DF:NewModule('micro', 1, 'PLAYER_LOGIN', function()
         if keyBinding then
             tooltipText = tooltipText..' '..NORMAL_FONT_COLOR_CODE..'('..keyBinding..')'..FONT_COLOR_CODE_CLOSE
         end
+        GameTooltip:SetText(tooltipText, 1.0, 1.0, 1.0)
         local newbieName = data.name == 'Socials' and 'SOCIAL' or string.upper(data.name)
         local newbieText = _G['NEWBIE_TOOLTIP_'..newbieName]
-        GameTooltip_AddNewbieTip(tooltipText, 1.0, 1.0, 1.0, newbieText)
+        if newbieText and SHOW_NEWBIE_TIPS == '1' then
+            GameTooltip:AddLine(newbieText, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+        end
+        GameTooltip:Show()
     end
 
     helpers.HideTooltip = function()

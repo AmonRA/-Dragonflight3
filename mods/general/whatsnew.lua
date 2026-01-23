@@ -6,6 +6,14 @@ DF:NewDefaults('whatsnew', {
 })
 
 DF:NewModule('whatsnew', 1, function()
+    local C = {
+        O = '|cffff9933',  -- neon orange (slightly softened)
+        Y = '|cffffee33',  -- neon yellow (not pure #FFFF00)
+        G = '|cff33ff99',  -- neon green with a hint of cyan
+        B = '|cff3399ff',  -- neon blue, not full electric
+        P = '|cffff66cc',  -- neon pink/purple blend
+    }
+
     local charKey = UnitName('player') .. '-' .. GetRealmName()
     DF_Profiles.meta.whatsnewShown = DF_Profiles.meta.whatsnewShown or {}
 
@@ -14,21 +22,16 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
-            'Added raid markers to nameplates',
-            'Added castbar to nameplates',
-            'Added debuff timers to nameplates',
-            'Added "show only pvp plates" to nameplates (hides players that aren\'t pvp flagged)',
-            'Added sound and music slider to the dock buttons (left and right)',
-            'Added "What\'s New" module',
-            'Added /df inspect for troubleshooting',
+            'Added timestamps to chat messages',
+            'Added abbreviation to chat messages',
+            'Added URL detection to chat messages',
+            C.G .. 'Options under GUI > Chat > Chat|r',
             '',
-            'Added donation button on GUI home panel for those who want to support me',
+            'Added tooltip default anchor to editmode',
         },
         bugfixes = {
-            'Fixed dock not saving settings',
-            'Fixed linking items from character frame to intellisense',
-            'Fixed spellbook not saving the "show ranks" or "show passive" options',
-            'Fixed framerate toggle (ctrl r)',
+            'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
+            'Some more minor clean ups and optimizations',
         },
     }
 
@@ -39,7 +42,11 @@ DF:NewModule('whatsnew', 1, function()
         contentText = contentText .. '|cff00ff00New Features:|r\n\n'
         lineCount = lineCount + 2
         for i = 1, table.getn(changelog.features) do
-            contentText = contentText .. '- ' .. changelog.features[i] .. '\n'
+            if changelog.features[i] == '' then
+                contentText = contentText .. '\n'
+            else
+                contentText = contentText .. '- ' .. changelog.features[i] .. '\n'
+            end
             lineCount = lineCount + 1
         end
         contentText = contentText .. '\n'
@@ -50,7 +57,11 @@ DF:NewModule('whatsnew', 1, function()
         contentText = contentText .. '|cffff8000Bug Fixes:|r\n\n'
         lineCount = lineCount + 2
         for i = 1, table.getn(changelog.bugfixes) do
-            contentText = contentText .. '- ' .. changelog.bugfixes[i] .. '\n'
+            if changelog.bugfixes[i] == '' then
+                contentText = contentText .. '\n'
+            else
+                contentText = contentText .. '- ' .. changelog.bugfixes[i] .. '\n'
+            end
             lineCount = lineCount + 1
         end
     end
@@ -61,7 +72,7 @@ DF:NewModule('whatsnew', 1, function()
     frame:SetFrameStrata('HIGH')
     frame:EnableMouse(true)
 
-    local title = DF.ui.Font(frame, 12, "What's New in v" .. info.version, {1, 0.82, 0}, 'CENTER')
+    local title = DF.ui.Font(frame, 12, "|cffffd100What's New in v: |cffffffff" .. info.version .. "|r", {1, 1, 1}, 'CENTER')
     title:SetPoint('TOP', frame, 'TOP', 0, -5)
 
     local closeBtn = DF.ui.CreateRedButton(frame, "close", function()
@@ -85,8 +96,10 @@ DF:NewModule('whatsnew', 1, function()
 
         yPos = yPos - 28
         for i = 1, table.getn(changelog.features) do
-            local line = DF.ui.Font(frame, 11, '- ' .. changelog.features[i], {1, 1, 1}, 'LEFT')
-            line:SetPoint('TOPLEFT', frame, 'TOPLEFT', 20, yPos)
+            if changelog.features[i] ~= '' then
+                local line = DF.ui.Font(frame, 11, '- ' .. changelog.features[i], {1, 1, 1}, 'LEFT')
+                line:SetPoint('TOPLEFT', frame, 'TOPLEFT', 20, yPos)
+            end
             yPos = yPos - 14
         end
         yPos = yPos - 14
@@ -104,8 +117,10 @@ DF:NewModule('whatsnew', 1, function()
 
         yPos = yPos - 28
         for i = 1, table.getn(changelog.bugfixes) do
-            local line = DF.ui.Font(frame, 11, '- ' .. changelog.bugfixes[i], {1, 1, 1}, 'LEFT')
-            line:SetPoint('TOPLEFT', frame, 'TOPLEFT', 20, yPos)
+            if changelog.bugfixes[i] ~= '' then
+                local line = DF.ui.Font(frame, 11, '- ' .. changelog.bugfixes[i], {1, 1, 1}, 'LEFT')
+                line:SetPoint('TOPLEFT', frame, 'TOPLEFT', 20, yPos)
+            end
             yPos = yPos - 14
         end
     end

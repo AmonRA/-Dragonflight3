@@ -22,7 +22,7 @@ local ENV = setmetatable({
             addonName = addonName,
             addonNameColor = '|cffffffffDragonflight|r |cffff00003|r',
             path = 'Interface\\AddOns\\' .. addonName .. '\\',
-            version = GetAddOnMetadata(addonName, 'X-Version'),
+            version = GetAddOnMetadata(addonName, 'Version'),
             patch = GetAddOnMetadata(addonName, 'X-Patch'),
             author = GetAddOnMetadata(addonName, 'Author'),
             github = 'github.com/Flaxic-LUA/-Dragonflight3',
@@ -75,7 +75,7 @@ function ENV.import()
 end
 
 function ENV.check()
-    return IsAddOnLoaded('--Dragonflight3-SYNC')
+    return IsAddOnLoaded('-Dragonflight3-SYNC')
 end
 
 function ENV.dependency(depName)

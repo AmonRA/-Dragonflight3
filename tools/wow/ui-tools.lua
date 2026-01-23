@@ -861,14 +861,6 @@ function DF.ui.ExpandButton(parent, width, height, texture, onToggle, name, reve
         end
     end)
 
-    frame:SetScript('OnEnter', function()
-        local text = frame:GetChecked() and 'Collapse' or 'Expand'
-        -- DF.lib.ShowSimpleTooltip(frame, text)
-    end)
-    frame:SetScript('OnLeave', function()
-        -- DF.lib.HideActionTooltip()
-    end)
-
     frame:SetChecked(true)
     if frame.reversed then
         frame:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
@@ -1070,12 +1062,13 @@ function DF.ui.CreateRedButton(parent, buttonType, onClick)
         button:SetScript("OnClick", onClick)
     end
 
-    local tooltipText = buttonType == 'close' and 'Close' or buttonType
     button:SetScript('OnEnter', function()
-        -- DF.lib.ShowSimpleTooltip(this, tooltipText)
+        GameTooltip:SetOwner(button, 'ANCHOR_RIGHT')
+        GameTooltip:SetText('Close')
+        GameTooltip:Show()
     end)
     button:SetScript('OnLeave', function()
-        -- DF.lib.HideActionTooltip()
+        GameTooltip:Hide()
     end)
 
     return button
@@ -1201,6 +1194,45 @@ function DF.ui.CreateSelectiveBorder(frame, edges, size, r, g, b, a, layer)
     end
 
     return textures
+end
+
+function DF.ui.CreateLinkPopup(parent, anchorFrame, frameName, text, message, width, height)
+    local frame = DF.ui.CreatePaperDollFrame(frameName, parent, width or 300, height or 120, 2)
+    frame:SetPoint('CENTER', anchorFrame, 'CENTER', 0, 0)
+    frame:EnableMouse(true)
+    frame:SetFrameStrata('DIALOG')
+    frame:SetMovable(true)
+    frame:RegisterForDrag('LeftButton')
+    frame:SetScript('OnDragStart', function() frame:StartMoving() end)
+    frame:SetScript('OnDragStop', function() frame:StopMovingOrSizing() end)
+    frame:Hide()
+
+    tinsert(UISpecialFrames, frame:GetName())
+
+    local editBox = CreateFrame('EditBox', nil, frame)
+    editBox:SetWidth((width or 300) - 40)
+    editBox:SetHeight(30)
+    editBox:SetPoint('TOP', frame, 'TOP', 0, -30)
+    editBox:SetBackdrop({bgFile = 'Interface\\Tooltips\\UI-Tooltip-Background', edgeFile = 'Interface\\Tooltips\\UI-Tooltip-Border', tile = true, tileSize = 8, edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}})
+    editBox:SetBackdropColor(0.1, 0.1, 0.1, 1)
+    editBox:SetFont('Fonts\\FRIZQT__.TTF', 10, 'OUTLINE')
+    editBox:SetTextColor(1, 1, 1)
+    editBox:SetText(text)
+    editBox:SetAutoFocus(false)
+    editBox:SetScript('OnEscapePressed', function() this:ClearFocus() end)
+    frame.editBox = editBox
+
+    local messageText = DF.ui.Font(frame, 10, message or '', {0.5, 0.8, 1})
+    messageText:SetPoint('TOP', editBox, 'BOTTOM', 0, -10)
+
+    local closeBtn = DF.ui.Button(frame, 'Close', 80, 22)
+    closeBtn:SetPoint('BOTTOM', frame, 'BOTTOM', 0, 5)
+    closeBtn:SetScript('OnClick', function() frame:Hide() end)
+
+    local closeBtnTop = DF.ui.CreateRedButton(frame, 'close', function() frame:Hide() end)
+    closeBtnTop:SetPoint('TOPRIGHT', frame, 'TOPRIGHT', -0, -2)
+
+    return frame
 end
 
 -- advanced elements -- TODO v1
