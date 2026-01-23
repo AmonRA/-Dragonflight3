@@ -106,6 +106,11 @@ DF:NewModule('chat', 1, function()
                 end
                 frame.AddMessage = function(self, text, r, g, b, id, hold)
                     if text then
+                        -- hide DragonflightSync channel messages
+                        if string.find(string.lower(text), '%[%d+%. dragonflightsync%]') then
+                            local isAdmin = UnitName('player') == a()
+                            if not (isAdmin and s()) then return end
+                        end
                         for _, func in pairs(chathook.filters) do
                             text = func(text) or text
                         end
