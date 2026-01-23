@@ -161,6 +161,7 @@ DF:NewModule('chat', 1, function()
     chatlinks.dialog = DF.ui.CreateLinkPopup(UIParent, UIParent, "DF_ChatPopUp", '', 'Press Ctrl+C to copy the link')
 
     chatlinks.oldSetItemRef = _G.SetItemRef
+    ---@diagnostic disable-next-line: duplicate-set-field
     function _G.SetItemRef(link, text, button)
         if strsub(link, 1, 3) == 'url' then
             if string.len(link) > 4 and string.sub(link, 1, 4) == 'url:' then

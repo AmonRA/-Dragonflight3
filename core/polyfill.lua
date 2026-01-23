@@ -7,6 +7,7 @@ end
 
 SLASH_RELOAD1 = '/rl'
 SLASH_RELOAD2 = '/reload'
+---@diagnostic disable-next-line: duplicate-set-field
 SlashCmdList['RELOAD'] = function()
     ReloadUI()
 end
