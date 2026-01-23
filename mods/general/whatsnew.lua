@@ -28,9 +28,11 @@ DF:NewModule('whatsnew', 1, function()
             C.G .. 'Options under GUI > Chat > Chat|r',
             '',
             'Added tooltip default anchor to editmode',
+            'Added cooldown colors',
         },
         bugfixes = {
             'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
+            'Fixed auto-shoot blinking never stops',
             'Some more minor clean ups and optimizations',
         },
     }

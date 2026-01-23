@@ -1099,7 +1099,7 @@ function setup:OnEvent()
         for _, bar in pairs(setup.bars) do
             for i = 1, table.getn(bar.buttons) do
                 local button = bar.buttons[i]
-                if IsAutoRepeatAction(button:GetID()) then
+                if button.isFlashing then
                     button.isFlashing = false
                     button.flash:SetAlpha(0)
                     button:SetScript('OnUpdate', nil)

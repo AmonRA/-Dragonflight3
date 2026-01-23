@@ -2,7 +2,7 @@ DRAGONFLIGHT()
 
 DF:NewDefaults('cooldowns', {
     enabled = {value = true},
-    version = {value = '1.0'},
+    version = {value = '1.1'},
     gui = {
         {tab = 'general', subtab = 'cooldowns', 'General'},
     },
@@ -10,8 +10,11 @@ DF:NewDefaults('cooldowns', {
     showText = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 1, description = 'Show cooldown numbers on buttons'}},
     textSize = {value = 14, metadata = {element = 'slider', category = 'General', indexInCategory = 2, description = 'Cooldown text size', min = 8, max = 32, stepSize = 1, dependency = {key = 'showText', state = true}}},
     textFont = {value = 'font:FRIZQT__.TTF', metadata = {element = 'dropdown', category = 'General', indexInCategory = 3, description = 'Cooldown text font', options = media.fonts, dependency = {key = 'showText', state = true}}},
-    colorByTime = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 4, description = 'Color text by remaining time (red <10s, yellow <30s, white otherwise)', dependency = {key = 'showText', state = true}}},
-    showSeconds = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 5, description = 'Show seconds for minutes (2:30 instead of 2m)', dependency = {key = 'showText', state = true}}},
+    color0to10s = {value = {1, 0, 0}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 4, description = 'Color for cooldowns 0-10 seconds', dependency = {key = 'showText', state = true}}},
+    color10to59s = {value = {1, 1, 0}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 5, description = 'Color for cooldowns 10-59 seconds', dependency = {key = 'showText', state = true}}},
+    color1to5m = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 6, description = 'Color for cooldowns 1-5 minutes', dependency = {key = 'showText', state = true}}},
+    color5mPlus = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'General', indexInCategory = 7, description = 'Color for cooldowns 5+ minutes', dependency = {key = 'showText', state = true}}},
+    showSeconds = {value = false, metadata = {element = 'checkbox', category = 'General', indexInCategory = 8, description = 'Show seconds for minutes (2:30 instead of 2m)', dependency = {key = 'showText', state = true}}},
 
 })
 
@@ -43,17 +46,17 @@ DF:NewModule('cooldowns', 1, function()
                 this.text:SetFont('Fonts\\FRIZQT__.TTF', 14, 'OUTLINE')
             end
             this.text:SetText(GetTimeString(remaining))
-            if DF.profile.cooldowns.colorByTime then
-                if remaining < 10 then
-                    this.text:SetTextColor(1, 0, 0)
-                elseif remaining < 30 then
-                    this.text:SetTextColor(1, 1, 0)
-                else
-                    this.text:SetTextColor(1, 1, 1)
-                end
+            local color
+            if remaining < 10 then
+                color = DF.profile.cooldowns.color0to10s
+            elseif remaining < 60 then
+                color = DF.profile.cooldowns.color10to59s
+            elseif remaining < 300 then
+                color = DF.profile.cooldowns.color1to5m
             else
-                this.text:SetTextColor(1, 1, 1)
+                color = DF.profile.cooldowns.color5mPlus
             end
+            this.text:SetTextColor(color[1], color[2], color[3])
         else
             this:Hide()
         end
@@ -124,7 +127,19 @@ DF:NewModule('cooldowns', 1, function()
         end
     end
 
-    callbacks.colorByTime = function(value)
+    callbacks.color0to10s = function(value)
+        -- color will update on next OnUpdate tick
+    end
+
+    callbacks.color10to59s = function(value)
+        -- color will update on next OnUpdate tick
+    end
+
+    callbacks.color1to5m = function(value)
+        -- color will update on next OnUpdate tick
+    end
+
+    callbacks.color5mPlus = function(value)
         -- color will update on next OnUpdate tick
     end
 

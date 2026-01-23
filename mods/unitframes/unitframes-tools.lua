@@ -1687,7 +1687,7 @@ function setup:GenerateDefaults()
         defaults[frame.key..'CombatGlow2MaxAlpha'] = {value = 0.7, metadata = {element = 'slider', category = catEffects, indexInCategory = 7, description = 'Combat glow max alpha (bar)', min = 0, max = 1, step = 0.05, dependency = {key = frame.key..'Enabled', state = true}}}
         if hasPvPIcon then
             defaults[frame.key..'ShowPvPIcon'] = {value = true, metadata = {element = 'checkbox', category = catEffects, indexInCategory = 8, description = 'Show PvP icon', dependency = {key = frame.key..'Enabled', state = true}}}
-            defaults[frame.key..'PvPIconSize'] = {value = 45, metadata = {element = 'slider', category = catEffects, indexInCategory = 9, description = 'PvP icon size', min = 20, max = 80, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowPvPIcon', state = true}}}}
+            defaults[frame.key..'PvPIconSize'] = {value = 60, metadata = {element = 'slider', category = catEffects, indexInCategory = 9, description = 'PvP icon size', min = 20, max = 80, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowPvPIcon', state = true}}}}
             defaults[frame.key..'PvPIconColor'] = {value = {1, 1, 1, 1}, metadata = {element = 'colorpicker', category = catEffects, indexInCategory = 10, description = 'PvP icon color', dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'ShowPvPIcon', state = true}}}}
         end
 
