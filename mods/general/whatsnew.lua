@@ -33,6 +33,7 @@ DF:NewModule('whatsnew', 1, function()
         bugfixes = {
             'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
             'Fixed auto-shoot blinking never stops',
+            'Fixed bags cooldown text not moving the the item',
             'Some more minor clean ups and optimizations',
         },
     }

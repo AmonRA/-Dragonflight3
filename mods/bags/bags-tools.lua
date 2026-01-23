@@ -633,8 +633,8 @@ function setup:UpdateBag(bagFrame)
             btn.count:Hide()
             if btn.cooldown then
                 btn.cooldown:Hide()
-                if btn.cooldown.text then
-                    btn.cooldown.text:SetText('')
+                if btn.cooldown.cdText then
+                    btn.cooldown.cdText:Hide()
                 end
             end
         end
