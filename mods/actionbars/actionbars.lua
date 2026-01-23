@@ -69,39 +69,30 @@ defaults.animationTrigger = {value = 'keypress', metadata = {element = 'dropdown
 
 local barOverrides = {
     mainBar = {
-        -- Main bar uses default button size because it matches multibar1 and multibar2
         gradientDirection = 'none',
         minAlpha = 0.4,
-        -- Main bar gets paging buttons because it's the primary action bar
         hasPaging = true,
-        -- Main bar gets background texture because it's not stance bar
         hasBgTexture = true,
-        -- Main bar shows gryphons on both sides because it's the primary bar
         decorationPosition = 'both',
     },
     multibar1 = {
-        -- Multi bar 1 uses default button size because it matches mainbar and multibar2
         gradientDirection = 'none',
         minAlpha = 0.4,
         hasBgTexture = true,
     },
     multibar2 = {
-        -- Multi bar 2 uses default button size because it matches mainbar and multibar1
         gradientDirection = 'none',
         minAlpha = 0.4,
         hasBgTexture = true,
     },
     multibar3 = {
-        -- Multi bar 3 gets smaller buttons because it's vertical on the right side
         buttonSize = 24,
         gradientDirection = 'none',
         minAlpha = 0.3,
         hasBgTexture = true,
-        -- Multi bar 3 has 1 button per row because it's vertical
         buttonsPerRow = 1,
     },
     multibar4 = {
-        -- Multi bar 4 is disabled because not needed
         enabled = false,
         buttonSize = 24,
         gradientDirection = 'none',
@@ -110,7 +101,6 @@ local barOverrides = {
         buttonsPerRow = 1,
     },
     multibar5 = {
-        -- Multi bar 5 is disabled because not needed
         enabled = false,
         buttonSize = 24,
         gradientDirection = 'none',
@@ -119,12 +109,10 @@ local barOverrides = {
         buttonsPerRow = 1,
     },
     petBar = {
-        -- Pet bar gets background texture because it's not stance bar
         hasBgTexture = true,
         buttonSize = 20,
     },
     stanceBar = {
-        -- Stance bar doesn't get background texture because it's special
         hasBgTexture = false,
         buttonSize = 20,
     },
@@ -151,7 +139,6 @@ for i = 1, table.getn(barConfigs) do
     local buttonsPerRow = maxButtons
     local enabled = true
 
-    -- Apply bar-specific overrides because individual bars need custom settings
     local overrides = barOverrides[bar.name]
     if overrides then
         buttonSize = overrides.buttonSize or buttonSize
@@ -187,7 +174,6 @@ for i = 1, table.getn(barConfigs) do
     defaults[bar.name..'DecorationX'] = {value = 45, metadata = {element = 'slider', category = catDecorations, indexInCategory = 7, description = 'Horizontal position offset for decorations', min = -60, max = 60, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
     defaults[bar.name..'DecorationY'] = {value = 0, metadata = {element = 'slider', category = catDecorations, indexInCategory = 8, description = 'Vertical position offset for decorations', min = -60, max = 60, stepSize = 1, dependency = {key = bar.name..'Enabled', state = true}}}
 
-    -- Add background texture setting because most bars need it except stance bar
     if hasBgTexture then
         defaults[bar.name..'BgTexture'] = {value = 'alliance', metadata = {element = 'dropdown', category = catAppearance, indexInCategory = 1, description = 'Button background texture', options = {'alliance', 'horde'}, dependency = {key = bar.name..'Enabled', state = true}}}
     end
@@ -199,7 +185,6 @@ for i = 1, table.getn(barConfigs) do
         defaults.petAutocastAlpha = {value = 0.8, metadata = {element = 'slider', category = catAppearance, indexInCategory = 4, description = 'Pet autocast alpha', min = 0, max = 1, stepSize = 0.1, dependency = {key = bar.name..'Enabled', state = true}}}
     end
 
-    -- Add paging settings because only main bar needs them
     if hasPaging then
         defaults.pagingShow = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 6, description = 'Show paging buttons'}}
         defaults.pagingButtonSize = {value = 20, metadata = {element = 'slider', category = catGeneral, indexInCategory = 7, description = 'Paging button size', min = 10, max = 40, stepSize = 1, dependency = {key = 'pagingShow', state = true}}}
