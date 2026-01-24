@@ -33,6 +33,7 @@ DF:NewModule('whatsnew', 1, function()
         },
         bugfixes = {
             'Fixed hp color gradient for nameplates being shit.',
+            'Fixed missing stack counter on nameplate debuffs.',
             -- 'Fixed auto-shoot blinking never stops',
             -- 'Fixed bags cooldown text not moving the the item',
             -- 'Some more minor clean ups and optimizations',

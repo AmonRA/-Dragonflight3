@@ -208,6 +208,11 @@ function plates:CreateNameplate(frame) -- v2
         timer:SetPoint('CENTER', btn, 'CENTER', 0, 0)
         timer:SetText('')
 
+        local count = btn:CreateFontString(nil, 'OVERLAY')
+        count:SetFont(media[DF.profile.nameplates.textFont] or 'Fonts\\FRIZQT__.TTF', 7, 'OUTLINE')
+        count:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMRIGHT', 2, -2)
+        count:SetText('')
+
         local row = math.floor((i - 1) / 5)
         local col = math.mod(i - 1, 5)
 
@@ -221,6 +226,7 @@ function plates:CreateNameplate(frame) -- v2
 
         btn.icon = icon
         btn.timer = timer
+        btn.count = count
         btn:Hide()
         debuffs[i] = btn
     end
@@ -648,6 +654,11 @@ function plates:SetupOnUpdate(frame) -- v1
                         frame.custom.debuffs[i].timer:SetText(string.format('%.0f', timeleft))
                     else
                         frame.custom.debuffs[i].timer:SetText('')
+                    end
+                    if stacks and stacks > 1 then
+                        frame.custom.debuffs[i].count:SetText(stacks)
+                    else
+                        frame.custom.debuffs[i].count:SetText('')
                     end
                     frame.custom.debuffs[i]:Show()
                 else
