@@ -151,6 +151,13 @@ DF:NewModule('gui-base', 1, function()
         ToggleStackPanel()
     end)
 
+    local slashBtn = DF.ui.Button(setup.subframe, 'Slash Commands', 120, 20, false, {1, 0, 0})
+    slashBtn:SetPoint('LEFT', stacksBtn, 'RIGHT', 5, 0)
+    slashBtn:SetScript('OnClick', function()
+        setup.mainframe:Hide()
+        DF.setups.slashscan:Show()
+    end)
+
     setup.testBtn = DF.ui.Button(setup.subframe, 'Test', 80, 20, false, {1, 0, 0})
     setup.testBtn:SetPoint('CENTER', setup.subframe, 'CENTER', 0, 0)
     setup.testBtn.testRunning = false

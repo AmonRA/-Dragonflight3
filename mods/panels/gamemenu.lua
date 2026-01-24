@@ -40,13 +40,22 @@ DF:NewModule('gamemenu', 1, function()
     end)
     yOffset = yOffset - buttonHeight - buttonSpacing
 
-    local addonsBtn = DF.ui.Button(frame, 'Addons', 160, buttonHeight)
-    addonsBtn:SetPoint('TOP', frame, 'TOP', 0, yOffset)
+    local addonsBtn = DF.ui.Button(frame, 'Addons', 140, buttonHeight)
+    addonsBtn:SetPoint('TOP', frame, 'TOP', -10, yOffset)
     addonsBtn:SetScript('OnClick', function()
         frame:Hide()
         local addonsFrame = getglobal('DF_AddonsFrame')
         if addonsFrame then
             addonsFrame:Show()
+        end
+    end)
+
+    local slashBtn = DF.ui.Button(frame, '+', 21, buttonHeight, nil, {.9, 0, 0})
+    slashBtn:SetPoint('LEFT', addonsBtn, 'RIGHT', -2, 0)
+    slashBtn:SetScript('OnClick', function()
+        frame:Hide()
+        if DF.setups.slashscan then
+            DF.setups.slashscan:Show()
         end
     end)
     yOffset = yOffset - buttonHeight - buttonSpacing * emptySpacing

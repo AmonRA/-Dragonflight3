@@ -362,8 +362,8 @@ DF:NewModule('minimap', 1, 'PLAYER_LOGIN', function()
     end
 
     callbacks.customPlayerArrow = function(value)
+        local db = DF.profile.minimap
         if value then
-            local db = DF.profile.minimap
             if customArrowTex then
                 customArrowTex:SetVertexColor(db.playerArrowColor[1], db.playerArrowColor[2], db.playerArrowColor[3])
             end
@@ -380,16 +380,18 @@ DF:NewModule('minimap', 1, 'PLAYER_LOGIN', function()
                 customArrowFrame:Hide()
             end
             if originalArrow then
+                originalArrow:SetScale(db.playerArrowScale)
                 originalArrow:Show()
             end
         end
     end
 
     callbacks.playerArrowScale = function(value)
-        if customArrowFrame then
+        local db = DF.profile.minimap
+        if db.customPlayerArrow and customArrowFrame then
             customArrowFrame:SetScale(value)
-        elseif playerArrow then
-            playerArrow:SetScale(value)
+        elseif not db.customPlayerArrow and originalArrow then
+            originalArrow:SetScale(value)
         end
     end
 

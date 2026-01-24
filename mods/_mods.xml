@@ -44,6 +44,7 @@
     <Include file="general\nocontrol.lua"/>
     <Include file="general\questtracker.lua"/>
     <Include file="general\sellvalue.lua"/>
+    <Include file="general\slashscan.lua"/>
     <Include file="general\sync.lua"/>
     <Include file="general\tweaks.lua"/>
     <Include file="general\uiparent.lua"/>

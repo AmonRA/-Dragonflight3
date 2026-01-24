@@ -117,97 +117,35 @@ DF:NewModule('ambient', 1, function()
         if showRight then right:Show() else right:Hide() end
     end
 
-    callbacks.enableNormal = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.enableCombat = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.enableResting = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalColor = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatColor = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingColor = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalDimensions = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatDimensions = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingDimensions = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalShowTop = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalShowBottom = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalShowLeft = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.normalShowRight = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatShowTop = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatShowBottom = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatShowLeft = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.combatShowRight = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingShowTop = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingShowBottom = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingShowLeft = function(value)
-        callbackHelper.UpdateAmbient()
-    end
-
-    callbacks.restingShowRight = function(value)
-        callbackHelper.UpdateAmbient()
-    end
+    callbacks.enableNormal = function() callbackHelper.UpdateAmbient() end
+    callbacks.enableCombat = function() callbackHelper.UpdateAmbient() end
+    callbacks.enableResting = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalColor = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatColor = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingColor = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalDimensions = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatDimensions = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingDimensions = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalShowTop = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalShowBottom = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalShowLeft = function() callbackHelper.UpdateAmbient() end
+    callbacks.normalShowRight = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatShowTop = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatShowBottom = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatShowLeft = function() callbackHelper.UpdateAmbient() end
+    callbacks.combatShowRight = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingShowTop = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingShowBottom = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingShowLeft = function() callbackHelper.UpdateAmbient() end
+    callbacks.restingShowRight = function() callbackHelper.UpdateAmbient() end
 
     -- events
-    local eventFrame = CreateFrame('Frame')
-    eventFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
-    eventFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-    eventFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
+    local f = CreateFrame('Frame')
+    f:RegisterEvent('PLAYER_REGEN_DISABLED')
+    f:RegisterEvent('PLAYER_REGEN_ENABLED')
+    f:RegisterEvent('PLAYER_UPDATE_RESTING')
 
-    eventFrame:SetScript('OnEvent', function()
+    f:SetScript('OnEvent', function()
         if event == 'PLAYER_REGEN_DISABLED' then
             inCombat = true
         elseif event == 'PLAYER_REGEN_ENABLED' then

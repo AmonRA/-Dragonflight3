@@ -7,6 +7,7 @@ local function ShowHelp()
     print('/df edit or /df editmode - Toggle Edit Mode')
     print('/df hover or /df hoverbind - Toggle Hoverbind Mode')
     print('/df stacks - Toggle Stack Editor')
+    print('/df slash - Toggle Slash Command Manager')
     redprint('Trouble:')
     print('/df inspect - Toggle Frame Inspector')
     print('/df safeboot - Disable all addons except Dragonflight')
@@ -100,6 +101,14 @@ _G.SlashCmdList['DRAGONFLIGHT'] = function(msg)
                 DF.setups.frameinspect:Hide()
             else
                 DF.setups.frameinspect:Show()
+            end
+        end
+    elseif msg == 'slash' then
+        if DF.setups.slashscan then
+            if DF.setups.slashscan:IsShown() then
+                DF.setups.slashscan:Hide()
+            else
+                DF.setups.slashscan:Show()
             end
         end
     elseif msg == '' then

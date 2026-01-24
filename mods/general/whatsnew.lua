@@ -7,11 +7,11 @@ DF:NewDefaults('whatsnew', {
 
 DF:NewModule('whatsnew', 1, function()
     local C = {
-        O = '|cffff9933',  -- neon orange (slightly softened)
-        Y = '|cffffee33',  -- neon yellow (not pure #FFFF00)
-        G = '|cff33ff99',  -- neon green with a hint of cyan
-        B = '|cff3399ff',  -- neon blue, not full electric
-        P = '|cffff66cc',  -- neon pink/purple blend
+        O = '|cffff9933',  -- neon orange
+        Y = '|cffffee33',  -- neon yellow
+        G = '|cff33ff99',  -- neon green
+        B = '|cff3399ff',  -- neon blue
+        P = '|cffff66cc',  -- neon pink
     }
 
     local charKey = UnitName('player') .. '-' .. GetRealmName()
@@ -22,19 +22,19 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
-            'Added timestamps to chat messages',
-            'Added abbreviation to chat messages',
-            'Added URL detection to chat messages',
-            C.G .. 'Options under GUI > Chat > Chat|r',
+            'Added slash command manager',
+            C.G .. 'Either use /df slash|r',
+            C.G .. 'Click the red "+" in the game menu next to "addons"|r',
+            C.G .. 'Or inside the GUI\'s bottom panel|r',
             '',
-            'Added tooltip default anchor to editmode',
-            'Added cooldown colors',
+            -- 'Added tooltip default anchor to editmode',
+            -- 'Added cooldown colors',
         },
         bugfixes = {
-            'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
-            'Fixed auto-shoot blinking never stops',
-            'Fixed bags cooldown text not moving the the item',
-            'Some more minor clean ups and optimizations',
+            -- 'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
+            -- 'Fixed auto-shoot blinking never stops',
+            -- 'Fixed bags cooldown text not moving the the item',
+            -- 'Some more minor clean ups and optimizations',
         },
     }
 
