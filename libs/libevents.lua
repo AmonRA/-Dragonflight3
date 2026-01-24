@@ -111,6 +111,19 @@ libevents:SetScript('OnUpdate', function()
                         end
                     end
                 end
+
+                -- stop OnUpdate if all custom events have fired, might remove this later
+                -- if we add more custom events that need it during runtime
+                local allFired = true
+                for _, ce in pairs(customEvents) do
+                    if not ce.fired then
+                        allFired = false
+                        break
+                    end
+                end
+                if allFired then
+                    libevents:SetScript('OnUpdate', nil)
+                end
             end
         end
     end

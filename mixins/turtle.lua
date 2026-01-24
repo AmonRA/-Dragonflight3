@@ -16,6 +16,12 @@ function DF.mixins.IsCollectorException(buttonName)
     return buttonName == 'EBC_Minimap' or buttonName == 'TWMiniMapBattlefieldFrame'
 end
 
+function DF.mixins.CleanTurtleTabName(name)
+    if DF.others.server ~= 'turtle' or not name then return name end
+    local cleaned = string.gsub(name, '^[Zz]+(%u)', '%1')
+    return cleaned
+end
+
 function DF.mixins.AddInspectTalentTab(customBg)
     if DF.others.server ~= 'turtle' then return end
 
@@ -42,10 +48,4 @@ function DF.mixins.AddInspectTalentTab(customBg)
             UpdateTalentTab()
         end
     end, true)
-end
-
-function DF.mixins.CleanTurtleTabName(name)
-    if DF.others.server ~= 'turtle' or not name then return name end
-    local cleaned = string.gsub(name, '^[Zz]+(%u)', '%1')
-    return cleaned
 end
