@@ -5,7 +5,10 @@ local getn = table.getn
 
 local plates = {
     registry = {},
-    lastChildCount = 0
+    lastChildCount = 0,
+    targetCounts = {},
+    mostTargetedGuid = nil,
+    lastTargetCountUpdate = 0
 }
 
 -- create
@@ -153,6 +156,17 @@ function plates:CreateNameplate(frame) -- v2
     targetIndicator:SetVertexColor(tiColor[1], tiColor[2], tiColor[3], 1)
     targetIndicator:Hide()
 
+    local focusFireIndicator = healthbar:CreateTexture(nil, 'OVERLAY')
+    local ffiTexture = DF.profile.nameplates.focusFireIndicatorTexture or 'tex:generic:Arrow0.blp'
+    focusFireIndicator:SetTexture(media[ffiTexture])
+    focusFireIndicator:SetTexCoord(0, 1, 1, 0)
+    local ffiScale = DF.profile.nameplates.focusFireIndicatorScale or 1
+    local ffiColor = DF.profile.nameplates.focusFireIndicatorColor or {1, 0.5, 0}
+    focusFireIndicator:SetSize(20 * ffiScale, 20 * ffiScale)
+    focusFireIndicator:SetPoint('BOTTOM', healthbar, 'TOP', 0, 50)
+    focusFireIndicator:SetVertexColor(ffiColor[1], ffiColor[2], ffiColor[3], 1)
+    focusFireIndicator:Hide()
+
     local portrait = overlay:CreateTexture(nil, 'ARTWORK')
     local pScale = DF.profile.nameplates.portraitScale or 1
     portrait:SetSize(20 * pScale, 20 * pScale)
@@ -260,6 +274,7 @@ function plates:CreateNameplate(frame) -- v2
         levelBg = levelBg,
         levelBorder = levelBorder,
         targetIndicator = targetIndicator,
+        focusFireIndicator = focusFireIndicator,
         topGlow = topGlow,
         botGlow = botGlow,
         nameText = nameText,
@@ -277,6 +292,47 @@ function plates:CreateNameplate(frame) -- v2
         lastGuid = guid,
         debuffs = debuffs,
     }
+end
+
+function plates:UpdateTargetCounts()
+    plates.targetCounts = {}
+    local maxCount = 0
+    local maxGuid = nil
+
+    local numRaid = GetNumRaidMembers()
+    local numParty = GetNumPartyMembers()
+
+    if numRaid > 0 then
+        for i = 1, 40 do
+            local unit = 'raid'..i..'target'
+            if UnitExists(unit) then
+                local _, targetGuid = UnitExists(unit)
+                if targetGuid then
+                    plates.targetCounts[targetGuid] = (plates.targetCounts[targetGuid] or 0) + 1
+                    if plates.targetCounts[targetGuid] > maxCount then
+                        maxCount = plates.targetCounts[targetGuid]
+                        maxGuid = targetGuid
+                    end
+                end
+            end
+        end
+    elseif numParty > 0 then
+        for i = 1, 4 do
+            local unit = 'party'..i..'target'
+            if UnitExists(unit) then
+                local _, targetGuid = UnitExists(unit)
+                if targetGuid then
+                    plates.targetCounts[targetGuid] = (plates.targetCounts[targetGuid] or 0) + 1
+                    if plates.targetCounts[targetGuid] > maxCount then
+                        maxCount = plates.targetCounts[targetGuid]
+                        maxGuid = targetGuid
+                    end
+                end
+            end
+        end
+    end
+
+    plates.mostTargetedGuid = (maxCount >= 2) and maxGuid or nil
 end
 
 function plates:UpdateRaidIcon(frame, unit)
@@ -623,84 +679,86 @@ function plates:SetupOnUpdate(frame) -- v1
             end
         end
 
-        -- target detection: show portrait and indicator, raise strata
-        if UnitName('target') == UnitName(currentGuid) and UnitExists('target') then
+        -- update target counts throttled
+        local now = GetTime()
+        if now - plates.lastTargetCountUpdate > 0.3 then
+            plates:UpdateTargetCounts()
+            plates.lastTargetCountUpdate = now
+        end
+
+        -- focus fire indicator
+        local isMostTargeted = currentGuid and currentGuid == plates.mostTargetedGuid
+        local isPlayerTarget = UnitName('target') == UnitName(currentGuid) and UnitExists('target')
+        if isPlayerTarget then
             local _, targetGuid = UnitExists('target')
-            if targetGuid == currentGuid then
-                frame.custom.frame:SetFrameStrata('LOW')
+            isPlayerTarget = targetGuid == currentGuid
+        end
 
-                -- portrait visibility
-                if plates.showPortrait then
-                    SetPortraitTexture(frame.custom.portrait, 'target')
-                    frame.custom.portraitBorder:Show()
-                else
-                    frame.custom.portrait:SetTexture(nil)
-                    frame.custom.portraitBorder:Hide()
-                end
+        if isMostTargeted and plates.showFocusFireIndicator then
+            frame.custom.focusFireIndicator:Show()
+        else
+            frame.custom.focusFireIndicator:Hide()
+        end
 
-                -- target indicator visibility
-                if plates.showTargetIndicator then
-                    frame.custom.targetIndicator:Show()
-                else
-                    frame.custom.targetIndicator:Hide()
-                end
+        -- target detection: show portrait and indicator, raise strata
+        if isPlayerTarget then
+            frame.custom.frame:SetFrameStrata('LOW')
 
-                -- scale
-                if plates.scaleNameplates then
-                    frame.custom.frame:SetScale(plates.scaleTargeted or 1)
+            -- portrait visibility
+            if plates.showPortrait then
+                SetPortraitTexture(frame.custom.portrait, 'target')
+                frame.custom.portraitBorder:Show()
+                if isMostTargeted then
+                    frame.custom.portrait:ClearAllPoints()
+                    frame.custom.portrait:SetPoint('BOTTOM', frame.custom.focusFireIndicator, 'TOP', 0, 5)
                 else
-                    frame.custom.frame:SetScale(1)
-                end
-
-                -- glow visibility
-                if plates.showGlow then
-                    frame.custom.topGlow:Show()
-                    frame.custom.botGlow:Show()
-                else
-                    frame.custom.topGlow:Hide()
-                    frame.custom.botGlow:Hide()
-                end
-
-                -- border visibility
-                if plates.showBorder then
-                    local showBrd = true
-                    if plates.showBorderOnlyTarget then
-                        showBrd = true
-                    end
-                    if showBrd then
-                        for _, tex in pairs(frame.custom.borderLeftTex) do tex:Show() end
-                        for _, tex in pairs(frame.custom.borderRightTex) do tex:Show() end
-                    else
-                        for _, tex in pairs(frame.custom.borderLeftTex) do tex:Hide() end
-                        for _, tex in pairs(frame.custom.borderRightTex) do tex:Hide() end
-                    end
-                else
-                    for _, tex in pairs(frame.custom.borderLeftTex) do tex:Hide() end
-                    for _, tex in pairs(frame.custom.borderRightTex) do tex:Hide() end
+                    frame.custom.portrait:ClearAllPoints()
+                    frame.custom.portrait:SetPoint('BOTTOM', frame.custom.targetIndicator, 'TOP', 0, 5)
                 end
             else
-                frame.custom.frame:SetFrameStrata('BACKGROUND')
                 frame.custom.portrait:SetTexture(nil)
                 frame.custom.portraitBorder:Hide()
+            end
+
+            -- target indicator visibility
+            if plates.showTargetIndicator and not isMostTargeted then
+                frame.custom.targetIndicator:Show()
+            else
                 frame.custom.targetIndicator:Hide()
+            end
+
+            -- scale
+            if plates.scaleNameplates then
+                frame.custom.frame:SetScale(plates.scaleTargeted or 1)
+            else
+                frame.custom.frame:SetScale(1)
+            end
+
+            -- glow visibility
+            if plates.showGlow then
+                frame.custom.topGlow:Show()
+                frame.custom.botGlow:Show()
+            else
                 frame.custom.topGlow:Hide()
                 frame.custom.botGlow:Hide()
+            end
 
-                -- scale
-                if plates.scaleNameplates then
-                    frame.custom.frame:SetScale(plates.scaleUntargeted or 1)
-                else
-                    frame.custom.frame:SetScale(1)
+            -- border visibility
+            if plates.showBorder then
+                local showBrd = true
+                if plates.showBorderOnlyTarget then
+                    showBrd = true
                 end
-
-                -- border visibility for non-target
-                if plates.showBorder and not plates.showBorderOnlyTarget then
+                if showBrd then
                     for _, tex in pairs(frame.custom.borderLeftTex) do tex:Show() end
                     for _, tex in pairs(frame.custom.borderRightTex) do tex:Show() end
                 else
                     for _, tex in pairs(frame.custom.borderLeftTex) do tex:Hide() end
                     for _, tex in pairs(frame.custom.borderRightTex) do tex:Hide() end
                 end
+            else
+                for _, tex in pairs(frame.custom.borderLeftTex) do tex:Hide() end
+                for _, tex in pairs(frame.custom.borderRightTex) do tex:Hide() end
             end
         else
             frame.custom.frame:SetFrameStrata('BACKGROUND')

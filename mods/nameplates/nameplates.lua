@@ -38,8 +38,12 @@ DF:NewDefaults('nameplates', {
     borderColor = {value = {0.4, 0.8, 0.9}, metadata = {element = 'colorpicker', category = 'Target Highlight', indexInCategory = 5, description = 'Healthbar border color', dependency = {key = 'showBorder', state = true}}},
     showTargetIndicator = {value = true, metadata = {element = 'checkbox', category = 'Target Highlight', indexInCategory = 6, description = 'Show target indicator arrow'}},
     targetIndicatorTexture = {value = 'tex:generic:Arrow0.blp', metadata = {element = 'dropdown', category = 'Target Highlight', indexInCategory = 7, description = 'Target indicator texture', options = {'tex:generic:Arrow0.blp', 'tex:generic:Arrow1.blp', 'tex:generic:Arrow2.blp', 'tex:generic:Arrow3.blp', 'tex:generic:Arrow4.blp', 'tex:generic:Arrow5.blp', 'tex:generic:Arrow6.blp', 'tex:generic:Arrow7.blp', 'tex:generic:Arrow8.blp'}, dependency = {key = 'showTargetIndicator', state = true}}},
-    targetIndicatorScale = {value = 1, metadata = {element = 'slider', category = 'Target Highlight', indexInCategory = 8, description = 'Target indicator scale', min = 0.5, max = 2, stepSize = 0.1, dependency = {key = 'showTargetIndicator', state = true}}},
+    targetIndicatorScale = {value = 1, metadata = {element = 'slider', category = 'Target Highlight', indexInCategory = 8, description = 'Target indicator scale', min = 0.5, max = 3, stepSize = 0.1, dependency = {key = 'showTargetIndicator', state = true}}},
     targetIndicatorColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Target Highlight', indexInCategory = 9, description = 'Target indicator color', dependency = {key = 'showTargetIndicator', state = true}}},
+    showFocusFireIndicator = {value = true, metadata = {element = 'checkbox', category = 'Target Highlight', indexInCategory = 10, description = 'Show focus fire indicator (most targeted by party/raid) - EXPERIMENTAL'}},
+    focusFireIndicatorTexture = {value = 'tex:generic:Arrow0.blp', metadata = {element = 'dropdown', category = 'Target Highlight', indexInCategory = 11, description = 'Focus fire indicator texture', options = {'tex:generic:Arrow0.blp', 'tex:generic:Arrow1.blp', 'tex:generic:Arrow2.blp', 'tex:generic:Arrow3.blp', 'tex:generic:Arrow4.blp', 'tex:generic:Arrow5.blp', 'tex:generic:Arrow6.blp', 'tex:generic:Arrow7.blp', 'tex:generic:Arrow8.blp'}, dependency = {key = 'showFocusFireIndicator', state = true}}},
+    focusFireIndicatorScale = {value = 2, metadata = {element = 'slider', category = 'Target Highlight', indexInCategory = 12, description = 'Focus fire indicator scale', min = 0.5, max = 3, stepSize = 0.1, dependency = {key = 'showFocusFireIndicator', state = true}}},
+    focusFireIndicatorColor = {value = {1, 0, 0}, metadata = {element = 'colorpicker', category = 'Target Highlight', indexInCategory = 13, description = 'Focus fire indicator color', dependency = {key = 'showFocusFireIndicator', state = true}}},
     showPortrait = {value = true, metadata = {element = 'checkbox', category = 'Portrait', indexInCategory = 1, description = 'Show target portrait'}},
     portraitScale = {value = 1, metadata = {element = 'slider', category = 'Portrait', indexInCategory = 2, description = 'Portrait scale', min = 0.5, max = 2, stepSize = 0.1, dependency = {key = 'showPortrait', state = true}}},
     portraitBorderColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Portrait', indexInCategory = 3, description = 'Portrait border color', dependency = {key = 'showPortrait', state = true}}},
@@ -449,6 +453,32 @@ DF:NewModule('nameplates', 1, 'PLAYER_ENTERING_WORLD', function()
         plates.targetIndicatorColor = value
         for frame in pairs(plates.registry) do
             frame.custom.targetIndicator:SetVertexColor(value[1], value[2], value[3], 1)
+        end
+    end
+
+    callbacks.showFocusFireIndicator = function(value)
+        plates.showFocusFireIndicator = value
+    end
+
+    callbacks.focusFireIndicatorTexture = function(value)
+        plates.focusFireIndicatorTexture = value
+        for frame in pairs(plates.registry) do
+            frame.custom.focusFireIndicator:SetTexture(media[value])
+        end
+    end
+
+    callbacks.focusFireIndicatorScale = function(value)
+        plates.focusFireIndicatorScale = value
+        for frame in pairs(plates.registry) do
+            local size = 20 * value
+            frame.custom.focusFireIndicator:SetSize(size, size)
+        end
+    end
+
+    callbacks.focusFireIndicatorColor = function(value)
+        plates.focusFireIndicatorColor = value
+        for frame in pairs(plates.registry) do
+            frame.custom.focusFireIndicator:SetVertexColor(value[1], value[2], value[3], 1)
         end
     end
 

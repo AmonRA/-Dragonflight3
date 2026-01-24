@@ -22,16 +22,17 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
-            'Added slash command manager',
-            C.G .. 'Either use /df slash|r',
-            C.G .. 'Click the red "+" in the game menu next to "addons"|r',
-            C.G .. 'Or inside the GUI\'s bottom panel|r',
+            'Added focus fire indicator for nameplates',
+            'If 2 or more party/raid members focus the same target, it will show',
+            C.G .. 'Options under GUI > Nameplates > Target Highlight|r',
+            '',
+            'Added name/level reverse to unitframes against OCD syndrome',
             '',
             -- 'Added tooltip default anchor to editmode',
             -- 'Added cooldown colors',
         },
         bugfixes = {
-            -- 'Fixed some missing tooltips for UI elements like expand or close buttons etc.',
+            'Fixed hp color gradient for nameplates being shit.',
             -- 'Fixed auto-shoot blinking never stops',
             -- 'Fixed bags cooldown text not moving the the item',
             -- 'Some more minor clean ups and optimizations',

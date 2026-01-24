@@ -89,20 +89,6 @@ function init:CheckDBVersion()
     return false
 end
 
-function init:SetupProfile()
-    local charKey = UnitName('player') .. '-' .. GetRealmName()
-    local profileName = DF_Profiles.meta.characterProfiles[charKey]
-    if not profileName and not DF_Profiles.meta.autoAssigned[charKey] then
-        profileName = charKey
-        init:ApplyDefaults(profileName)
-        DF_Profiles.meta.characterProfiles[charKey] = profileName
-        DF_Profiles.meta.autoAssigned[charKey] = true
-    end
-    DF.profile = DF_Profiles.profiles[profileName]
-    DF_Profiles.meta.activeProfile = profileName
-    DF.others.currentProfile = profileName
-end
-
 function init:CheckModuleVersions()
     -- collect modules with version mismatches
     local mismatchModules = {}
@@ -137,6 +123,20 @@ function init:CheckModuleVersions()
         return true
     end
     return false
+end
+
+function init:SetupProfile()
+    local charKey = UnitName('player') .. '-' .. GetRealmName()
+    local profileName = DF_Profiles.meta.characterProfiles[charKey]
+    if not profileName and not DF_Profiles.meta.autoAssigned[charKey] then
+        profileName = charKey
+        init:ApplyDefaults(profileName)
+        DF_Profiles.meta.characterProfiles[charKey] = profileName
+        DF_Profiles.meta.autoAssigned[charKey] = true
+    end
+    DF.profile = DF_Profiles.profiles[profileName]
+    DF_Profiles.meta.activeProfile = profileName
+    DF.others.currentProfile = profileName
 end
 
 function init:ExecModules(forceImmediate)

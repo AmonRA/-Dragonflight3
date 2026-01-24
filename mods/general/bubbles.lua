@@ -7,7 +7,7 @@
 --     -- named keys (tab, subtab) define panel location, array elements define categories within that panel
 --     -- each category groups related settings with a header, settings use category + indexInCategory for ordering
 --     gui = {
---         {tab = 'bubbles', subtab = 'mainbar', 'General'},
+--         {tab = 'general', subtab = 'tweaks', 'Speechbubbles'},
 --     },
 
 --     -- defaults examples:
@@ -15,7 +15,7 @@
 --     -- customPlayerArrow = {value = true, metadata = {element = 'checkbox', category = 'Arrow', indexInCategory = 1, description = 'Use Dragonflight\'s custom player arrow', dependency = {key = 'showMinimap', state = true}}},
 --     -- playerArrowScale = {value = 1, metadata = {element = 'slider', category = 'Arrow', indexInCategory = 3, description = 'Size of the player arrow', min = 0.5, max = 2, stepSize = 0.1, dependency = {key = 'showMinimap', state = true}}},
 --     -- playerArrowColor = {value = {1, 1, 1}, metadata = {element = 'colorpicker', category = 'Arrow', indexInCategory = 4, description = 'Color of the player arrow', dependency = {key = 'customPlayerArrow', state = true}}},
---     bubblesprint = {value = true, metadata = {element = 'checkbox', category = 'General', indexInCategory = 1, description = 'bubbles print description'}},
+--     bubblesprint = {value = true, metadata = {element = 'checkbox', category = 'Speechbubbles', indexInCategory = 1, description = 'bubbles print description'}},
 
 -- })
 

@@ -104,7 +104,20 @@ function DF.math.colorGradient(perc, r1, g1, b1, r2, g2, b2, r3, g3, b3)
         return r1, g1, b1
     end
 
-    local segment, relperc = DF.math.modf(perc)
+    local segment, relperc
+    if r3 then
+        if perc >= 0.5 then
+            segment = 1
+            relperc = (perc - 0.5) * 2
+        else
+            segment = 0
+            relperc = perc * 2
+        end
+    else
+        segment = 0
+        relperc = perc
+    end
+
     if segment > 0 and r3 then
         r1, g1, b1, r2, g2, b2 = r2, g2, b2, r3, g3, b3
     end

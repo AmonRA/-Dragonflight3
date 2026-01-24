@@ -1511,6 +1511,7 @@ function setup:GenerateDefaults()
             hasPvPIcon = true,
             healthBarTexture = 'aurora_hpbar',
             manaBarTexture = 'aurora_hpbar',
+            reverseNameLevel = true,
         },
         targettarget = {
             hasNameAbbreviation = true,
@@ -1577,6 +1578,7 @@ function setup:GenerateDefaults()
         local hasHappinessIcon = false
         local portraitBorderTexture = 'portrait_border_edge'
         local scale = 1
+        local reverseNameLevel = false
 
         local healthBarTexture = 'aurora_hpbar_reversed'
         local manaBarTexture = 'aurora_hpbar_reversed'
@@ -1596,6 +1598,7 @@ function setup:GenerateDefaults()
             hasHappinessIcon = overrides.hasHappinessIcon or hasHappinessIcon
             portraitBorderTexture = overrides.portraitBorderTexture or portraitBorderTexture
             scale = overrides.scale or scale
+            reverseNameLevel = overrides.reverseNameLevel or reverseNameLevel
             healthBarTexture = overrides.healthBarTexture or healthBarTexture
             manaBarTexture = overrides.manaBarTexture or manaBarTexture
             if overrides.showHealthText ~= nil then showHealthText = overrides.showHealthText end
@@ -1609,12 +1612,13 @@ function setup:GenerateDefaults()
         defaults[frame.key..'PortraitSize'] = {value = 80, metadata = {element = 'slider', category = catGeneral, indexInCategory = 5, description = 'Portrait size', min = 40, max = 120, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ShowLevel'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 6, description = 'Show level text', dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'ShowName'] = {value = true, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 7, description = 'Show name text', dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'ReverseNameLevel'] = {value = reverseNameLevel, metadata = {element = 'checkbox', category = catGeneral, indexInCategory = 8, description = 'Reverse name and level position', dependency = {key = frame.key..'Enabled', state = true}}}
         if hasNameAbbreviation then
-            defaults[frame.key..'NameAbbreviation'] = {value = 'truncated', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 8, description = 'Name abbreviation mode', options = {'none', 'initials', 'truncated'}, dependency = {key = frame.key..'Enabled', state = true}}}
-            defaults[frame.key..'NameMaxLength'] = {value = 14, metadata = {element = 'slider', category = catGeneral, indexInCategory = 9, description = 'Max name length (truncated mode)', min = 3, max = 20, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'NameAbbreviation', state = 'truncated'}}}}
+            defaults[frame.key..'NameAbbreviation'] = {value = 'truncated', metadata = {element = 'dropdown', category = catGeneral, indexInCategory = 9, description = 'Name abbreviation mode', options = {'none', 'initials', 'truncated'}, dependency = {key = frame.key..'Enabled', state = true}}}
+            defaults[frame.key..'NameMaxLength'] = {value = 14, metadata = {element = 'slider', category = catGeneral, indexInCategory = 10, description = 'Max name length (truncated mode)', min = 3, max = 20, step = 1, dependency = {{key = frame.key..'Enabled', state = true}, {key = frame.key..'NameAbbreviation', state = 'truncated'}}}}
         end
-        defaults[frame.key..'InfoBgWidth'] = {value = 127, metadata = {element = 'slider', category = catGeneral, indexInCategory = 10, description = 'Name bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
-        defaults[frame.key..'InfoBgHeight'] = {value = 16, metadata = {element = 'slider', category = catGeneral, indexInCategory = 11, description = 'Name bar height', min = 8, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'InfoBgWidth'] = {value = 127, metadata = {element = 'slider', category = catGeneral, indexInCategory = 11, description = 'Name bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
+        defaults[frame.key..'InfoBgHeight'] = {value = 16, metadata = {element = 'slider', category = catGeneral, indexInCategory = 12, description = 'Name bar height', min = 8, max = 30, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarWidth'] = {value = 120, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 1, description = 'Health bar width', min = 60, max = 300, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarHeight'] = {value = 20, metadata = {element = 'slider', category = catHealthBar, indexInCategory = 2, description = 'Health bar height', min = 10, max = 50, step = 1, dependency = {key = frame.key..'Enabled', state = true}}}
         defaults[frame.key..'HealthBarTexture'] = {value = healthBarTexture, metadata = {element = 'dropdown', category = catHealthBar, indexInCategory = 3, description = 'Health bar texture', options = {'aurora_hpbar', 'aurora_hpbar_sharp', 'aurora_hpbar_reversed', 'aurora_hpbar_sharp_reversed', 'white8x8'}, dependency = {key = frame.key..'Enabled', state = true}}}
@@ -1807,6 +1811,33 @@ function setup:GenerateCallbacks()
                 local portrait = setup.portraits[j]
                 if (frame.key == 'party' and string.find(portrait.unit, 'party')) or portrait.unit == frame.key then
                     if value then portrait.name:Show() else portrait.name:Hide() end
+                end
+            end
+        end
+        callbacks[frame.key..'ReverseNameLevel'] = function(value)
+            for j = 1, table.getn(setup.portraits) do
+                local portrait = setup.portraits[j]
+                if (frame.key == 'party' and string.find(portrait.unit, 'party')) or portrait.unit == frame.key then
+                    portrait.name:ClearAllPoints()
+                    portrait.level:ClearAllPoints()
+                    local isTarget = portrait.unit == 'target'
+                    if value then
+                        if isTarget then
+                            portrait.name:SetPoint('RIGHT', portrait.infoBg, 'RIGHT', -7, 1)
+                            portrait.level:SetPoint('LEFT', portrait.infoBg, 'LEFT', 3, 1)
+                        else
+                            portrait.name:SetPoint('RIGHT', portrait.infoBg, 'RIGHT', -7, 1)
+                            portrait.level:SetPoint('LEFT', portrait.infoBg, 'LEFT', 5, 1)
+                        end
+                    else
+                        if isTarget then
+                            portrait.name:SetPoint('LEFT', portrait.infoBg, 'LEFT', 3, 1)
+                            portrait.level:SetPoint('RIGHT', portrait.infoBg, 'RIGHT', -7, 1)
+                        else
+                            portrait.name:SetPoint('LEFT', portrait.infoBg, 'LEFT', 5, 1)
+                            portrait.level:SetPoint('RIGHT', portrait.infoBg, 'RIGHT', -7, 1)
+                        end
+                    end
                 end
             end
         end
