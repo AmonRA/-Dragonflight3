@@ -332,9 +332,9 @@ DF:NewModule('raid', 1, function()
 
     local buttons = {
         {btn = toggleBtn, title = 'Interact Editor', desc = 'Opens the interact editor for configuring click actions on raid frames'},
-        {btn = specialBtn, title = 'Focus Frame', desc = 'Toggles the focus frame showing lowest HP raid members'},
-        {btn = headerBtn, title = 'Group Elements', desc = 'Toggles group headers and total HP bars'},
-        {btn = testBtn, title = 'Test Mode', desc = 'Toggles test mode or use /df raid'}
+        {btn = specialBtn, title = 'Focus Frame', desc = 'Toggles the focus frame showing the 5 lowest HP raid members'},
+        {btn = headerBtn, title = 'Group Elements', desc = 'Toggles group headers and group total HP bars'},
+        {btn = testBtn, title = 'Test Mode', desc = 'Toggles test mode (or /df raid)'}
     }
 
     for _, data in buttons do
