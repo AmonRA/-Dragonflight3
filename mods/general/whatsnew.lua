@@ -22,21 +22,15 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
-            'Added focus fire indicator for nameplates',
-            'If 2 or more party/raid members focus the same target, it will show',
-            C.G .. 'Options under GUI > Nameplates > Target Highlight|r',
-            '',
-            'Added name/level reverse to unitframes against OCD syndrome',
-            '',
-            -- 'Added tooltip default anchor to editmode',
-            -- 'Added cooldown colors',
+            'Added raidframes module (phase 1, base features)',
+            C.O .. 'Raidframes will be rolled out in 3 phases (base, interaction features, heal predict)|r',
+            C.G .. 'Options under GUI > Unitframes > Raid|r',
+            C.G .. 'Use /df raid to toggle test mode|r',
         },
         bugfixes = {
-            'Fixed hp color gradient for nameplates being shit.',
-            'Fixed missing stack counter on nameplate debuffs.',
-            -- 'Fixed auto-shoot blinking never stops',
-            -- 'Fixed bags cooldown text not moving the the item',
-            -- 'Some more minor clean ups and optimizations',
+            'Fixed distance module error when targeting dead units',
+            'Fixed dock not saving sectors (again lol)',
+            'Fixed party and targetframes not show group leaders correctly',
         },
     }
 

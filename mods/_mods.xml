@@ -101,6 +101,8 @@
     <Include file="trouble\frameinspect.lua"/>
 
     <!-- UNITFRAMES -->
+    <Include file="unitframes\raid-interact.lua"/>
+    <Include file="unitframes\raid.lua"/>
     <Include file="unitframes\unitframes-tools.lua"/>
     <Include file="unitframes\unitframes.lua"/>
 

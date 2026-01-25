@@ -36,15 +36,6 @@ DF:NewModule('distance', 1, function()
     local portraitSize = frameHeight - 5
     local fontSize = frameHeight - 8
 
-    local distanceRanges = {
-        {min = 0, max = 5, name = 'melee'},
-        {min = 5, max = 10, name = 'close'},
-        {min = 10, max = 20, name = 'medium'},
-        {min = 20, max = 30, name = 'long'},
-        {min = 30, max = 40, name = 'max'},
-        {min = 40, max = 999, name = 'out'}
-    }
-
     local distFrame = CreateFrame('Frame', 'DF_DistanceFrame', UIParent)
     distFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
     distFrame:SetPoint('CENTER', UIParent, 'CENTER', 0, -220)
@@ -119,8 +110,12 @@ DF:NewModule('distance', 1, function()
         this.tick = GetTime() + 0.1
         if UnitExists('target') then
             local dist = UnitXP('distanceBetween', 'player', 'target')
+            if not dist then
+                distFrame:Hide()
+                return
+            end
             local format = distFrame.showDecimals and '%.1f' or '%d'
-            distText:SetText(string.format(format, dist or 0))
+            distText:SetText(string.format(format, dist))
             if distFrame.barColorByRange then
                 local color
                 for i = 1, table.getn(distFrame.colorTable) do

@@ -619,7 +619,7 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
         elapsed = elapsed + arg1
         if elapsed >= 0.5 then
             for i = 1, 6 do
-                if fpsSectors[i] then
+                if fpsSectors[i] and DF.profile.dock['sector'..i..'Widget'] ~= 'none' then
                     widget:FPS(sectors[i])
                 end
             end
@@ -641,26 +641,46 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
     eventFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
     eventFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     eventFrame:SetScript('OnEvent', function()
-        if event == 'PLAYER_XP_UPDATE' then
+        if event == 'PLAYER_XP_UPDATE' and DF.profile.dock.sector2Widget == 'exp' then
             widget:EXP(sectors[2])
         end
-        if event == 'PLAYER_MONEY' then
+        if event == 'PLAYER_MONEY' and DF.profile.dock.sector3Widget == 'gold' then
             widget:Gold(sectors[3])
         end
         if event == 'FRIENDLIST_UPDATE' then
-            widget:Friends(sectors[4])
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'friends' then
+                    widget:Friends(sectors[i])
+                end
+            end
         end
         if event == 'GUILD_ROSTER_UPDATE' or event == 'PLAYER_GUILD_UPDATE' then
-            widget:Guild(sectors[5])
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'guild' then
+                    widget:Guild(sectors[i])
+                end
+            end
         end
         if event == 'UPDATE_INVENTORY_DURABILITY' or (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') then
-            widget:Durability(sectors[6])
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'durability' then
+                    widget:Durability(sectors[i])
+                end
+            end
         end
         if (event == 'UNIT_INVENTORY_CHANGED' and arg1 == 'player') or event == 'BAG_UPDATE' then
-            widget:Ammo(sectors[4])
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'ammo' then
+                    widget:Ammo(sectors[i])
+                end
+            end
         end
         if event == 'BAG_UPDATE' then
-            widget:Bagspace(sectors[5])
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'bagspace' then
+                    widget:Bagspace(sectors[i])
+                end
+            end
         end
         if event == 'PLAYER_REGEN_DISABLED' then
             if glowManager.combatGlowEnabled then
@@ -713,14 +733,14 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
         local fontPath = media[value]
         local size = DF.profile.dock.fontSize
         for i = 1, 6 do
-            if sectors[i].text then
+            if sectors[i].text and DF.profile.dock['sector'..i..'Widget'] ~= 'none' then
                 sectors[i].text:SetFont(fontPath, size)
             end
         end
     end
     callbacks.fontSize = function(value)
         for i = 1, 6 do
-            if sectors[i].text then
+            if sectors[i].text and DF.profile.dock['sector'..i..'Widget'] ~= 'none' then
                 local font = sectors[i].text:GetFont()
                 sectors[i].text:SetFont(font, value)
             end

@@ -298,6 +298,7 @@ DF:NewModule('editmode', 2, 'PLAYER_AFTER_ENTERING_WORLD', function()
         RegisterFrame('DF_NoControlFrame', 'frames')
         RegisterFrame('DF_QuestTracker', 'frames')
         RegisterFrame('DF_FPS', 'frames')
+        RegisterFrame('DF_RaidAnchor', 'frames')
     end)
 
     editFrame:SetScript('OnHide', function()

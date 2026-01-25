@@ -8,6 +8,7 @@ local function ShowHelp()
     print('/df hover or /df hoverbind - Toggle Hoverbind Mode')
     print('/df stacks - Toggle Stack Editor')
     print('/df slash - Toggle Slash Command Manager')
+    print('/df raid - Toggle Raid Test Mode')
     redprint('Trouble:')
     print('/df inspect - Toggle Frame Inspector')
     print('/df safeboot - Disable all addons except Dragonflight')
@@ -110,6 +111,10 @@ _G.SlashCmdList['DRAGONFLIGHT'] = function(msg)
             else
                 DF.setups.slashscan:Show()
             end
+        end
+    elseif msg == 'raid' then
+        if DF.setups.ToggleRaidTestMode then
+            DF.setups.ToggleRaidTestMode()
         end
     elseif msg == '' then
         DRAGONFLIGHTToggleGUI()

@@ -100,7 +100,7 @@ function setup:CreateUnitFrame(unit, width, height)
     unitFrame.raidIcon:SetPoint('CENTER', unitFrame.portraitFrame, 'TOP', 0, -5)
     unitFrame.raidIcon:Hide()
 
-    if string.find(unit, 'party') or unit == 'player' then
+    if string.find(unit, 'party') or unit == 'player' or unit == 'target' then
         unitFrame.leaderIcon = iconFrame:CreateTexture(nil, 'OVERLAY')
         unitFrame.leaderIcon:SetTexture(self.textures.groupLeader)
         unitFrame.leaderIcon:SetSize(16, 16)
@@ -614,12 +614,14 @@ end
 
 function setup:UpdateLeaderIcon(unitFrame)
     if not unitFrame.leaderIcon then return end
-    if GetNumPartyMembers() == 0 then
-        unitFrame.leaderIcon:Hide()
-        return
-    end
     if unitFrame.unit == 'player' then
-        if GetPartyLeaderIndex() == 0 then
+        if GetNumPartyMembers() > 0 and GetPartyLeaderIndex() == 0 then
+            unitFrame.leaderIcon:Show()
+        else
+            unitFrame.leaderIcon:Hide()
+        end
+    elseif unitFrame.unit == 'target' then
+        if UnitIsPartyLeader(unitFrame.unit) then
             unitFrame.leaderIcon:Show()
         else
             unitFrame.leaderIcon:Hide()
@@ -627,7 +629,7 @@ function setup:UpdateLeaderIcon(unitFrame)
     else
         local idStr = string.gsub(unitFrame.unit, 'party', '')
         local id = tonumber(idStr)
-        if GetPartyLeaderIndex() == id then
+        if GetNumPartyMembers() > 0 and GetPartyLeaderIndex() == id then
             unitFrame.leaderIcon:Show()
         else
             unitFrame.leaderIcon:Hide()
@@ -737,6 +739,7 @@ end
 
 function setup:UpdateBarTextNumbers(unitFrame)
     if not unitFrame.abbreviateNumbers then return end
+    if not UnitIsConnected(unitFrame.unit) then return end
     local health = UnitHealth(unitFrame.unit)
     local maxHealth = UnitHealthMax(unitFrame.unit)
     local mana = UnitMana(unitFrame.unit)
@@ -1059,6 +1062,8 @@ function setup:OnUpdate()
                     elseif string.find(portrait.unit, 'party') then
                         if not DF.profile['unitframes']['partyEnabled'] then
                             portrait:Hide()
+                        elseif UnitInRaid('player') then
+                            portrait:Hide()
                         elseif UnitExists(portrait.unit) then
                             if not DF.profile['unitframes']['partyShowPortrait'] then
                                 portrait.model:Hide()
@@ -1090,6 +1095,7 @@ function setup:OnUpdate()
                             setup:UpdateNameText(portrait)
                             setup:UpdateLevelColor(portrait)
                             setup:UpdatePvPIcon(portrait)
+                            setup:UpdateLeaderIcon(portrait)
                             setup:UpdateBarText(portrait)
                             setup:UpdateBarTextNumbers(portrait)
                             local visibleBuffs = setup:UpdateBuffs(portrait)
@@ -1130,6 +1136,7 @@ function setup:OnUpdate()
                                         setup:UpdateLevelColor(portrait)
                                         setup:UpdatePvPIcon(portrait)
                                         setup:UpdateRaidIcon(portrait)
+                                        setup:UpdateLeaderIcon(portrait)
                                         setup:UpdateBarText(portrait)
                                         setup:UpdateBarTextNumbers(portrait)
                                         local visibleBuffs = setup:UpdateBuffs(portrait)
@@ -1274,6 +1281,7 @@ function setup:OnEvent()
                 setup:UpdateNameText(portrait)
                 setup:UpdateLevelColor(portrait)
                 setup:UpdatePvPIcon(portrait)
+                setup:UpdateLeaderIcon(portrait)
                 setup:UpdateBarText(portrait)
                 local visibleBuffs = setup:UpdateBuffs(portrait)
                 setup:UpdateDebuffs(portrait, math.ceil(visibleBuffs / 5))
@@ -2539,12 +2547,20 @@ function setup:GenerateCallbacks()
                             if portrait.model.combatGlow then portrait.model.combatGlow:SetTexCoord(1, 0, 0, 1) end
                             if portrait.model.restingGlow then portrait.model.restingGlow:SetTexCoord(1, 0, 0, 1) end
                         end
+                        if portrait.leaderIcon then
+                            portrait.leaderIcon:ClearAllPoints()
+                            portrait.leaderIcon:SetPoint('TOP', portrait.portraitFrame, 'TOP', 25, 2)
+                        end
                     else
                         portrait.border:SetTexCoord(0, 1, 0, 1)
                         portrait.borderBg:SetTexCoord(0, 1, 0, 1)
                         if borderTexture == 'portrait_border_edge' then
                             if portrait.model.combatGlow then portrait.model.combatGlow:SetTexCoord(0, 1, 0, 1) end
                             if portrait.model.restingGlow then portrait.model.restingGlow:SetTexCoord(0, 1, 0, 1) end
+                        end
+                        if portrait.leaderIcon then
+                            portrait.leaderIcon:ClearAllPoints()
+                            portrait.leaderIcon:SetPoint('TOP', portrait.portraitFrame, 'TOP', -25, 2)
                         end
                     end
                 end
