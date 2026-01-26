@@ -61,6 +61,7 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
         castBar.border:SetTexture(media['tex:castbar:CastingBarFrame.blp'])
 
         local start, duration, spell, channel
+        local currentSpellId = nil
 
         function castBar:StartCast(spellName, castTime, isChannel)
             spell = spellName
@@ -102,18 +103,30 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
                 local _, unitGUID = UnitExists(unit)
                 if casterGUID == unitGUID then
                     local castType, spellid, castTime = arg3, arg4, arg5
+                    local spellName = SpellInfo(spellid) or "Unknown"
+
+                    -- debugprint("[" .. unit .. "] CASTEVENT: " .. castType .. " | SpellID: " .. spellid .. " | Spell: " .. spellName .. " | CurrentID: " .. (currentSpellId or "nil"))
+
                     if castType == 'START' or castType == 'CHANNEL' then
                         start = nil  -- clear before starting new cast
                     end
                     if castType == 'START' then
-                        local spellName = SpellInfo(spellid)
+                        currentSpellId = spellid
+                        -- debugprint("[" .. unit .. "] STARTING cast - Set currentSpellId to: " .. spellid)
                         castBar:StartCast(spellName, castTime, false)
                     elseif castType == 'CHANNEL' then
-                        local spellName = SpellInfo(spellid)
+                        currentSpellId = spellid
+                        -- debugprint("[" .. unit .. "] STARTING channel - Set currentSpellId to: " .. spellid)
                         castBar:StartCast(spellName, castTime, true)
                     elseif castType == 'CAST' or castType == 'FAIL' then
-                        start = nil
-                        castBar:Hide()
+                        if spellid == currentSpellId then
+                            -- debugprint("[" .. unit .. "] HIDING castbar - SpellID matches currentSpellId: " .. spellid)
+                            start = nil
+                            currentSpellId = nil
+                            castBar:Hide()
+                        else
+                            -- debugprint("[" .. unit .. "] IGNORING " .. castType .. " - SpellID " .. spellid .. " != currentSpellId " .. (currentSpellId or "nil"))
+                        end
                     end
                 end
             end
