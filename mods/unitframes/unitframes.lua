@@ -4,19 +4,19 @@ local setup = DF.setups.unitframes
 DF:NewDefaults('unitframes', setup:GenerateDefaults())
 
 DF:NewModule('unitframes', 1, 'PLAYER_LOGIN', function()
-    local playerPortrait = setup:CreateUnitFrame('player', 180, 70)
+    local playerPortrait = setup:CreateUnitFrame('player', 195, 70)
     playerPortrait:SetPoint('TOPLEFT', UIParent, 'TOPLEFT', 45, -30)
 
-    local targetPortrait = setup:CreateUnitFrame('target', 180, 70)
+    local targetPortrait = setup:CreateUnitFrame('target', 195, 70)
     targetPortrait:SetPoint('LEFT', playerPortrait, 'RIGHT', 50, 0)
 
-    local totPortrait = setup:CreateUnitFrame('targettarget', 180, 70)
+    local totPortrait = setup:CreateUnitFrame('targettarget', 195, 70)
     totPortrait:SetPoint('TOPLEFT', targetPortrait, 'BOTTOMRIGHT', -10, -0)
 
-    local petPortrait = setup:CreateUnitFrame('pet', 180, 70)
+    local petPortrait = setup:CreateUnitFrame('pet', 195, 70)
     petPortrait:SetPoint('TOPLEFT', playerPortrait, 'BOTTOMLEFT', 10, -20)
 
-    local petTargetPortrait = setup:CreateUnitFrame('pettarget', 180, 70)
+    local petTargetPortrait = setup:CreateUnitFrame('pettarget', 195, 70)
     petTargetPortrait:SetPoint('TOPLEFT', petPortrait, 'BOTTOMRIGHT', 10, 0)
 
     for i = 1, 4 do

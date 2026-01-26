@@ -17,6 +17,7 @@
     <!-- CAST -->
     <Include file="cast\cast-tools.lua"/>
     <Include file="cast\cast.lua"/>
+    <Include file="cast\cast2.lua"/>
 
     <!-- CHAT -->
     <Include file="chat\chat-tools.lua"/>

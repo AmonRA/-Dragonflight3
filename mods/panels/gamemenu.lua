@@ -251,21 +251,17 @@ DF:NewModule('gamemenu', 1, function()
 
     _G.ToggleGameMenu = function()
         if StaticPopup_EscapePressed() then
-            return
         elseif frame:IsVisible() then
             PlaySound('igMainMenuQuit')
             frame:Hide()
+        elseif CloseMenus() then
+        elseif SpellStopCasting() then
+        elseif SpellStopTargeting() then
+        elseif CloseAllWindows() then
+        elseif ClearTarget() then
         else
-            local closedMenus = CloseMenus()
-            local closedWindows = CloseAllWindows()
-            if not (closedMenus or closedWindows) then
-                if UnitExists('target') then
-                    ClearTarget()
-                else
-                    PlaySound('igMainMenuOpen')
-                    frame:Show()
-                end
-            end
+            PlaySound('igMainMenuOpen')
+            frame:Show()
         end
     end
 

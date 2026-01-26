@@ -367,6 +367,7 @@ function DF.lib.CreateCastBar(unit)
 
         if castName then
             self.state.interrupted = false
+            self.state.fadeOut = false
             if castName ~= self.state.lastCast then
                 self.state.lastCast = castName
                 local castDuration = (endTime - startTime) / 1000
@@ -378,7 +379,6 @@ function DF.lib.CreateCastBar(unit)
                 end
             end
 
-            self.state.fadeOut = false
             self.frame:SetAlpha(1)
             self.bar:SetVertexColor(self.config.barColor[1], self.config.barColor[2], self.config.barColor[3])
             self:SetColors(1, 1, 1, 1, 1, 1)
@@ -425,6 +425,7 @@ function DF.lib.CreateCastBar(unit)
 
         elseif channelName then
             self.state.interrupted = false
+            self.state.fadeOut = false
             if channelName ~= self.state.lastCast then
                 self.state.lastCast = channelName
                 local channelDuration = (channelEnd - channelStart) / 1000
@@ -436,7 +437,6 @@ function DF.lib.CreateCastBar(unit)
                 end
             end
 
-            self.state.fadeOut = false
             self.frame:SetAlpha(1)
             self.bar:SetVertexColor(self.config.barColor[1], self.config.barColor[2], self.config.barColor[3])
             self:SetColors(1, 1, 1, 1, 1, 1)
