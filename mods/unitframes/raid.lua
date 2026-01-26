@@ -815,7 +815,7 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    function setup:RefreshUnit(f)
+    function setup:RefreshUnit(f) -- v1: removed updategrouphealth() call and moved to raid:setscript
         if UnitExists(f.unit) then
             local hp = UnitHealth(f.unit)
             local maxhp = UnitHealthMax(f.unit)
@@ -831,26 +831,31 @@ DF:NewModule('raid', 1, function()
             local r, g, b = self:GetHPColor(f.unit, hp, maxhp)
             f.hp:SetStatusBarColor(r, g, b)
             f:Show()
-            self:UpdateGroupHealth()
+            -- self:UpdateGroupHealth()
             self:UpdateRaidIcon(f)
         else
             f:Hide()
         end
     end
 
-    function setup:UpdateGroupHealth()
-        for group = 1, 8 do
-            local totalHP = 0
-            local totalMaxHP = 0
-            for i = 1, 40 do
-                if raid.frames[i]:IsShown() then
-                    local _, _, g = GetRaidRosterInfo(i)
-                    if g == group then
-                        totalHP = totalHP + UnitHealth(raid.frames[i].unit)
-                        totalMaxHP = totalMaxHP + UnitHealthMax(raid.frames[i].unit)
-                    end
+    function setup:UpdateGroupHealth() -- v1: single loop
+        local groupHP = {}
+        local groupMaxHP = {}
+
+        -- single loop through frames
+        for i = 1, 40 do
+            if raid.frames[i]:IsShown() then
+                local _, _, group = GetRaidRosterInfo(i)
+                if group then
+                    groupHP[group] = (groupHP[group] or 0) + UnitHealth(raid.frames[i].unit)
+                    groupMaxHP[group] = (groupMaxHP[group] or 0) + UnitHealthMax(raid.frames[i].unit)
                 end
             end
+        end
+
+        for group = 1, 8 do
+            local totalHP = groupHP[group] or 0
+            local totalMaxHP = groupMaxHP[group] or 0
             if totalMaxHP > 0 then
                 raid.groupHealthBars[group]:SetMinMaxValues(0, totalMaxHP)
                 raid.groupHealthBars[group]:SetValue(totalHP)
@@ -970,22 +975,33 @@ DF:NewModule('raid', 1, function()
         setup:UpdateAggroBorders()
     end)
 
-    raid:SetScript('OnUpdate', function()
+    raid:SetScript('OnUpdate', function() -- v1: now handles group health update
         this.elapsed = (this.elapsed or 0) + arg1
-        if this.elapsed < 0.1 then return end
+        if this.elapsed < 0.3 then return end
         this.elapsed = 0
         setup:UpdateRange()
+        setup:UpdateGroupHealth()
     end)
 
-    DF.timers.every(0.1, function()
+    DF.timers.every(0.3, function()
         setup:UpdateAggroBorders()
     end)
 
     setup:PositionRaidIcons()
     setup:UpdateTargetBorderPositions()
 
+
+
+
+
+
+
+
+
+
     -- test mode
     local testMode = false
+    local stressTestActive = false
     local testData = {}
 
     function DF.setups.ToggleRaidTestMode()
@@ -1101,6 +1117,69 @@ DF:NewModule('raid', 1, function()
         end
     end
     testBtn:SetScript('OnClick', DF.setups.ToggleRaidTestMode)
+
+    function DF.setups.StressTestRaid()
+        if not testMode then
+            print("Enable test mode first with /df raid")
+            return
+        end
+
+        stressTestActive = not stressTestActive
+
+        if stressTestActive then
+            print("=== STRESS TEST: Testing individual functions ===")
+
+            -- Test 1: UpdateAggroBorders
+            local start = GetTime()
+            for i = 1, 1000 do
+                setup:UpdateAggroBorders()
+            end
+            local aggroTime = (GetTime() - start) * 1000
+
+            -- Test 2: UpdateRange
+            start = GetTime()
+            for i = 1, 1000 do
+                setup:UpdateRange()
+            end
+            local rangeTime = (GetTime() - start) * 1000
+
+            -- Test 3: UpdateGroupHealth
+            start = GetTime()
+            for i = 1, 1000 do
+                setup:UpdateGroupHealth()
+            end
+            local groupTime = (GetTime() - start) * 1000
+
+            -- Test 4: HP Color calculations
+            start = GetTime()
+            for i = 1, 1000 do
+                for j = 1, 40 do
+                    local r, g, b = setup:GetHPColor(testData[j].class, testData[j].hp, 2000)
+                end
+            end
+            local colorTime = (GetTime() - start) * 1000
+
+            print("=== RESULTS (1000 iterations) ===")
+            print(string.format("UpdateAggroBorders: %.2fms", aggroTime))
+            print(string.format("UpdateRange: %.2fms", rangeTime))
+            print(string.format("UpdateGroupHealth: %.2fms", groupTime))
+            print(string.format("Color calculations (40x): %.2fms", colorTime))
+            print("=== SLOWEST FUNCTION IS YOUR BOTTLENECK ===")
+        end
+    end
+
+
+    _G.SlashCmdList["DFSTRESSTEST"] = function()
+        DF.setups.StressTestRaid()
+    end
+    -- _G.SLASH_DFSTRESSTEST1 = "/dfstresstest"
+    -- end test mode
+
+
+
+
+
+
 
     -- callbacks
     local callbacks = {}

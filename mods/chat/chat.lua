@@ -234,6 +234,12 @@ DF:NewModule('chat', 1, function()
         middleSel:Hide()
         chatTab.auroraMiddleSel = middleSel
 
+        local edgeWidth = chatTab:GetWidth() / 2
+        left:SetWidth(edgeWidth)
+        right:SetWidth(edgeWidth)
+        leftSel:SetWidth(edgeWidth)
+        rightSel:SetWidth(edgeWidth)
+
         chatTab.auroraSkinned = true
     end
 

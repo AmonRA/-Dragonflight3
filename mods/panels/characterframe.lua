@@ -70,7 +70,7 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
         characterBg:Hide()
         CharacterFrame_ShowSubFrame('PetPaperDollFrame')
         PanelTemplates_SetTab(CharacterFrame, 2)
-    end, 55)
+    end, 43)
 
     customBg:AddTab('Reputation', function()
         characterBg:Hide()
@@ -85,12 +85,12 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
             petTab:Hide()
             if customBg.Tabs[3] then
                 customBg.Tabs[3]:ClearAllPoints()
-                customBg.Tabs[3]:SetPoint('BOTTOMLEFT', customBg.Tabs[1], 'BOTTOMRIGHT', 2, 0)
+                customBg.Tabs[3]:SetPoint('BOTTOMLEFT', customBg.Tabs[1], 'BOTTOMRIGHT', 4, 0)
             end
         end
         if HasPetUI() and customBg.Tabs[3] then
             customBg.Tabs[3]:ClearAllPoints()
-            customBg.Tabs[3]:SetPoint('BOTTOMLEFT', petTab, 'BOTTOMRIGHT', 2, 0)
+            customBg.Tabs[3]:SetPoint('BOTTOMLEFT', petTab, 'BOTTOMRIGHT', 4, 0)
         end
     end
 

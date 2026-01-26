@@ -223,6 +223,14 @@ function DF.ui.CreateTabs(parent, name, flipVertical)
         end
         label:SetText(text)
 
+        local edgeWidth = tab:GetWidth() / 2
+        left:SetWidth(edgeWidth)
+        right:SetWidth(edgeWidth)
+        leftSel:SetWidth(edgeWidth)
+        rightSel:SetWidth(edgeWidth)
+        hlLeft:SetWidth(edgeWidth)
+        hlRight:SetWidth(edgeWidth)
+
         function tab:SetSelected(selected)
             if selected then
                 left:Hide()
@@ -1323,7 +1331,6 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
 
         local tex = media['tex:interface:uiframetabs']
 
-        -- Normal state (inactive, 36px tall)
         local left = tab:CreateTexture(nil, "BACKGROUND")
         left:SetTexture(tex)
         left:SetSize(35, 36)
@@ -1346,7 +1353,6 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
         middle:SetTexCoord(0, 0.015625, 0.175781, 0.316406)
         tab.Middle = middle
 
-        -- Selected state (active, 42px tall)
         local leftSel = tab:CreateTexture(nil, "BACKGROUND")
         leftSel:SetTexture(tex)
         leftSel:SetSize(35, 45)
@@ -1372,7 +1378,6 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
         middleSel:Hide()
         tab.MiddleSel = middleSel
 
-        -- Highlight
         local hlLeft = tab:CreateTexture(nil, "HIGHLIGHT")
         hlLeft:SetTexture(tex)
         hlLeft:SetSize(35, 36)
@@ -1398,7 +1403,6 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
         hlMiddle:SetBlendMode("ADD")
         hlMiddle:SetAlpha(0.4)
 
-        -- Text
         local label = tab:CreateFontString(nil, "BORDER", "GameFontNormalSmall")
         label:SetPoint("CENTER", tab, "CENTER", 0, 2)
         label:SetText(text)
@@ -1412,7 +1416,14 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
             tab:SetSize(finalTabWidth, 32)
         end
 
-        -- State functions
+        local edgeWidth = tab:GetWidth() / 2
+        left:SetWidth(edgeWidth)
+        right:SetWidth(edgeWidth)
+        leftSel:SetWidth(edgeWidth)
+        rightSel:SetWidth(edgeWidth)
+        hlLeft:SetWidth(edgeWidth)
+        hlRight:SetWidth(edgeWidth)
+
         function tab:SetSelected(selected)
             if selected then
                 left:Hide()
@@ -1466,7 +1477,8 @@ function DF.ui.CreatePaperDollFrame(name, parent, width, height, frameStyle)
         if numTabs == 0 then
             tab:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 8, -30)
         else
-            tab:SetPoint("BOTTOMLEFT", frame.Tabs[numTabs], "BOTTOMRIGHT", spacing or 2, 0)
+            tab:SetPoint("BOTTOMLEFT", frame.Tabs[numTabs], "BOTTOMRIGHT", (spacing or 4), 0)
+
         end
 
         tab:SetScript("OnClick", function()

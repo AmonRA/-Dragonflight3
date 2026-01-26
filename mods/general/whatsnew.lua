@@ -29,12 +29,8 @@ DF:NewModule('whatsnew', 1, function()
             C.G .. 'Use /df raid to toggle test mode|r',
         },
         bugfixes = {
-            'Fixed raid frame range fading beeing slow',
-            'Fixed dock not showing combat or gold properly',
-            'Fixed ESCAPE not canceling spellcast\'s',
-            'Fixed distance module error when targeting dead units',
-            'Fixed dock not saving sectors (again lol)',
-            'Fixed party and targetframes not show group leaders correctly',
+            C.R..'First attempt at improving raidframe performance, be carefull',
+            'Fixed small panel tabs (characterframe etc.) having overlap textures',
         },
     }
 
