@@ -39,7 +39,8 @@ function DF.lib.CreateCastBar(unit)
         interrupted = false,
         sparkPositions = {},
         calculatedFadeTime = 1,
-        currentLag = 0
+        currentLag = 0,
+        currentSpellId = nil
     }
 
     function cast:CreateCastFrame()
@@ -521,13 +522,24 @@ function DF.lib.CreateCastBar(unit)
     castEventFrame:SetScript('OnEvent', function()
         local casterGUID = arg1
         local eventType = arg3
+        local spellid = arg4
         local casterName = UnitName(casterGUID)
         local unitName = UnitName(cast.unit)
         if casterName == unitName then
-            if eventType == 'FAIL' then
-                cast.state.interrupted = true
+            if eventType == 'START' then
+                cast.state.currentSpellId = spellid
+            elseif eventType == 'CHANNEL' then
+                cast.state.currentSpellId = spellid
+            elseif eventType == 'FAIL' then
+                if spellid == cast.state.currentSpellId then
+                    cast.state.interrupted = true
+                    cast.state.currentSpellId = nil
+                end
             elseif eventType == 'CAST' then
-                cast.state.interrupted = false
+                if spellid == cast.state.currentSpellId then
+                    cast.state.interrupted = false
+                    cast.state.currentSpellId = nil
+                end
             end
         end
     end)
@@ -541,6 +553,7 @@ function DF.lib.CreateCastBar(unit)
             cast.state.lastCast = nil
             cast.state.lastEndTime = nil
             cast.state.interrupted = false
+            cast.state.currentSpellId = nil
             cast.state.sparkPositions = {}
             for i = 1, cast.config.trailMaxCount do
                 if cast.sparkTrails[i] then

@@ -23,15 +23,13 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
-            C.R .. 'Added minimal castbar-TESTVERSION module due to multiple reports',
-            C.R .. 'of castbar not functioning correctly, please enable that instead and report|r',
-            '',
             'Added raidframes module (phase 1, base features)',
             C.O .. 'Raidframes will be rolled out in 3 phases (base, interaction features, heal predict)|r',
             C.G .. 'Options under GUI > Unitframes > Raid|r',
             C.G .. 'Use /df raid to toggle test mode|r',
         },
         bugfixes = {
+            'Fixed castbar disappearing in various situations',
             'Fixed ESCAPE not canceling spellcast\'s',
             'Fixed distance module error when targeting dead units',
             'Fixed dock not saving sectors (again lol)',
