@@ -9,72 +9,58 @@ DF:NewDefaults('castbar-testversion', {
 DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
     DF.common.KillFrame(CastingBarFrame)
 
+    local GetTime = GetTime
+    local strformat = string.format
+    local UnitExists = UnitExists
+    local UnitCastingInfo = UnitCastingInfo
+    local UnitChannelInfo = UnitChannelInfo
+    local SpellInfo = SpellInfo
+
     local function CreateCastBar(unit, frameName, width, height)
         local castBar = CreateFrame('Frame', frameName, UIParent)
         castBar:SetSize(width, height)
         castBar:SetFrameStrata('LOW')
         castBar:Hide()
 
-        local bg = castBar:CreateTexture(nil, 'BACKGROUND')
-        bg:SetAllPoints()
-        bg:SetTexture(media['tex:castbar:CastingBarBackground.blp'])
+        castBar.bg = castBar:CreateTexture(nil, 'BACKGROUND')
+        castBar.bg:SetAllPoints()
+        castBar.bg:SetTexture(media['tex:castbar:CastingBarBackground.blp'])
 
-        local dropshadow = castBar:CreateTexture(nil, 'BACKGROUND')
-        dropshadow:SetSize(width - 4, height + 9)
-        dropshadow:SetPoint('TOP', castBar, 'BOTTOM', -1, 5)
-        dropshadow:SetTexture(media['tex:castbar:CastingBarFrameDropShadow.blp'])
-        dropshadow:SetAlpha(0.5)
+        castBar.dropshadow = castBar:CreateTexture(nil, 'BACKGROUND')
+        castBar.dropshadow:SetSize(width - 4, height + 9)
+        castBar.dropshadow:SetPoint('TOP', castBar, 'BOTTOM', -1, 5)
+        castBar.dropshadow:SetTexture(media['tex:castbar:CastingBarFrameDropShadow.blp'])
+        castBar.dropshadow:SetAlpha(0.5)
 
-        local barFill = castBar:CreateTexture(nil, 'ARTWORK')
-        barFill:SetPoint('LEFT', castBar, 'LEFT', 0, 0)
-        barFill:SetTexture(media['tex:castbar:CastingBarStandard3.tga'])
-        barFill:SetVertexColor(1, 0.82, 0)
-        barFill:SetSize(0, height)
+        castBar.barFill = castBar:CreateTexture(nil, 'ARTWORK')
+        castBar.barFill:SetPoint('LEFT', castBar, 'LEFT', 0, 0)
+        castBar.barFill:SetTexture(media['tex:castbar:CastingBarStandard3.tga'])
+        castBar.barFill:SetVertexColor(1, 0.82, 0)
+        castBar.barFill:SetSize(0, height)
 
-        local text = castBar:CreateFontString(nil, 'ARTWORK')
-        text:SetPoint('LEFT', dropshadow, 'LEFT', 6, -1)
-        text:SetFont('Fonts\\FRIZQT__.TTF', height * 0.75)
-        text:SetShadowOffset(1, -1)
-        text:SetShadowColor(0, 0, 0)
+        castBar.text = castBar:CreateFontString(nil, 'ARTWORK')
+        castBar.text:SetPoint('LEFT', castBar.dropshadow, 'LEFT', 6, -1)
+        castBar.text:SetFont('Fonts\\FRIZQT__.TTF', height * 0.75)
+        castBar.text:SetShadowOffset(1, -1)
+        castBar.text:SetShadowColor(0, 0, 0)
 
-        local timeText = castBar:CreateFontString(nil, 'ARTWORK')
-        timeText:SetPoint('RIGHT', dropshadow, 'RIGHT', -6, -1)
-        timeText:SetFont('Fonts\\FRIZQT__.TTF', height * 0.75)
-        timeText:SetShadowOffset(1, -1)
-        timeText:SetShadowColor(0, 0, 0)
+        castBar.timeText = castBar:CreateFontString(nil, 'ARTWORK')
+        castBar.timeText:SetPoint('RIGHT', castBar.dropshadow, 'RIGHT', -6, -1)
+        castBar.timeText:SetFont('Fonts\\FRIZQT__.TTF', height * 0.75)
+        castBar.timeText:SetShadowOffset(1, -1)
+        castBar.timeText:SetShadowColor(0, 0, 0)
 
-        local spark = castBar:CreateTexture(nil, 'OVERLAY')
-        spark:SetSize(32, height + 11)
-        spark:SetTexture('Interface\\CastingBar\\UI-CastingBar-Spark')
-        spark:SetBlendMode('ADD')
-        spark:Hide()
+        castBar.spark = castBar:CreateTexture(nil, 'OVERLAY')
+        castBar.spark:SetSize(32, height + 11)
+        castBar.spark:SetTexture('Interface\\CastingBar\\UI-CastingBar-Spark')
+        castBar.spark:SetBlendMode('ADD')
+        castBar.spark:Hide()
 
-        local border = castBar:CreateTexture(nil, 'OVERLAY')
-        border:SetAllPoints()
-        border:SetTexture(media['tex:castbar:CastingBarFrame.blp'])
+        castBar.border = castBar:CreateTexture(nil, 'OVERLAY')
+        castBar.border:SetAllPoints()
+        castBar.border:SetTexture(media['tex:castbar:CastingBarFrame.blp'])
 
         local start, duration, spell, channel
-
-        function castBar:OnUpdate()
-            if start then
-                local elapsed = GetTime() - start
-                local remain = duration - elapsed
-                if remain > 0 then
-                    local value = channel and remain or elapsed
-                    local pct = value / duration
-                    barFill:SetWidth(width * pct)
-                    barFill:SetTexCoord(0, pct, 0, 1)
-                    text:SetText(spell)
-                    timeText:SetText(string.format('%.1f', channel and -remain or elapsed))
-                    local sparkPos = width * pct
-                    spark:SetPoint('CENTER', castBar, 'LEFT', sparkPos, 0)
-                    spark:Show()
-                else
-                    castBar:Hide()
-                    spark:Hide()
-                end
-            end
-        end
 
         function castBar:StartCast(spellName, castTime, isChannel)
             spell = spellName
@@ -82,41 +68,34 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
             start = GetTime()
             channel = isChannel
             local pct = channel and 1 or 0
-            barFill:SetWidth(width * pct)
-            barFill:SetTexCoord(0, pct, 0, 1)
+            castBar.barFill:SetWidth(width * pct)
+            castBar.barFill:SetTexCoord(0, pct, 0, 1)
             castBar:Show()
         end
 
-        function castBar:CheckCasting()
-            if UnitCastingInfo(unit) then
-                local spellName, _, _, _, startTime, endTime = UnitCastingInfo(unit)
-                local now = GetTime() * 1000
-                local totalDuration = (endTime - startTime) / 1000
-                local elapsed = (now - startTime) / 1000
-                spell = spellName
-                duration = totalDuration
-                start = GetTime() - elapsed
-                channel = false
-                castBar:Show()
-            elseif UnitChannelInfo(unit) then
-                local spellName, _, _, _, startTime, endTime = UnitChannelInfo(unit)
-                local now = GetTime() * 1000
-                local totalDuration = (endTime - startTime) / 1000
-                local elapsed = (now - startTime) / 1000
-                spell = spellName
-                duration = totalDuration
-                start = GetTime() - elapsed
-                channel = true
-                castBar:Show()
-            end
+        function castBar:SetCastInfo(spellName, startTime, endTime, isChannel)
+            local now = GetTime() * 1000
+            local totalDuration = (endTime - startTime) / 1000
+            local elapsed = (now - startTime) / 1000
+            spell = spellName
+            duration = totalDuration
+            start = GetTime() - elapsed
+            channel = isChannel
+            castBar:Show()
         end
 
         function castBar:OnEvent()
             if event == 'PLAYER_TARGET_CHANGED' and unit == 'target' then
-                start = nil  -- always clear, not just when no target
+                start = nil
                 castBar:Hide()
                 if UnitExists('target') then
-                    castBar:CheckCasting()
+                    if UnitCastingInfo(unit) then
+                        local spellName, _, _, _, startTime, endTime = UnitCastingInfo(unit)
+                        castBar:SetCastInfo(spellName, startTime, endTime, false)
+                    elseif UnitChannelInfo(unit) then
+                        local spellName, _, _, _, startTime, endTime = UnitChannelInfo(unit)
+                        castBar:SetCastInfo(spellName, startTime, endTime, true)
+                    end
                 end
             elseif event == 'UNIT_CASTEVENT' then
                 local casterGUID = arg1
@@ -140,12 +119,31 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
             end
         end
 
+        function castBar:OnUpdate()
+            if start then
+                local elapsed = GetTime() - start
+                local remain = duration - elapsed
+                if remain > 0 then
+                    local value = channel and remain or elapsed
+                    local pct = value / duration
+                    castBar.barFill:SetWidth(width * pct)
+                    castBar.barFill:SetTexCoord(0, pct, 0, 1)
+                    castBar.text:SetText(spell)
+                    castBar.timeText:SetText(strformat('%.1f', channel and -remain or elapsed))
+                    local sparkPos = width * pct
+                    castBar.spark:SetPoint('CENTER', castBar, 'LEFT', sparkPos, 0)
+                    castBar.spark:Show()
+                else
+                    castBar:Hide()
+                    castBar.spark:Hide()
+                end
+            end
+        end
+
         castBar:SetScript('OnEvent', castBar.OnEvent)
         castBar:SetScript('OnUpdate', castBar.OnUpdate)
         castBar:RegisterEvent('UNIT_CASTEVENT')
-        if unit == 'target' then
-            castBar:RegisterEvent('PLAYER_TARGET_CHANGED')
-        end
+        if unit == 'target' then castBar:RegisterEvent('PLAYER_TARGET_CHANGED') end
 
         return castBar
     end
