@@ -628,7 +628,6 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
     end)
 
     local eventFrame = CreateFrame'Frame'
-    eventFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
     eventFrame:RegisterEvent('PLAYER_XP_UPDATE')
     eventFrame:RegisterEvent('PLAYER_MONEY')
     eventFrame:RegisterEvent('FRIENDLIST_UPDATE')
@@ -682,20 +681,35 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
                 end
             end
         end
-        if event == 'PLAYER_REGEN_DISABLED' then
-            if glowManager.combatGlowEnabled then
-                helpers.SetGlowCondition('combat', true)
-            end
-        elseif event == 'PLAYER_REGEN_ENABLED' then
-            if glowManager.combatGlowEnabled then
-                helpers.SetGlowCondition('combat', false)
-            end
+            if event == 'PLAYER_REGEN_DISABLED' then
+                for i = 1, 6 do
+                    if DF.profile.dock['sector'..i..'Widget'] == 'combat' then
+                        widget:Combat(sectors[i])
+                    end
+                end
+                if glowManager.combatGlowEnabled then
+                    helpers.SetGlowCondition('combat', true)
+                end
+            elseif event == 'PLAYER_REGEN_ENABLED' then
+                for i = 1, 6 do
+                    if DF.profile.dock['sector'..i..'Widget'] == 'combat' then
+                        widget:Combat(sectors[i])
+                    end
+                end
+                if glowManager.combatGlowEnabled then
+                    helpers.SetGlowCondition('combat', false)
+                end
+
         elseif event == 'PLAYER_UPDATE_RESTING' then
             if glowManager.restingGlowEnabled then
                 helpers.SetGlowCondition('resting', IsResting())
             end
         end
     end)
+    -- Initialize all widgets
+    for i = 1, 6 do
+        helpers.ApplyWidget(sectors[i], DF.profile.dock['sector'..i..'Widget'], i)
+    end
 
     local glowTopOption = 'all'
     local glowBottomOption = 'all'

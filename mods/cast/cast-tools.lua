@@ -526,17 +526,22 @@ function DF.lib.CreateCastBar(unit)
         local casterName = UnitName(casterGUID)
         local unitName = UnitName(cast.unit)
         if casterName == unitName then
+            -- debugprint("[" .. cast.unit .. "] CASTEVENT: " .. eventType .. " | SpellID: " .. spellid .. " | CurrentID: " .. (cast.state.currentSpellId or "nil"))
             if eventType == 'START' then
                 cast.state.currentSpellId = spellid
+                -- cast.state.interrupted = false
             elseif eventType == 'CHANNEL' then
                 cast.state.currentSpellId = spellid
+                -- cast.state.interrupted = false
             elseif eventType == 'FAIL' then
                 if spellid == cast.state.currentSpellId then
+                    -- debugprint("[" .. cast.unit .. "] Setting interrupted = true for spell " .. spellid)
                     cast.state.interrupted = true
                     cast.state.currentSpellId = nil
                 end
             elseif eventType == 'CAST' then
                 if spellid == cast.state.currentSpellId then
+                    -- debugprint("[" .. cast.unit .. "] Setting interrupted = false for spell " .. spellid)
                     cast.state.interrupted = false
                     cast.state.currentSpellId = nil
                 end

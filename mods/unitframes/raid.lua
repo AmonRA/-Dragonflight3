@@ -332,7 +332,7 @@ DF:NewModule('raid', 1, function()
 
     local buttons = {
         {btn = toggleBtn, title = 'Interact Editor', desc = 'Opens the interact editor for configuring click actions on raid frames'},
-        {btn = specialBtn, title = 'Focus Frame', desc = 'Toggles the focus frame showing the 5 lowest HP raid members'},
+        {btn = specialBtn, title = 'Focus Frame', desc = 'Toggles the focus frame showing the 5 lowest HP raid members (requires active raid)'},
         {btn = headerBtn, title = 'Group Elements', desc = 'Toggles group headers and group total HP bars'},
         {btn = testBtn, title = 'Test Mode', desc = 'Toggles test mode (or /df raid)'}
     }
@@ -438,7 +438,7 @@ DF:NewModule('raid', 1, function()
 
     alphaUpdater:SetScript('OnUpdate', function()
         this.elapsed = (this.elapsed or 0) + arg1
-        if this.elapsed < 0.1 then return end
+        if this.elapsed < 0.01 then return end
         this.elapsed = 0
 
         for i = 1, 40 do
