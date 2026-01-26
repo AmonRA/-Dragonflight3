@@ -234,12 +234,13 @@ DF:NewModule('chat', 1, function()
         middleSel:Hide()
         chatTab.auroraMiddleSel = middleSel
 
-        -- local edgeWidth = chatTab:GetWidth() / 2
-        -- left:SetWidth(edgeWidth)
-        -- right:SetWidth(edgeWidth)
-        -- leftSel:SetWidth(edgeWidth)
-        -- rightSel:SetWidth(edgeWidth)
-
+        chatTab:SetScript('OnSizeChanged', function()
+            local edgeWidth = this:GetWidth() / 2
+            this.auroraLeft:SetWidth(edgeWidth)
+            this.auroraRight:SetWidth(edgeWidth)
+            this.auroraLeftSel:SetWidth(edgeWidth)
+            this.auroraRightSel:SetWidth(edgeWidth)
+        end)
         chatTab.auroraSkinned = true
     end
 
@@ -273,8 +274,8 @@ DF:NewModule('chat', 1, function()
         local tab = _G['ChatFrame'..i..'Tab']
         if tab then
             SkinChatTab(tab)
-            tab:ClearAllPoints()
-            tab:SetPoint('BOTTOMLEFT', _G['ChatFrame'..i], 'TOPLEFT', 0, 3)
+            -- tab:ClearAllPoints()
+            -- tab:SetPoint('BOTTOMLEFT', _G['ChatFrame'..i], 'TOPLEFT', 50, 15)
         end
     end
 
