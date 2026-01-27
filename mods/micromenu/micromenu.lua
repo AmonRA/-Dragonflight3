@@ -169,6 +169,46 @@ DF:NewModule('micro', 1, 'PLAYER_LOGIN', function()
     callbacks.expandButtons = function(value)
         setup.frame.expandButtonLeft:SetChecked(value)
         setup.frame.expandButtonRight:SetChecked(value)
+
+        local leftBtn = setup.frame.expandButtonLeft
+        local rightBtn = setup.frame.expandButtonRight
+
+        if leftBtn.reversed then
+            if value then
+                leftBtn:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
+                leftBtn:GetHighlightTexture():SetTexCoord(1, 0, 0, 1)
+            else
+                leftBtn:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
+                leftBtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 1)
+            end
+        else
+            if value then
+                leftBtn:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
+                leftBtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 1)
+            else
+                leftBtn:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
+                leftBtn:GetHighlightTexture():SetTexCoord(1, 0, 0, 1)
+            end
+        end
+
+        if rightBtn.reversed then
+            if value then
+                rightBtn:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
+                rightBtn:GetHighlightTexture():SetTexCoord(1, 0, 0, 1)
+            else
+                rightBtn:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
+                rightBtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 1)
+            end
+        else
+            if value then
+                rightBtn:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
+                rightBtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 1)
+            else
+                rightBtn:GetNormalTexture():SetTexCoord(1, 0, 0, 1)
+                rightBtn:GetHighlightTexture():SetTexCoord(1, 0, 0, 1)
+            end
+        end
+
         for _, button in ipairs(setup.buttons) do
             if value then
                 button:Show()

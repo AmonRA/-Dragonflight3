@@ -117,6 +117,11 @@ DF:NewModule('collector', 1, 'PLAYER_ENTERING_WORLD', function()
             btn:SetPoint('TOPLEFT', collectorFrame, 'TOPLEFT', xOffset, yOffset)
             btn:SetScale(buttonScale)
 
+            btn:SetMovable(false)
+            btn:RegisterForDrag()
+            btn:SetScript('OnDragStart', nil)
+            btn:SetScript('OnDragStop', nil)
+
             if not btn.collectorHooked then
                 local btnName = btn:GetName()
                 DF.hooks.HookScript(btn, 'OnClick', function()
@@ -129,18 +134,16 @@ DF:NewModule('collector', 1, 'PLAYER_ENTERING_WORLD', function()
         end
     end
 
-    DF.timers.delay(.1, function()
-        LayoutButtons(buttonsFound)
-    end)
+    DF.timers.delay(.1, function() LayoutButtons(buttonsFound) end)
 
     -- callbacks
     local callbacks = {}
 
-    callbacks.buttonsPerRow = function(value)
+    callbacks.buttonsPerRow = function()
         LayoutButtons(buttonsFound)
     end
 
-    callbacks.spacing = function(value)
+    callbacks.spacing = function()
         LayoutButtons(buttonsFound)
     end
 
@@ -162,12 +165,11 @@ DF:NewModule('collector', 1, 'PLAYER_ENTERING_WORLD', function()
         bg:SetVertexColor(0, 0, 0, value / 100)
     end
 
-    callbacks.autoHide = function(value)
+    callbacks.autoHide = function()
         LayoutButtons(buttonsFound)
     end
 
-    callbacks.autoClose = function(value)
-    end
+    callbacks.autoClose = function() end
 
     DF:NewCallbacks('collector', callbacks)
 end)

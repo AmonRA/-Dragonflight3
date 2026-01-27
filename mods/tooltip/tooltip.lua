@@ -74,7 +74,7 @@ DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
             if showDistance then
                 local dist = UnitXP('distanceBetween', 'player', 'mouseover')
                 if dist then
-                    GameTooltip:AddLine('Distance: '..string.format('%.1f', dist)..'y', 1, 1, 1)
+                    GameTooltip:AddLine('Distance: '..string.format('%.0f', dist)..'y', 1, 1, 1)
                     distanceLineIndex = GameTooltip:NumLines()
                 end
             end
@@ -90,7 +90,7 @@ DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
             if dist then
                 local line = getglobal('GameTooltipTextLeft'..distanceLineIndex)
                 if line then
-                    line:SetText('Distance: '..string.format('%.1f', dist)..'y')
+                    line:SetText('Distance: '..string.format('%.0f', dist)..'y')
                 end
             end
         end
@@ -155,7 +155,7 @@ DF:NewModule('tooltip', 1, 'PLAYER_ENTERING_WORLD', function()
             end
             GameTooltipStatusBar:SetScript('OnValueChanged', function()
                 HealthBar_OnValueChanged(arg1)
-                local min, max = this:GetMinMaxValues()
+                local _, max = this:GetMinMaxValues()
                 local cur = this:GetValue()
                 if cur > 0 and textFormat then
                     if textFormat == 'cur' then

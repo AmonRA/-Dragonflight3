@@ -31,6 +31,8 @@ DF:NewModule('whatsnew', 1, function()
         },
         bugfixes = {
             C.R..'First attempt at improving raidframe performance, be carefull',
+            'Fixed minimap buttons beeing dragable',
+            'Fixed micromenu expandbutton not saving properly',
             'Fixed unitframes not showing tagged mobs on hp bars',
             'Fixed small panel tabs (characterframe, chat etc.) having overlap textures',
             'Fixed cooldowns disappearing too early',

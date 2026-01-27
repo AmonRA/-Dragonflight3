@@ -174,14 +174,6 @@ function syncFrame:OnChatMsgChannelDetected()
             local version = DF.lua.match(arg1, '#V(.+)')
             self:CheckForUpdate(version)
         end
-        -- admin help
-        if arg1 == '#ADMIN' and isAdmin and s() then
-            print('|cff00ff00Admin Commands:|r')
-            print('|cffffcc00#ADMIN-INFO|r - Count online users')
-            print('|cffffcc00#ADMIN-PUSHPRINT msg|r - Broadcast to all')
-            print('|cffffcc00#ADMIN-PUSHPRINT-user msg|r - Send to specific user')
-            print('|cffffcc00#ADMIN-DEBUG on/off|r - Toggle debug mode')
-        end
         -- player info confirmation
         if string.find(arg1, '#CONFIRM') then
             local name = DF.lua.match(arg1, '#CONFIRM(.+)')
@@ -203,7 +195,7 @@ function syncFrame:OnChatMsgChannelDetected()
                     for _, _ in pairs(infoResponses) do
                         count = count + 1
                     end
-                    print('|cff00ff00[Admin] ' .. count .. ' users responded|r')
+                    print('|cff00ff00[Sync] ' .. count .. ' users responded|r')
                     infoCountTimer = nil
                 end)
             else
@@ -232,13 +224,13 @@ function syncFrame:OnChatMsgChannelDetected()
                 if targetUser and message then
                     if debugMode and not (isAdmin and s()) then return end
                     if string.lower(UnitName('player')) == string.lower(targetUser) or (isAdmin and s()) then
-                        print('|cffff6600[Admin Message]|r: ' .. message)
+                        print('|cffff6600[Guzruul Message]|r: ' .. message)
                     end
                 else
                     local msg = DF.lua.match(arg1, '#ADMIN%-PUSHPRINT(.+)')
                     if msg then
                         if debugMode and not (isAdmin and s()) then return end
-                        print('|cffff6600[Admin Message]|r: ' .. msg)
+                        print('|cffff6600[Guzruul Message]|r: ' .. msg)
                     end
                 end
             end
@@ -249,12 +241,12 @@ function syncFrame:OnChatMsgChannelDetected()
             if mode == 'on' then
                 debugMode = true
                 if isAdmin and s() then
-                    print('|cffff0000[Admin] Debug mode ON|r')
+                    print('|cffff0000[Sync] Debug mode ON|r')
                 end
             elseif mode == 'off' then
                 debugMode = false
                 if isAdmin and s() then
-                    print('|cff00ff00[Admin] Debug mode OFF|r')
+                    print('|cff00ff00[Sync] Debug mode OFF|r')
                 end
             end
         end
@@ -295,6 +287,7 @@ end
 
 syncFrame:RegisterEvent('SYNC_READY')
 syncFrame:RegisterEvent('CHAT_MSG_CHANNEL')
+syncFrame:RegisterEvent('CHAT_MSG_SAY')
 syncFrame:RegisterEvent('CHAT_MSG_ADDON')
 syncFrame:RegisterEvent('PARTY_MEMBERS_CHANGED')
 syncFrame:SetScript('OnEvent', function()
@@ -306,6 +299,16 @@ syncFrame:SetScript('OnEvent', function()
 
     if event == 'CHAT_MSG_CHANNEL' then
         syncFrame:OnChatMsgChannelDetected()
+    end
+
+    if event == 'CHAT_MSG_SAY' then
+        if arg1 == '#ADMIN' and isAdmin and s() then
+            print('|cff00ff00Admin Commands:|r')
+            print('|cffffcc00#ADMIN-INFO|r - Count online users')
+            print('|cffffcc00#ADMIN-PUSHPRINT msg|r - Broadcast to all')
+            print('|cffffcc00#ADMIN-PUSHPRINT-user msg|r - Send to specific user')
+            print('|cffffcc00#ADMIN-DEBUG on/off|r - Toggle debug mode')
+        end
     end
 
     if event == 'CHAT_MSG_ADDON' then

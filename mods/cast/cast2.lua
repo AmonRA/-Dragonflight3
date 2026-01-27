@@ -2,8 +2,8 @@ DRAGONFLIGHT()
 if not dependency('SuperWoW') then return end
 
 DF:NewDefaults('castbar-testversion', {
-    enabled = {value = false},
-    version = {value = '1.0'},
+    enabled = { value = false },
+    version = { value = '1.0' },
 })
 
 DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
@@ -61,13 +61,18 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
         castBar.border:SetTexture(media['tex:castbar:CastingBarFrame.blp'])
 
         local start, duration, spell, channel
-        local currentSpellId = nil
+        local currentSpellId
+        local castPushback = 0       -- ms, increases duration
+        local channelPushback = 0    -- ms, reduces remaining time
 
         function castBar:StartCast(spellName, castTime, isChannel)
             spell = spellName
             duration = castTime / 1000
             start = GetTime()
             channel = isChannel
+            castPushback = 0
+            channelPushback = 0
+
             local pct = channel and 1 or 0
             castBar.barFill:SetWidth(width * pct)
             castBar.barFill:SetTexCoord(0, pct, 0, 1)
@@ -78,10 +83,14 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
             local now = GetTime() * 1000
             local totalDuration = (endTime - startTime) / 1000
             local elapsed = (now - startTime) / 1000
+
             spell = spellName
             duration = totalDuration
             start = GetTime() - elapsed
             channel = isChannel
+            castPushback = 0
+            channelPushback = 0
+
             castBar:Show()
         end
 
@@ -89,74 +98,91 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
             if event == 'PLAYER_TARGET_CHANGED' and unit == 'target' then
                 start = nil
                 castBar:Hide()
+
                 if UnitExists('target') then
                     if UnitCastingInfo(unit) then
-                        local spellName, _, _, _, startTime, endTime = UnitCastingInfo(unit)
-                        castBar:SetCastInfo(spellName, startTime, endTime, false)
+                        local spellName, _, _, _, s, e = UnitCastingInfo(unit)
+                        castBar:SetCastInfo(spellName, s, e, false)
                     elseif UnitChannelInfo(unit) then
-                        local spellName, _, _, _, startTime, endTime = UnitChannelInfo(unit)
-                        castBar:SetCastInfo(spellName, startTime, endTime, true)
+                        local spellName, _, _, _, s, e = UnitChannelInfo(unit)
+                        castBar:SetCastInfo(spellName, s, e, true)
                     end
                 end
+
             elseif event == 'UNIT_CASTEVENT' then
                 local casterGUID = arg1
                 local _, unitGUID = UnitExists(unit)
-                if casterGUID == unitGUID then
-                    local castType, spellid, castTime = arg3, arg4, arg5
-                    local spellName = SpellInfo(spellid) or "Unknown"
+                if casterGUID ~= unitGUID then return end
 
-                    -- debugprint("[" .. unit .. "] CASTEVENT: " .. castType .. " | SpellID: " .. spellid .. " | Spell: " .. spellName .. " | CurrentID: " .. (currentSpellId or "nil"))
+                local castType, spellid, castTime = arg3, arg4, arg5
+                local spellName = SpellInfo(spellid) or "Unknown"
 
-                    if castType == 'START' or castType == 'CHANNEL' then
-                        start = nil  -- clear before starting new cast
+                if castType == 'START' then
+                    currentSpellId = spellid
+                    castBar:StartCast(spellName, castTime, false)
+
+                elseif castType == 'CHANNEL' then
+                    currentSpellId = spellid
+                    castBar:StartCast(spellName, castTime, true)
+
+                elseif castType == 'CAST' or castType == 'FAIL' then
+                    if spellid == currentSpellId then
+                        start = nil
+                        currentSpellId = nil
+                        castBar:Hide()
                     end
-                    if castType == 'START' then
-                        currentSpellId = spellid
-                        -- debugprint("[" .. unit .. "] STARTING cast - Set currentSpellId to: " .. spellid)
-                        castBar:StartCast(spellName, castTime, false)
-                    elseif castType == 'CHANNEL' then
-                        currentSpellId = spellid
-                        -- debugprint("[" .. unit .. "] STARTING channel - Set currentSpellId to: " .. spellid)
-                        castBar:StartCast(spellName, castTime, true)
-                    elseif castType == 'CAST' or castType == 'FAIL' then
-                        if spellid == currentSpellId then
-                            -- debugprint("[" .. unit .. "] HIDING castbar - SpellID matches currentSpellId: " .. spellid)
-                            start = nil
-                            currentSpellId = nil
-                            castBar:Hide()
-                        else
-                            -- debugprint("[" .. unit .. "] IGNORING " .. castType .. " - SpellID " .. spellid .. " != currentSpellId " .. (currentSpellId or "nil"))
-                        end
-                    end
+                end
+
+            elseif event == 'SPELLCAST_DELAYED' and unit == 'player' then
+                if not start then return end
+                local disruption = tonumber(arg1) or 0
+                if disruption <= 0 then return end
+
+                if channel then
+                    channelPushback = channelPushback + disruption
+                else
+                    castPushback = castPushback + disruption
                 end
             end
         end
 
         function castBar:OnUpdate()
-            if start then
-                local elapsed = GetTime() - start
-                local remain = duration - elapsed
-                if remain > 0 then
-                    local value = channel and remain or elapsed
-                    local pct = value / duration
-                    castBar.barFill:SetWidth(width * pct)
-                    castBar.barFill:SetTexCoord(0, pct, 0, 1)
-                    castBar.text:SetText(spell)
-                    castBar.timeText:SetText(strformat('%.1f', channel and -remain or elapsed))
-                    local sparkPos = width * pct
-                    castBar.spark:SetPoint('CENTER', castBar, 'LEFT', sparkPos, 0)
-                    castBar.spark:Show()
-                else
-                    castBar:Hide()
-                    castBar.spark:Hide()
-                end
+            if not start then return end
+
+            local elapsed = GetTime() - start
+            local effectiveDuration = duration + (castPushback / 1000)
+            local remain = effectiveDuration - elapsed
+
+            if channel then
+                remain = remain - (channelPushback / 1000)
             end
+
+            if remain <= 0 then
+                castBar:Hide()
+                castBar.spark:Hide()
+                return
+            end
+
+            local value = channel and remain or elapsed
+            local pct = value / effectiveDuration
+            if pct < 0 then pct = 0 elseif pct > 1 then pct = 1 end
+
+            castBar.barFill:SetWidth(width * pct)
+            castBar.barFill:SetTexCoord(0, pct, 0, 1)
+            castBar.text:SetText(spell)
+            castBar.timeText:SetText(strformat('%.1f', channel and -remain or elapsed))
+
+            castBar.spark:SetPoint('CENTER', castBar, 'LEFT', width * pct, 0)
+            castBar.spark:Show()
         end
 
         castBar:SetScript('OnEvent', castBar.OnEvent)
         castBar:SetScript('OnUpdate', castBar.OnUpdate)
         castBar:RegisterEvent('UNIT_CASTEVENT')
-        if unit == 'target' then castBar:RegisterEvent('PLAYER_TARGET_CHANGED') end
+        castBar:RegisterEvent('SPELLCAST_DELAYED')
+        if unit == 'target' then
+            castBar:RegisterEvent('PLAYER_TARGET_CHANGED')
+        end
 
         return castBar
     end
@@ -165,5 +191,5 @@ DF:NewModule('castbar-testversion', 2, 'PLAYER_LOGIN', function()
     playerCastBar:SetPoint('CENTER', 0, -150)
 
     local targetCastBar = CreateCastBar('target', 'DF_CastBar_Target', 160, 13)
-    targetCastBar:SetPoint('TOP', getglobal('DF_TargetFrame'), 'BOTTOM', -0, -200)
+    targetCastBar:SetPoint('TOP', getglobal('DF_TargetFrame'), 'BOTTOM', 0, -200)
 end)
