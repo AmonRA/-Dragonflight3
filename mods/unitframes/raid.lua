@@ -54,6 +54,30 @@ DF:NewDefaults('raid', {
 DF:NewModule('raid', 1, function()
     local interact = DF.setups.interact
 
+    local mathfloor = math.floor
+    local strfind = string.find
+    local tinsert = table.insert
+    local tsort = table.sort
+    local type = type
+    local tostring = tostring
+
+    local UnitExists = UnitExists
+    local UnitHealth = UnitHealth
+    local UnitHealthMax = UnitHealthMax
+    local UnitMana = UnitMana
+    local UnitManaMax = UnitManaMax
+    local UnitName = UnitName
+    local UnitClass = UnitClass
+    local UnitPowerType = UnitPowerType
+    local UnitCanAttack = UnitCanAttack
+    local UnitIsUnit = UnitIsUnit
+    local UnitInRaid = UnitInRaid
+    local UnitXP = UnitXP
+    local GetRaidTargetIndex = GetRaidTargetIndex
+    local GetRaidRosterInfo = GetRaidRosterInfo
+    local GetTime = GetTime
+
+
     local setup = {
         frameWidth = 70,
         frameHeight = 45,
@@ -386,12 +410,12 @@ DF:NewModule('raid', 1, function()
                 local hp = UnitHealth(raid.frames[i].unit)
                 local maxhp = UnitHealthMax(raid.frames[i].unit)
                 if maxhp > 0 then
-                    table.insert(units, {index = i, hp = hp, maxhp = maxhp, percent = hp/maxhp})
+                    tinsert(units, {index = i, hp = hp, maxhp = maxhp, percent = hp/maxhp})
                 end
             end
         end
 
-        table.sort(units, function(a, b) return a.percent < b.percent end)
+        tsort(units, function(a, b) return a.percent < b.percent end)
 
         local visibleCount = 0
         for i = 1, 5 do
@@ -535,7 +559,7 @@ DF:NewModule('raid', 1, function()
         end
         if p.hpBarColorMode == 'class' then
             local class
-            if type(unit) == 'string' and string.find(unit, 'raid') then
+            if type(unit) == 'string' and strfind(unit, 'raid') then
                 -- debugprint('raid unit: '..unit)
                 local _, c = UnitClass(unit)
                 class = c
@@ -710,7 +734,7 @@ DF:NewModule('raid', 1, function()
         if index and index > 0 then
             local left = math.mod(index - 1, 4) * 0.25
             local right = left + 0.25
-            local top = math.floor((index - 1) / 4) * 0.25
+            local top = mathfloor((index - 1) / 4) * 0.25
             local bottom = top + 0.25
             f.raidIcon:SetTexCoord(left, right, top, bottom)
             f.raidIcon:Show()
@@ -861,7 +885,7 @@ DF:NewModule('raid', 1, function()
                 local bar = raid.groupHealthBars[group]
                 bar:SetMinMaxValues(0, groupMaxHP[group])
                 bar:SetValue(groupHP[group])
-                local percent = math.floor((groupHP[group] / groupMaxHP[group]) * 100)
+                local percent = mathfloor((groupHP[group] / groupMaxHP[group]) * 100)
                 bar.text:SetText(percent..'%')
                 local r, g, b = self:GetTotalHPColor(groupHP[group], groupMaxHP[group])
                 bar:SetStatusBarColor(r, g, b)
@@ -1071,7 +1095,7 @@ DF:NewModule('raid', 1, function()
                     if d.hp < 0 then d.hp = 2000 end
                     if d.mana < 0 then d.mana = 2000 end
                     raid.frames[i].hp:SetValue(d.hp)
-                    setup:SetHPText(raid.frames[i].hpText, math.floor(d.hp), 2000, DF.profile.raid.hpTextFormat)
+                    setup:SetHPText(raid.frames[i].hpText, mathfloor(d.hp), 2000, DF.profile.raid.hpTextFormat)
                     local r, g, b = setup:GetHPColor(d.class, d.hp, 2000)
                     raid.frames[i].hp:SetStatusBarColor(r, g, b)
                     raid.frames[i].mana:SetValue(d.mana)
@@ -1082,7 +1106,7 @@ DF:NewModule('raid', 1, function()
                         totalHP = totalHP + testData[i].hp
                     end
                     raid.groupHealthBars[group]:SetValue(totalHP)
-                    local percent = math.floor((totalHP / 10000) * 100)
+                    local percent = mathfloor((totalHP / 10000) * 100)
                     raid.groupHealthBars[group].text:SetText(percent..'%')
                     local r, g, b = setup:GetTotalHPColor(totalHP, 10000)
                     raid.groupHealthBars[group]:SetStatusBarColor(r, g, b)
@@ -1311,7 +1335,7 @@ DF:NewModule('raid', 1, function()
         if testMode then
             for i = 1, 40 do
                 local d = testData[i]
-                setup:SetHPText(raid.frames[i].hpText, math.floor(d.hp), 2000, value)
+                setup:SetHPText(raid.frames[i].hpText, mathfloor(d.hp), 2000, value)
             end
         else
             for i = 1, 40 do
@@ -1324,7 +1348,7 @@ DF:NewModule('raid', 1, function()
         if testMode then
             for i = 1, 40 do
                 local d = testData[i]
-                setup:SetHPText(raid.frames[i].hpText, math.floor(d.hp), 2000, DF.profile.raid.hpTextFormat)
+                setup:SetHPText(raid.frames[i].hpText, mathfloor(d.hp), 2000, DF.profile.raid.hpTextFormat)
             end
         else
             for i = 1, 40 do
@@ -1556,7 +1580,7 @@ DF:NewModule('raid', 1, function()
         if testMode then
             for i = 1, 40 do
                 local d = testData[i]
-                setup:SetHPText(raid.frames[i].hpText, math.floor(d.hp), 2000, DF.profile.raid.hpTextFormat)
+                setup:SetHPText(raid.frames[i].hpText, mathfloor(d.hp), 2000, DF.profile.raid.hpTextFormat)
             end
         else
             for i = 1, 40 do
