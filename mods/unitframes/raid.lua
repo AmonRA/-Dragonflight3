@@ -838,7 +838,7 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    function setup:UpdateGroupHealth() -- v1: single loop
+    function setup:UpdateGroupHealth() -- v1: single loop / v2: direct access
         local groupHP = {}
         local groupMaxHP = {}
 
@@ -854,15 +854,17 @@ DF:NewModule('raid', 1, function()
         end
 
         for group = 1, 8 do
-            local totalHP = groupHP[group] or 0
-            local totalMaxHP = groupMaxHP[group] or 0
-            if totalMaxHP > 0 then
-                raid.groupHealthBars[group]:SetMinMaxValues(0, totalMaxHP)
-                raid.groupHealthBars[group]:SetValue(totalHP)
-                local percent = math.floor((totalHP / totalMaxHP) * 100)
-                raid.groupHealthBars[group].text:SetText(percent..'%')
-                local r, g, b = self:GetTotalHPColor(totalHP, totalMaxHP)
-                raid.groupHealthBars[group]:SetStatusBarColor(r, g, b)
+            -- local totalHP = groupHP[group] or 0
+            -- local totalMaxHP = groupMaxHP[group] or 0
+            -- if totalMaxHP > 0 then
+            if groupMaxHP[group] and groupMaxHP[group] > 0 then
+                local bar = raid.groupHealthBars[group]
+                bar:SetMinMaxValues(0, groupMaxHP[group])
+                bar:SetValue(groupHP[group])
+                local percent = math.floor((groupHP[group] / groupMaxHP[group]) * 100)
+                bar.text:SetText(percent..'%')
+                local r, g, b = self:GetTotalHPColor(groupHP[group], groupMaxHP[group])
+                bar:SetStatusBarColor(r, g, b)
             end
         end
     end
@@ -999,6 +1001,17 @@ DF:NewModule('raid', 1, function()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     -- test mode
     local testMode = false
     local stressTestActive = false
@@ -1118,39 +1131,33 @@ DF:NewModule('raid', 1, function()
     end
     testBtn:SetScript('OnClick', DF.setups.ToggleRaidTestMode)
 
+
+
+
     function DF.setups.StressTestRaid()
-        if not testMode then
-            print("Enable test mode first with /df raid")
-            return
-        end
+        if not testMode then return end
 
         stressTestActive = not stressTestActive
 
         if stressTestActive then
-            print("=== STRESS TEST: Testing individual functions ===")
-
-            -- Test 1: UpdateAggroBorders
             local start = GetTime()
             for i = 1, 1000 do
                 setup:UpdateAggroBorders()
             end
             local aggroTime = (GetTime() - start) * 1000
 
-            -- Test 2: UpdateRange
             start = GetTime()
             for i = 1, 1000 do
                 setup:UpdateRange()
             end
             local rangeTime = (GetTime() - start) * 1000
 
-            -- Test 3: UpdateGroupHealth
             start = GetTime()
             for i = 1, 1000 do
                 setup:UpdateGroupHealth()
             end
             local groupTime = (GetTime() - start) * 1000
 
-            -- Test 4: HP Color calculations
             start = GetTime()
             for i = 1, 1000 do
                 for j = 1, 40 do
@@ -1159,20 +1166,16 @@ DF:NewModule('raid', 1, function()
             end
             local colorTime = (GetTime() - start) * 1000
 
-            print("=== RESULTS (1000 iterations) ===")
             print(string.format("UpdateAggroBorders: %.2fms", aggroTime))
             print(string.format("UpdateRange: %.2fms", rangeTime))
             print(string.format("UpdateGroupHealth: %.2fms", groupTime))
             print(string.format("Color calculations (40x): %.2fms", colorTime))
-            print("=== SLOWEST FUNCTION IS YOUR BOTTLENECK ===")
         end
     end
-
-
-    _G.SlashCmdList["DFSTRESSTEST"] = function()
-        DF.setups.StressTestRaid()
-    end
+    _G.SlashCmdList["DFSTRESSTEST"] = function() DF.setups.StressTestRaid() end
     -- _G.SLASH_DFSTRESSTEST1 = "/dfstresstest"
+
+
     -- end test mode
 
 
@@ -1301,7 +1304,7 @@ DF:NewModule('raid', 1, function()
         setup.specialUpdateRate = value
     end
 
-    callbacks.minAlpha = function(value)
+    callbacks.minAlpha = function()
     end
 
     callbacks.hpTextFormat = function(value)
@@ -1317,7 +1320,7 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    callbacks.hpTextStyle = function(value)
+    callbacks.hpTextStyle = function()
         if testMode then
             for i = 1, 40 do
                 local d = testData[i]
@@ -1456,7 +1459,7 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    callbacks.targetBorderColor = function(value)
+    callbacks.targetBorderColor = function()
         setup:UpdateTargetBorderColors()
     end
 
@@ -1546,10 +1549,10 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    callbacks.gradientLow = function(value) callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
-    callbacks.gradientMid = function(value) callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
-    callbacks.gradientHigh = function(value) callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
-    callbacks.hpTextColorMode = function(value)
+    callbacks.gradientLow = function() callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
+    callbacks.gradientMid = function() callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
+    callbacks.gradientHigh = function() callbackHelper.UpdateAllColors() setup:UpdateGroupHealth() end
+    callbacks.hpTextColorMode = function()
         if testMode then
             for i = 1, 40 do
                 local d = testData[i]
@@ -1561,12 +1564,12 @@ DF:NewModule('raid', 1, function()
             end
         end
     end
-    callbacks.hpBarColorMode = function(value) callbackHelper.UpdateAllColors() end
-    callbacks.hpBarStaticColor = function(value) callbackHelper.UpdateAllColors() end
-    callbacks.hpBarUseFullColor = function(value) callbackHelper.UpdateAllColors() end
-    callbacks.hpBarFullColor = function(value) callbackHelper.UpdateAllColors() end
-    callbacks.totalHpBarColorMode = function(value) setup:UpdateGroupHealth() end
-    callbacks.totalHpBarStaticColor = function(value) setup:UpdateGroupHealth() end
+    callbacks.hpBarColorMode = function() callbackHelper.UpdateAllColors() end
+    callbacks.hpBarStaticColor = function() callbackHelper.UpdateAllColors() end
+    callbacks.hpBarUseFullColor = function() callbackHelper.UpdateAllColors() end
+    callbacks.hpBarFullColor = function() callbackHelper.UpdateAllColors() end
+    callbacks.totalHpBarColorMode = function() setup:UpdateGroupHealth() end
+    callbacks.totalHpBarStaticColor = function() setup:UpdateGroupHealth() end
     callbacks.totalHpBarSpacing = function(value)
         if testMode then
             for col = 1, 8 do
@@ -1578,8 +1581,8 @@ DF:NewModule('raid', 1, function()
             setup:RepositionFrames()
         end
     end
-    callbacks.range = function(value) end
-    callbacks.rangeFading = function(value) end
+    callbacks.range = function() end
+    callbacks.rangeFading = function() end
 
     DF:NewCallbacks('raid', callbacks)
 end)

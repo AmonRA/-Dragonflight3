@@ -130,5 +130,4 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
     checkbox:SetScript('OnClick', function()
         DF.profile.map.showCoords = this:GetChecked() and 1 or nil
     end)
-
 end)

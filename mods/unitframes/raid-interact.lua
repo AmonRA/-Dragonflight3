@@ -10,6 +10,7 @@ function interact:OnClick(frame)
             local id = string.gsub(frame.unit, 'raid', '')
             local name = UnitName(frame.unit)
             FriendsDropDown.displayMode = 'MENU'
+            ---@diagnostic disable-next-line: duplicate-set-field
             FriendsDropDown.initialize = function() UnitPopup_ShowMenu(_G[UIDROPDOWNMENU_OPEN_MENU], 'PARTY', frame.unit, name, id) end
             ToggleDropDownMenu(1, nil, FriendsDropDown, 'cursor')
         end
