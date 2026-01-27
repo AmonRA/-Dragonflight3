@@ -761,6 +761,14 @@ function setup:UpdateBarTextNumbers(unitFrame)
 end
 
 function setup:UpdateHealthBarColor(portrait, unit)
+    if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+        portrait.hpBar:SetFillColor(0.5, 0.5, 0.5, 1)
+        if portrait.unit == 'target' then
+            setup.lastTargetColor = {0.5, 0.5, 0.5}
+        end
+        return
+    end
+
     local modeKey = string.find(portrait.unit, 'party') and 'partyHealthBarColorMode' or portrait.unit..'HealthBarColorMode'
     local mode = (DF_Profiles and DF.profile['unitframes'] and DF.profile['unitframes'][modeKey]) or 'class'
     if mode == 'custom' then
