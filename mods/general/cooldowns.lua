@@ -32,6 +32,8 @@ DF:NewModule('cooldowns', 1, function()
             else
                 return string.format('%dm', seconds / 60)
             end
+        elseif seconds < 1 then
+            return string.format('%.1f', seconds)
         else
             return string.format('%d', seconds)
         end
@@ -39,9 +41,21 @@ DF:NewModule('cooldowns', 1, function()
 
     local function OnUpdate()
         if (this.tick or .1) > GetTime() then return else this.tick = GetTime() + .1 end
+
+        local parent = this:GetParent()
+        if parent then
+            local parentName = parent:GetName()
+            if parentName and _G[parentName .. "Cooldown"] then
+                if not _G[parentName .. "Cooldown"]:IsShown() then
+                    this:Hide()
+                    return
+                end
+            end
+        end
+
         local remaining = this.duration - (GetTime() - this.start)
-        if remaining >= 0 and remaining >= 1.5 then
-            local font, size = this.text:GetFont()
+        if remaining >= 0 then
+            local font, _ = this.text:GetFont()
             if not font then
                 this.text:SetFont('Fonts\\FRIZQT__.TTF', 14, 'OUTLINE')
             end
@@ -127,25 +141,11 @@ DF:NewModule('cooldowns', 1, function()
         end
     end
 
-    callbacks.color0to10s = function(value)
-        -- color will update on next OnUpdate tick
-    end
-
-    callbacks.color10to59s = function(value)
-        -- color will update on next OnUpdate tick
-    end
-
-    callbacks.color1to5m = function(value)
-        -- color will update on next OnUpdate tick
-    end
-
-    callbacks.color5mPlus = function(value)
-        -- color will update on next OnUpdate tick
-    end
-
-    callbacks.showSeconds = function(value)
-        -- format will update on next OnUpdate tick
-    end
+    callbacks.color0to10s = function() end
+    callbacks.color10to59s = function() end
+    callbacks.color1to5m = function() end
+    callbacks.color5mPlus = function() end
+    callbacks.showSeconds = function() end
 
     DF:NewCallbacks('cooldowns', callbacks)
 end)

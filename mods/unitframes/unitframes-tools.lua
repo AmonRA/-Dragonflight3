@@ -886,7 +886,8 @@ function setup:UpdateDebuffs(unitFrame, buffRows)
                     elseif timeleft >= 60 then
                         timeText = string.format('%d|cffff0000m|r', timeleft / 60)
                     else
-                        timeText = string.format('%d|cffff0000s|r', timeleft)
+                        timeText = string.format('%d', timeleft)
+
                     end
                     unitFrame.debuffs[i].timer:SetText(timeText)
                     unitFrame.debuffs[i].timer:Show()
@@ -1192,7 +1193,8 @@ function setup:OnUpdate()
                             elseif timeleft >= 60 then
                                 timeText = string.format('%d|cffff0000m|r', timeleft / 60)
                             else
-                                timeText = string.format('%d|cffff0000s|r', timeleft)
+                                timeText = string.format('%d', timeleft)
+
                             end
                             portrait.debuffs[k].timer:SetText(timeText)
                             portrait.debuffs[k].timer:Show()
