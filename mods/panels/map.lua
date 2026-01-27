@@ -45,13 +45,11 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
 
     WorldMapFrame:ClearAllPoints()
     WorldMapFrame:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
-    WorldMapFrame:SetWidth(WorldMapButton:GetWidth() + 15)
-    WorldMapFrame:SetHeight(WorldMapButton:GetHeight() + 100)
+    WorldMapFrame:SetSize(WorldMapButton:GetWidth() + 15, WorldMapButton:GetHeight() + 100)
 
     DF.hooks.HookScript(WorldMapFrame, 'OnShow', function()
-        WorldMapFrame:SetScale(0.7)
+        WorldMapFrame:SetScale(DF.profile.UIParent.worldmapScale or 0.7)
         this:EnableKeyboard(false)
-
     end, true)
 
     WorldMapFrame:SetMovable(true)
@@ -96,6 +94,68 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
             end
         end
     end
+local coordsBg = DF.ui.Frame(WorldMapButton, 120, 20, DF.profile.UIParent.worldmapScale or 0.7)
+coordsBg:SetPoint('BOTTOM', WorldMapButton, 'BOTTOM', 0, 0)
+local coordsText = DF.ui.Font(coordsBg, 12, '', {1, 1, 1})
+coordsText:SetPoint('CENTER', coordsBg, 'CENTER', 0, 0)
+
+DF.profile.map.showCoords = DF.profile.map.showCoords or true
+
+local coordsFrame = CreateFrame('Frame', nil, WorldMapButton)
+coordsFrame:SetScript('OnUpdate', function()
+    if not DF.profile.map.showCoords then
+        coordsBg:Hide()
+        return
+    end
+    coordsBg:Show()
+    local width = WorldMapButton:GetWidth()
+    local height = WorldMapButton:GetHeight()
+    local mx, my = WorldMapButton:GetCenter()
+    local scale = WorldMapButton:GetEffectiveScale()
+    local x, y = GetCursorPosition()
+    if mx and my then
+        mx = ((x / scale) - (mx - width / 2)) / width * 100
+        my = ((my + height / 2) - (y / scale)) / height * 100
+    end
+if mx and my and MouseIsOver(WorldMapButton) then
+    coordsBg:Show()
+    coordsText:SetText(string.format('X: %.1f    Y: %.1f', mx, my))
+else
+    coordsBg:Hide()
+end
+
+end)
+
+local checkbox = DF.ui.Checkbox(customBg, 'Coordinates', 20, 20, 'RIGHT')
+checkbox:SetPoint('BOTTOMLEFT', customBg, 'BOTTOMLEFT', 10, 10)
+checkbox:SetChecked(DF.profile.map.showCoords == 1)
+checkbox:SetScript('OnClick', function()
+    DF.profile.map.showCoords = this:GetChecked()
+end)
+
+
+    -- local slider = CreateFrame('Slider', 'DF_MapSlider', UIParent)
+    -- slider:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOMLEFT', 10, 10)
+    -- slider:SetSize(150, 16)
+    -- slider:SetOrientation('HORIZONTAL')
+    -- slider:SetMinMaxValues(0.5, 0.9)
+    -- slider:SetValueStep(0.1)
+    -- slider:SetValue(DF.profile.map.mapScale or 0.7)
+    -- slider:SetBackdrop({
+    --     bgFile = 'Interface\\Buttons\\UI-SliderBar-Background',
+    --     edgeFile = 'Interface\\Buttons\\UI-SliderBar-Border',
+    --     tile = true, tileSize = 8, edgeSize = 8,
+    --     insets = {left = 3, right = 3, top = 6, bottom = 6}
+    -- })
+    -- local thumb = slider:CreateTexture(nil, 'ARTWORK')
+    -- thumb:SetTexture('Interface\\Buttons\\UI-SliderBar-Button-Horizontal')
+    -- thumb:SetSize(32, 32)
+    -- slider:SetThumbTexture(thumb)
+    -- slider:SetScript('OnValueChanged', function()
+    --     local scale = this:GetValue()
+    --     DF.profile.map.mapScale = scale
+    --     WorldMapFrame:SetScale(scale)
+    -- end)
 
     local callbacks = {}
     DF:NewCallbacks('map', callbacks)

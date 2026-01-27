@@ -16,6 +16,7 @@ DF:NewDefaults('UIParent', {
     talentsBgAlpha = {value = 1, metadata = {element = 'slider', category = 'General', indexInCategory = 7, description = 'Talents background transparency', min = 0, max = 1, stepSize = 0.1}},
     keybindingBgAlpha = {value = 1, metadata = {element = 'slider', category = 'General', indexInCategory = 8, description = 'Keybinding frame background transparency', min = 0, max = 1, stepSize = 0.1}},
     macroBgAlpha = {value = 1, metadata = {element = 'slider', category = 'General', indexInCategory = 9, description = 'Macro frame background transparency', min = 0, max = 1, stepSize = 0.1}},
+    worldmapBgAlpha = {value = 1, metadata = {element = 'slider', category = 'General', indexInCategory = 10, description = 'World map background transparency', min = 0, max = 1, stepSize = 0.1}},
 
     characterScale = {value = 1, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 1, description = 'Character frame scale', min = 0.5, max = 1.5, stepSize = 0.05}},
     questlogScale = {value = 1, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 2, description = 'Quest log scale', min = 0.5, max = 1.5, stepSize = 0.05}},
@@ -26,6 +27,7 @@ DF:NewDefaults('UIParent', {
     talentsScale = {value = 0.9, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 7, description = 'Talents scale', min = 0.5, max = 1.5, stepSize = 0.05}},
     keybindingScale = {value = 1, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 8, description = 'Keybinding frame scale', min = 0.5, max = 1.5, stepSize = 0.05}},
     macroScale = {value = 1, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 9, description = 'Macro frame scale', min = 0.5, max = 1.5, stepSize = 0.05}},
+    worldmapScale = {value = 0.7, metadata = {element = 'slider', category = 'UI Scale', indexInCategory = 10, description = 'World map scale', min = 0.5, max = 0.9, stepSize = 0.1}},
 
 })
 
@@ -171,6 +173,14 @@ DF:NewModule('UIParent', 2, 'PLAYER_ENTERING_WORLD', function()
         local customBg = getglobal('DF_MacroCustomBg')
         if customBg then customBg:SetScale(value) end
         if MacroFrame then MacroFrame:SetScale(value) end
+    end
+
+    callbacks.worldmapBgAlpha = function(value)
+        WorldMapFrame:SetAlpha(value)
+    end
+
+    callbacks.worldmapScale = function(value)
+        WorldMapFrame:SetScale(value)
     end
 
     DF:NewCallbacks('UIParent', callbacks)

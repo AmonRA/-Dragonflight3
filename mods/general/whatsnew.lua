@@ -23,6 +23,7 @@ DF:NewModule('whatsnew', 1, function()
 
     local changelog = {
         features = {
+            'Added worldmap scale and background alpha options, coordinates display',
             'Added raidframes module (phase 1, base features)',
             C.O .. 'Raidframes will be rolled out in 3 phases (base, interaction features, heal predict)|r',
             C.G .. 'Options under GUI > Unitframes > Raid|r',
