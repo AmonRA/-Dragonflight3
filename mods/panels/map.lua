@@ -94,44 +94,41 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
             end
         end
     end
-local coordsBg = DF.ui.Frame(WorldMapButton, 120, 20, DF.profile.UIParent.worldmapScale or 0.7)
-coordsBg:SetPoint('BOTTOM', WorldMapButton, 'BOTTOM', 0, 0)
-local coordsText = DF.ui.Font(coordsBg, 12, '', {1, 1, 1})
-coordsText:SetPoint('CENTER', coordsBg, 'CENTER', 0, 0)
+    local coordsBg = DF.ui.Frame(WorldMapButton, 120, 20, DF.profile.UIParent.worldmapScale or 0.7)
+    coordsBg:SetPoint('BOTTOM', WorldMapButton, 'BOTTOM', 0, 0)
+    local coordsText = DF.ui.Font(coordsBg, 12, '', {1, 1, 1})
+    coordsText:SetPoint('CENTER', coordsBg, 'CENTER', 0, 0)
 
-DF.profile.map.showCoords = DF.profile.map.showCoords or true
+    local coordsFrame = CreateFrame('Frame', nil, WorldMapButton)
+    coordsFrame:SetScript('OnUpdate', function()
+        if not DF.profile.map.showCoords then
+            coordsBg:Hide()
+            return
+        end
+        local width = WorldMapButton:GetWidth()
+        local height = WorldMapButton:GetHeight()
+        local mx, my = WorldMapButton:GetCenter()
+        local scale = WorldMapButton:GetEffectiveScale()
+        local x, y = GetCursorPosition()
+        if mx and my then
+            mx = ((x / scale) - (mx - width / 2)) / width * 100
+            my = ((my + height / 2) - (y / scale)) / height * 100
+        end
+        if mx and my and MouseIsOver(WorldMapButton) then
+            coordsBg:Show()
+            coordsText:SetText(string.format('X: %.1f    Y: %.1f', mx, my))
+        else
+            coordsBg:Hide()
+        end
 
-local coordsFrame = CreateFrame('Frame', nil, WorldMapButton)
-coordsFrame:SetScript('OnUpdate', function()
-    if not DF.profile.map.showCoords then
-        coordsBg:Hide()
-        return
-    end
-    coordsBg:Show()
-    local width = WorldMapButton:GetWidth()
-    local height = WorldMapButton:GetHeight()
-    local mx, my = WorldMapButton:GetCenter()
-    local scale = WorldMapButton:GetEffectiveScale()
-    local x, y = GetCursorPosition()
-    if mx and my then
-        mx = ((x / scale) - (mx - width / 2)) / width * 100
-        my = ((my + height / 2) - (y / scale)) / height * 100
-    end
-if mx and my and MouseIsOver(WorldMapButton) then
-    coordsBg:Show()
-    coordsText:SetText(string.format('X: %.1f    Y: %.1f', mx, my))
-else
-    coordsBg:Hide()
-end
+    end)
 
-end)
-
-local checkbox = DF.ui.Checkbox(customBg, 'Coordinates', 20, 20, 'RIGHT')
-checkbox:SetPoint('BOTTOMLEFT', customBg, 'BOTTOMLEFT', 10, 10)
-checkbox:SetChecked(DF.profile.map.showCoords == 1)
-checkbox:SetScript('OnClick', function()
-    DF.profile.map.showCoords = this:GetChecked()
-end)
+    local checkbox = DF.ui.Checkbox(customBg, 'Coordinates', 20, 20, 'RIGHT')
+    checkbox:SetPoint('BOTTOMLEFT', customBg, 'BOTTOMLEFT', 10, 10)
+    checkbox:SetChecked(DF.profile.map.showCoords == 1)
+    checkbox:SetScript('OnClick', function()
+        DF.profile.map.showCoords = this:GetChecked() and 1 or nil
+    end)
 
 
     -- local slider = CreateFrame('Slider', 'DF_MapSlider', UIParent)
