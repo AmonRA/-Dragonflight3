@@ -65,6 +65,7 @@ DF:NewModule('ambient', 1, function()
 
     local inCombat = false
     local isResting = false
+    local baseAlpha = 0.7
 
     local callbacks = {}
     local callbackHelper = {}
@@ -102,10 +103,14 @@ DF:NewModule('ambient', 1, function()
             return
         end
 
-        top:SetGradientAlpha('VERTICAL', color[1], color[2], color[3], 0, color[1], color[2], color[3], 0.7)
-        bottom:SetGradientAlpha('VERTICAL', color[1], color[2], color[3], 0.7, color[1], color[2], color[3], 0)
-        left:SetGradientAlpha('HORIZONTAL', color[1], color[2], color[3], 0.7, color[1], color[2], color[3], 0)
-        right:SetGradientAlpha('HORIZONTAL', color[1], color[2], color[3], 0, color[1], color[2], color[3], 0.7)
+        if inCombat and p.enableCombat or isResting and p.enableResting then
+            baseAlpha = (math.sin(DF.setups.glowSync * 3) + 1) / 2 * 0.7
+        end
+
+        top:SetGradientAlpha('VERTICAL', color[1], color[2], color[3], 0, color[1], color[2], color[3], baseAlpha)
+        bottom:SetGradientAlpha('VERTICAL', color[1], color[2], color[3], baseAlpha, color[1], color[2], color[3], 0)
+        left:SetGradientAlpha('HORIZONTAL', color[1], color[2], color[3], baseAlpha, color[1], color[2], color[3], 0)
+        right:SetGradientAlpha('HORIZONTAL', color[1], color[2], color[3], 0, color[1], color[2], color[3], baseAlpha)
         top:SetHeight(dimensions)
         bottom:SetHeight(dimensions)
         left:SetWidth(dimensions)
@@ -154,6 +159,13 @@ DF:NewModule('ambient', 1, function()
             isResting = IsResting()
         end
         callbackHelper.UpdateAmbient()
+    end)
+
+    local pulseFrame = CreateFrame'Frame'
+    pulseFrame:SetScript('OnUpdate', function()
+        if inCombat or isResting then
+            callbackHelper.UpdateAmbient()
+        end
     end)
 
     DF:NewCallbacks('ambient', callbacks)

@@ -10,17 +10,9 @@ mt.__newindex = function(t, key, value)
     local stack = debugstack(2)
     local addonName = DF.lua.match(stack, "AddOns\\([^\\]+)\\") or "Unknown"
 
-    local cmds = {}
-    local i = 1
-    while _G["SLASH_"..key..i] do
-        table.insert(cmds, _G["SLASH_"..key..i])
-        i = i + 1
-    end
-
     slashCommandRegistry[key] = {
         addon = addonName,
         handler = value,
-        commands = cmds,
         blocked = DF_GlobalData.slashScanner and DF_GlobalData.slashScanner[key] or false
     }
 
@@ -30,6 +22,7 @@ mt.__newindex = function(t, key, value)
         rawset(t, key, value)
     end
 end
+
 setmetatable(SlashCmdList, mt)
 slashCommandRegistry['DRAGONFLIGHT'] = {
     addon = 'Dragonflight 3',
@@ -82,16 +75,30 @@ DF:NewModule('slashscan', 1, 'PLAYER_LOGIN', function()
         if DF_GlobalData.slashScanner[key] then
             rawset(SlashCmdList, key, nil)
         end
-    end
+        end
 
     local function BuildSlashList()
         scroll.content:SetHeight(1)
         local yOffset = -10
 
+        -- we build this later due to addons like LowHPWarning etc.
+        for key, info in pairs(slashCommandRegistry) do
+            if not info.commands then
+                local cmds = {}
+                local i = 1
+                while _G["SLASH_"..key..i] do
+                    table.insert(cmds, _G["SLASH_"..key..i])
+                    i = i + 1
+                end
+                info.commands = cmds
+            end
+        end
+
         local sortedList = {}
         for key, info in pairs(slashCommandRegistry) do
             table.insert(sortedList, {key = key, info = info})
         end
+
         table.sort(sortedList, function(a, b)
             return string.lower(a.info.addon) < string.lower(b.info.addon)
         end)

@@ -120,9 +120,6 @@ DF:NewModule('raid', 1, function()
         DF.profile.raid.showSpecialFrame = false
     end
 
-    local alphaUpdater = CreateFrame('Frame')
-    alphaUpdater:Hide()
-
     local function CreateUnitFrame(parent, unit, index)
         local f = CreateFrame('Button', nil, parent)
         f:SetSize(setup.frameWidth, setup.frameHeight)
@@ -197,7 +194,6 @@ DF:NewModule('raid', 1, function()
         edgeSize = 16,
         insets = {left = 4, right = 4, top = 4, bottom = 4}
     })
-    raid:SetBackdropColor(0, 0, 0, 0.3)
     raid:SetBackdropBorderColor(0.3, 0.3, 0.3, .6)
     raid.frames = {}
     raid.groupHeaders = {}
@@ -230,6 +226,9 @@ DF:NewModule('raid', 1, function()
         header:Hide()
         raid.groupHeaders[col] = header
     end
+
+    local alphaUpdater = CreateFrame('Frame')
+    alphaUpdater:Hide()
 
     local specialFrame = CreateFrame('Frame', 'DF_FocusFrame', raid)
     specialFrame:SetWidth(setup.frameWidth + (setup.framePadding * 2))
@@ -422,6 +421,7 @@ DF:NewModule('raid', 1, function()
             if units[i] then
                 local raidFrame = raid.frames[units[i].index]
                 f.unit = raidFrame.unit
+                f.unitTarget = f.unit..'target' -- v2: cache unitTarget when specialFrame assigns unit
                 f.hp:SetMinMaxValues(0, units[i].maxhp)
                 f.hp:SetValue(units[i].hp)
                 f.mana:SetMinMaxValues(0, UnitManaMax(f.unit))
@@ -614,13 +614,13 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    function setup:UpdateAggroBorders()
+    function setup:UpdateAggroBorders() -- v0: @70ms / v1: cached unitTarget  @30-47ms
         if not DF.profile.raid.showAggroBorder then return end
         for i = 1, 40 do
             local f = raid.frames[i]
             if f:IsShown() and UnitExists(f.unit) then
-                local unitTarget = f.unit..'target'
-                if UnitExists(unitTarget) and UnitCanAttack('player', unitTarget) and UnitIsUnit(unitTarget..'target', f.unit) then
+                if not f.unitTarget then f.unitTarget = f.unit..'target' end
+                if UnitExists(f.unitTarget) and UnitCanAttack('player', f.unitTarget) and UnitIsUnit(f.unitTarget..'target', f.unit) then
                     f.aggroBorder:Show()
                 else
                     f.aggroBorder:Hide()
@@ -632,8 +632,8 @@ DF:NewModule('raid', 1, function()
         for i = 1, 5 do
             local f = specialFrame.frames[i]
             if f:IsShown() and f.unit and UnitExists(f.unit) then
-                local unitTarget = f.unit..'target'
-                if UnitExists(unitTarget) and UnitCanAttack('player', unitTarget) and UnitIsUnit(unitTarget..'target', f.unit) then
+                if not f.unitTarget then f.unitTarget = f.unit..'target' end
+                if UnitExists(f.unitTarget) and UnitCanAttack('player', f.unitTarget) and UnitIsUnit(f.unitTarget..'target', f.unit) then
                     f.aggroBorder:Show()
                 else
                     f.aggroBorder:Hide()
@@ -774,13 +774,15 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    function setup:RepositionFrames()
+    function setup:RepositionFrames() -- v1: caching GetRaidRosterInfo()
         local groupCounts = {}
         local firstFrameInGroup = {}
         for i = 1, 40 do
             local f = raid.frames[i]
             if UnitExists(f.unit) then
                 local _, _, group = GetRaidRosterInfo(i)
+                f.group = group -- v1 stick it to the frame
+                f.unitTarget = f.unit..'target' -- v2: cache unitTarget when repositioning
                 if group then
                     groupCounts[group] = (groupCounts[group] or 0) + 1
                     if not firstFrameInGroup[group] then
@@ -850,25 +852,20 @@ DF:NewModule('raid', 1, function()
         end
     end
 
-    function setup:UpdateGroupHealth() -- v1: single loop / v2: direct access
+    function setup:UpdateGroupHealth() -- v0: @188ms lol / v1: single loop / v2: using cached GetRaidRosterInfo() @30-47ms now hurray
         local groupHP = {}
         local groupMaxHP = {}
 
-        -- single loop through frames
+        -- single loop
         for i = 1, 40 do
-            if raid.frames[i]:IsShown() then
-                local _, _, group = GetRaidRosterInfo(i)
-                if group then
-                    groupHP[group] = (groupHP[group] or 0) + UnitHealth(raid.frames[i].unit)
-                    groupMaxHP[group] = (groupMaxHP[group] or 0) + UnitHealthMax(raid.frames[i].unit)
-                end
+            local f = raid.frames[i]
+            if f:IsShown() and f.group then
+                groupHP[f.group] = (groupHP[f.group] or 0) + UnitHealth(f.unit)
+                groupMaxHP[f.group] = (groupMaxHP[f.group] or 0) + UnitHealthMax(f.unit)
             end
         end
 
         for group = 1, 8 do
-            -- local totalHP = groupHP[group] or 0
-            -- local totalMaxHP = groupMaxHP[group] or 0
-            -- if totalMaxHP > 0 then
             if groupMaxHP[group] and groupMaxHP[group] > 0 then
                 local bar = raid.groupHealthBars[group]
                 bar:SetMinMaxValues(0, groupMaxHP[group])
@@ -1039,7 +1036,7 @@ DF:NewModule('raid', 1, function()
                 f:UnregisterAllEvents()
                 f:SetAlpha(1)
                 f.alphaAnim = nil
-                testData[i] = {hp = 2000, mana = 2000}
+                testData[i] = {hp = 2000, mana = 2000, powerType = math.mod(i - 1, 6)}
                 testData[i].class = testClasses[math.mod(i - 1, 9) + 1]
                 local col = math.ceil(i / 5)
                 local row = math.mod(i - 1, 5) + 1
@@ -1051,6 +1048,8 @@ DF:NewModule('raid', 1, function()
                 f.hp:SetValue(2000)
                 f.mana:SetMinMaxValues(0, 2000)
                 f.mana:SetValue(2000)
+                local color = DF.tables.powercolors[testData[i].powerType] or {0, 0, 1}
+                f.mana:SetStatusBarColor(color[1], color[2], color[3])
                 f:Show()
             end
             for col = 1, 8 do
@@ -1087,6 +1086,8 @@ DF:NewModule('raid', 1, function()
                     local r, g, b = setup:GetHPColor(d.class, d.hp, 2000)
                     raid.frames[i].hp:SetStatusBarColor(r, g, b)
                     raid.frames[i].mana:SetValue(d.mana)
+                    local color = DF.tables.powercolors[d.powerType] or {0, 0, 1}
+                    raid.frames[i].mana:SetStatusBarColor(color[1], color[2], color[3])
                 end
                 for group = 1, 8 do
                     local totalHP = 0
@@ -1114,7 +1115,11 @@ DF:NewModule('raid', 1, function()
                 specialFrame.frames[i].targetBorderRight:Hide()
             end
             raid:SetScript('OnUpdate', function()
+                this.elapsed = (this.elapsed or 0) + arg1
+                if this.elapsed < 0.3 then return end
+                this.elapsed = 0
                 setup:UpdateRange()
+                setup:UpdateGroupHealth()
             end)
             for _, event in setup.events.raid do
                 raid:RegisterEvent(event)

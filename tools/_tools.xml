@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Include file="constants.lua"/>
     <Include file="common\lua.lua"/>
     <Include file="common\data.lua"/>
     <Include file="common\math.lua"/>

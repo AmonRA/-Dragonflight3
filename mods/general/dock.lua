@@ -42,6 +42,7 @@ DF:NewDefaults('dock', {
 })
 
 DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
+
     local mainFrame = CreateFrame('Frame', 'DF_Dock', UIParent)
     mainFrame:SetFrameStrata'BACKGROUND'
     mainFrame:SetSize(300, 30)
@@ -548,7 +549,6 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
     end
 
     local pulseFrame = CreateFrame'Frame'
-    pulseFrame.elapsed = 0
     pulseFrame:SetScript('OnUpdate', function()
         if glowManager.durationTimer then
             glowManager.durationTimer = glowManager.durationTimer - arg1
@@ -563,9 +563,7 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
         local condition = glowConditions[glowManager.activeCondition]
         if condition.mode ~= 'pulse' then return end
 
-        this.elapsed = this.elapsed + arg1
-        local cycle = this.elapsed / condition.pulseSpeed
-        local alpha = (math.sin(cycle * 3.14159 * 2) + 1) / 2
+        local alpha = (math.sin(DF.setups.glowSync * 3) + 1) / 2
 
         for _, glow in pairs(condition.glows) do
             if glow == mainGlowTop or glow == leftGlowTop or glow == rightGlowTop then

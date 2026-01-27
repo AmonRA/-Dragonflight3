@@ -4,7 +4,7 @@ local setup = {
     portraitModels = {},
     portraits = {},
     updater = CreateFrame('Frame'),
-    combatGlowElapsed = 0,
+
     lastTargetColor = {0, 1, 0},
     lastPlayerColor = {0, 1, 0},
     portrait2DTimer = 5, -- TODO find a better way this is total trash, unitframes needs rework
@@ -1056,7 +1056,7 @@ function setup:OnUpdate()
                 end
             end
         end
-        setup.combatGlowElapsed = setup.combatGlowElapsed + arg1
+        DF.setups.glowSync = DF.setups.glowSync + arg1
         for i = 1, table.getn(setup.portraits) do
             local portrait = setup.portraits[i]
             if UnitExists(portrait.unit) then
@@ -1160,13 +1160,12 @@ function setup:OnUpdate()
                 end
             end
             if portrait.model.restingGlow and (portrait.model.restingGlow:IsShown() or portrait.model.restingGlow2:IsShown()) then
-                portrait.model.restingGlow.elapsed = portrait.model.restingGlow.elapsed + arg1
-                local alpha = (math.sin(portrait.model.restingGlow.elapsed * 3) + 1) / 2
+                local alpha = (math.sin(DF.setups.glowSync * 3) + 1) / 2
                 portrait.model.restingGlow:SetAlpha(alpha * (portrait.restingGlowMaxAlpha or 0.7))
                 portrait.model.restingGlow2:SetAlpha(alpha * (portrait.restingGlow2MaxAlpha or 0.7))
             end
             if portrait.model.combatGlow and (portrait.model.combatGlow:IsShown() or portrait.model.combatGlow2:IsShown()) then
-                local alpha = (math.sin(setup.combatGlowElapsed * 3) + 1) / 2
+                local alpha = (math.sin(DF.setups.glowSync * 3) + 1) / 2
                 portrait.model.combatGlow:SetAlpha(alpha * (portrait.combatGlowMaxAlpha or 0.7))
                 portrait.model.combatGlow2:SetAlpha(alpha * (portrait.combatGlow2MaxAlpha or 0.7))
             end
