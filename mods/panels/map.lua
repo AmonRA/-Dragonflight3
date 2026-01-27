@@ -94,6 +94,7 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
             end
         end
     end
+
     local coordsBg = DF.ui.Frame(WorldMapButton, 120, 20, DF.profile.UIParent.worldmapScale or 0.7)
     coordsBg:SetPoint('BOTTOM', WorldMapButton, 'BOTTOM', 0, 0)
     local coordsText = DF.ui.Font(coordsBg, 12, '', {1, 1, 1})
@@ -130,30 +131,4 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
         DF.profile.map.showCoords = this:GetChecked() and 1 or nil
     end)
 
-
-    -- local slider = CreateFrame('Slider', 'DF_MapSlider', UIParent)
-    -- slider:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOMLEFT', 10, 10)
-    -- slider:SetSize(150, 16)
-    -- slider:SetOrientation('HORIZONTAL')
-    -- slider:SetMinMaxValues(0.5, 0.9)
-    -- slider:SetValueStep(0.1)
-    -- slider:SetValue(DF.profile.map.mapScale or 0.7)
-    -- slider:SetBackdrop({
-    --     bgFile = 'Interface\\Buttons\\UI-SliderBar-Background',
-    --     edgeFile = 'Interface\\Buttons\\UI-SliderBar-Border',
-    --     tile = true, tileSize = 8, edgeSize = 8,
-    --     insets = {left = 3, right = 3, top = 6, bottom = 6}
-    -- })
-    -- local thumb = slider:CreateTexture(nil, 'ARTWORK')
-    -- thumb:SetTexture('Interface\\Buttons\\UI-SliderBar-Button-Horizontal')
-    -- thumb:SetSize(32, 32)
-    -- slider:SetThumbTexture(thumb)
-    -- slider:SetScript('OnValueChanged', function()
-    --     local scale = this:GetValue()
-    --     DF.profile.map.mapScale = scale
-    --     WorldMapFrame:SetScale(scale)
-    -- end)
-
-    local callbacks = {}
-    DF:NewCallbacks('map', callbacks)
 end)
