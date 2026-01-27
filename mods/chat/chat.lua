@@ -270,6 +270,25 @@ DF:NewModule('chat', 1, function()
         end
     end
 
+    local oldFCF_DockUpdate = _G.FCF_DockUpdate
+    _G.FCF_DockUpdate = function()
+        oldFCF_DockUpdate()
+        for i = 1, NUM_CHAT_WINDOWS do
+            local chatFrame = _G['ChatFrame'..i]
+            local chatTab = _G['ChatFrame'..i..'Tab']
+            if chatFrame and chatFrame.isDocked and chatTab then
+                local isSelected = (SELECTED_DOCK_FRAME and SELECTED_DOCK_FRAME:GetID() == i)
+                local yOffset = isSelected and 0 or 3
+                local point, relativeTo, relativePoint, x, y = chatTab:GetPoint(1)
+                if y ~= yOffset then
+                    chatTab:ClearAllPoints()
+                    chatTab:SetPoint(point, relativeTo, relativePoint, x, yOffset)
+                end
+            end
+        end
+    end
+
+
     for i = 1, NUM_CHAT_WINDOWS do
         local tab = _G['ChatFrame'..i..'Tab']
         if tab then

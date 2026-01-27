@@ -7,12 +7,12 @@ DF:NewDefaults('whatsnew', {
 
 DF:NewModule('whatsnew', 1, function()
     local C = {
-        O = '|cffff9933',  -- neon orange
-        Y = '|cffffee33',  -- neon yellow
-        G = '|cff33ff99',  -- neon green
-        B = '|cff3399ff',  -- neon blue
-        P = '|cffff66cc',  -- neon pink
-        R = '|cffff3333',  -- neon red
+        O = '|cffff9933',
+        Y = '|cffffee33',
+        G = '|cff33ff99',
+        B = '|cff3399ff',
+        P = '|cffff66cc',
+        R = '|cffff3333',
     }
 
     local charKey = UnitName('player') .. '-' .. GetRealmName()
@@ -30,7 +30,7 @@ DF:NewModule('whatsnew', 1, function()
         },
         bugfixes = {
             C.R..'First attempt at improving raidframe performance, be carefull',
-            'Fixed small panel tabs (characterframe etc.) having overlap textures',
+            'Fixed small panel tabs (characterframe, chat etc.) having overlap textures',
         },
     }
 
