@@ -45,19 +45,29 @@ end
 -- abbreviate: formats large numbers with k/m suffixes
 -- number (number) - number to abbreviate
 -- returns: abbreviated string or original number
+-- function DF.math.abbreviate(number)
+--     if type(number) ~= 'number' then return number end
+
+--     local sign = number < 0 and -1 or 1
+--     number = math.abs(number)
+
+--     if number > 1000000 then
+--         return DF.math.round(number/1000000*sign, 1) .. 'm'
+--     elseif number > 1000 then
+--         return DF.math.round(number/1000*sign, 1) .. 'k'
+--     end
+
+--     return number * sign
+-- end
 function DF.math.abbreviate(number)
-    if type(number) ~= 'number' then return number end
-
-    local sign = number < 0 and -1 or 1
-    number = math.abs(number)
-
-    if number > 1000000 then
-        return DF.math.round(number/1000000*sign, 1) .. 'm'
-    elseif number > 1000 then
-        return DF.math.round(number/1000*sign, 1) .. 'k'
+    local sign = number < 0 and '-' or ''
+    local abs = math.abs(number)
+    if abs >= 1000000 then
+        return sign..string.format('%.1fm', abs / 1000000)
+    elseif abs >= 1000 then
+        return sign..string.format('%.1fk', abs / 1000)
     end
-
-    return number * sign
+    return number
 end
 
 -- isEven: checks if number is even

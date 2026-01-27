@@ -44,7 +44,7 @@ DF:NewDefaults('raid', {
     gradientLow = {value = {1, 0, 0}, metadata = {element = 'colorpicker', category = 'Gradient Colors', indexInCategory = 1, description = 'Low HP color'}},
     gradientMid = {value = {1, 1, 0}, metadata = {element = 'colorpicker', category = 'Gradient Colors', indexInCategory = 2, description = 'Mid HP color'}},
     gradientHigh = {value = {0, 1, 0}, metadata = {element = 'colorpicker', category = 'Gradient Colors', indexInCategory = 3, description = 'High HP color'}},
-    range = {value = 10, metadata = {element = 'slider', category = 'Range', indexInCategory = 1, description = 'Range fade distance', min = 5, max = 50, stepSize = 1}},
+    range = {value = 40, metadata = {element = 'slider', category = 'Range', indexInCategory = 1, description = 'Range fade distance', min = 5, max = 50, stepSize = 1}},
     rangeFading = {value = 'gradient', metadata = {element = 'dropdown', category = 'Range', indexInCategory = 2, description = 'Out of range fading mode', options = {'off', 'instant', 'gradient'}}},
     minAlpha = {value = 0.1, metadata = {element = 'slider', category = 'Range', indexInCategory = 3, description = 'Minimum alpha for fade out', min = 0, max = 1, stepSize = 0.05}},
     specialUpdateRate = {value = 0.5, metadata = {element = 'slider', category = 'Focus Frame', indexInCategory = 1, description = 'Focus frame update rate (0.1s - 1s)', min = 0.1, max = 1, stepSize = 0.1}},
@@ -59,7 +59,6 @@ DF:NewModule('raid', 1, function()
     local tinsert = table.insert
     local tsort = table.sort
     local type = type
-    local tostring = tostring
 
     local UnitExists = UnitExists
     local UnitHealth = UnitHealth
@@ -76,7 +75,7 @@ DF:NewModule('raid', 1, function()
     local GetRaidTargetIndex = GetRaidTargetIndex
     local GetRaidRosterInfo = GetRaidRosterInfo
     local GetTime = GetTime
-
+    local abbreviate = DF.math.abbreviate
 
     local setup = {
         frameWidth = 70,
@@ -518,24 +517,14 @@ DF:NewModule('raid', 1, function()
     end)
 
     -- methods
-    function setup:AbbreviateNumber(num)
-        if num >= 1000000 then
-            return string.format('%.1fm', num / 1000000)
-        elseif num >= 1000 then
-            return string.format('%.1fk', num / 1000)
-        else
-            return tostring(num)
-        end
-    end
-
     function setup:SetHPText(hpText, hp, maxhp, format)
         local style = DF.profile.raid.hpTextStyle
         local text = ''
         if format == 'current' then
-            text = style == 'abbreviated' and self:AbbreviateNumber(hp) or hp
+            text = style == 'abbreviated' and abbreviate(hp) or hp
         elseif format == 'cur/max' then
             if style == 'abbreviated' then
-                text = self:AbbreviateNumber(hp)..'/'..self:AbbreviateNumber(maxhp)
+                text = abbreviate(hp)..'/'..abbreviate(maxhp)
             else
                 text = hp..'/'..maxhp
             end
@@ -544,7 +533,7 @@ DF:NewModule('raid', 1, function()
             if missing == 0 then
                 text = ''
             else
-                text = style == 'abbreviated' and self:AbbreviateNumber(missing) or missing
+                text = style == 'abbreviated' and abbreviate(missing) or missing
             end
         end
         hpText:SetText(text)
@@ -719,7 +708,6 @@ DF:NewModule('raid', 1, function()
             return
         end
 
-        -- gradient mode
         if not frame.alphaAnim then
             frame.alphaAnim = {target = targetAlpha, start = frame:GetAlpha(), elapsed = 0, duration = 0.2}
         else
