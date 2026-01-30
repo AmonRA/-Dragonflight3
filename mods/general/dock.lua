@@ -638,11 +638,19 @@ DF:NewModule('dock', 1, 'PLAYER_AFTER_ENTERING_WORLD',function()
     eventFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
     eventFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     eventFrame:SetScript('OnEvent', function()
-        if event == 'PLAYER_XP_UPDATE' and DF.profile.dock.sector2Widget == 'exp' then
-            widget:EXP(sectors[2])
+        if event == 'PLAYER_XP_UPDATE' then
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'exp' then
+                    widget:EXP(sectors[i])
+                end
+            end
         end
-        if event == 'PLAYER_MONEY' and DF.profile.dock.sector3Widget == 'gold' then
-            widget:Gold(sectors[3])
+        if event == 'PLAYER_MONEY' then
+            for i = 1, 6 do
+                if DF.profile.dock['sector'..i..'Widget'] == 'gold' then
+                    widget:Gold(sectors[i])
+                end
+            end
         end
         if event == 'FRIENDLIST_UPDATE' then
             for i = 1, 6 do

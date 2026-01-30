@@ -881,6 +881,7 @@ function setup:UpdateDebuffs(unitFrame, buffRows)
             end
             if stacks and stacks > 1 then
                 unitFrame.debuffs[i].count:SetText(stacks)
+                unitFrame.debuffs[i].count:SetTextColor(0, 1, 0)
                 unitFrame.debuffs[i].count:Show()
             else
                 unitFrame.debuffs[i].count:Hide()
