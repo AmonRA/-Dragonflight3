@@ -51,6 +51,39 @@ DF:NewModule('micro', 1, 'PLAYER_LOGIN', function()
         if data.name == 'Spellbook' then globalName = 'SPELLBOOK_ABILITIES_BUTTON' end
         if data.name == 'Socials' then globalName = 'SOCIAL_BUTTON' end
         local tooltipText = _G[globalName] or data.name
+
+        if data.name == 'EBC' then
+            tooltipText = 'Everlook Broadcasting Co.'
+
+            GameTooltip:SetText(tooltipText, 1.0, 1.0, 1.0)
+            GameTooltip:AddLine('Listen to some awesome tunes while', 1, 0.82, 0)
+            GameTooltip:AddLine('you play Turtle WoW.', 1, 0.82, 0)
+
+            GameTooltip:Show()
+            return
+        end
+
+        if data.name == 'LFT' then
+            tooltipText = 'Looking for Team'
+
+            GameTooltip:SetText(tooltipText, 1.0, 1.0, 1.0)
+            GameTooltip:AddLine('Open the the Group Finder interface to find a team,', 1, 0.82, 0)
+            GameTooltip:AddLine('be aware that you must travel to the dungeon manually.', 1, 0.82, 0)
+            GameTooltip:Show()
+            return
+        end
+
+        if data.name == 'PVP' then
+            tooltipText = 'Player vs Player'
+
+            GameTooltip:SetText(tooltipText, 1.0, 1.0, 1.0)
+            GameTooltip:AddLine('Queue for battlegrounds and view PvP statistics,', 1, 0.82, 0)
+            GameTooltip:Show()
+            return
+        end
+
+
+
         local keyBinding = GetBindingKey(data.action)
         if keyBinding then
             tooltipText = tooltipText..' '..NORMAL_FONT_COLOR_CODE..'('..keyBinding..')'..FONT_COLOR_CODE_CLOSE

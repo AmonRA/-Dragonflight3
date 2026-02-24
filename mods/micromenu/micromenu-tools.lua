@@ -15,6 +15,9 @@ local setup = {
         {name = 'QuestLog', icon = 'quest', func = function() ToggleQuestLog() end, action = 'TOGGLEQUESTLOG'},
         {name = 'Socials', icon = 'tabard', func = function() ToggleFriendsFrame() end, action = 'TOGGLESOCIAL'},
         {name = 'WorldMap', icon = 'shield', func = function() ToggleWorldMap() end, action = 'TOGGLEWORLDMAP'},
+        {name = 'PVP', icon = 'book', func = function() if BattlefieldFrame:IsVisible() then ToggleGameMenu() else ShowTWBGQueueMenu() end end, action = 'TOGGLEPVP'},
+        {name = 'LFT', icon = 'eye', func = function() LFT_Toggle() end, action = 'TOGGLELFT'},
+        {name = 'EBC', icon = 'horseshoe', func = function() ShowEBCMinimapDropdown() EBCMinimapDropdown:ClearAllPoints() EBCMinimapDropdown:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -60, 60) end, action = 'TOGGLEEBC'},
         {name = 'MainMenu', icon = 'wow', func = function() ToggleGameMenu(1) end, action = 'TOGGLEGAMEMENU'},
         {name = 'Help', icon = 'question', func = function() ToggleHelpFrame() end, action = 'TOGGLEHELP'}
     },
@@ -138,6 +141,10 @@ function setup:UpdateButtonStates()
         elseif data.name == 'Socials' and FriendsFrame:IsVisible() then
             isPushed = true
         elseif data.name == 'WorldMap' and WorldMapFrame:IsVisible() then
+            isPushed = true
+        elseif data.name == 'LFT' and LFTFrame:IsVisible() then
+            isPushed = true
+        elseif data.name == 'PVP' and BattlefieldFrame:IsVisible() then
             isPushed = true
         elseif data.name == 'MainMenu' and (GameMenuFrame:IsVisible() or OptionsFrame:IsVisible()) then
             isPushed = true
