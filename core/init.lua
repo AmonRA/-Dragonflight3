@@ -8,8 +8,7 @@ local init = {
 }
 
 DF.others.blacklist = {
--- Remove check for blacklisted addons
---    '-DragonflightReloaded', 'ShaguTweaks', 'ShaguTweaks-extras', 'ShaguTweaks-mods',
+    '-DragonflightReloaded', 'ShaguTweaks', 'ShaguTweaks-extras', 'ShaguTweaks-mods',
 }
 
 DF.others.blacklistFound = false
@@ -208,9 +207,7 @@ function init:Finalize()
 end
 
 function init:InitDF()
-    
-    -- ** Disable DF3 Chat Sync **
-    --if not DF.others.syncActive then return end
+    if not DF.others.syncActive then return end
 
     init:DetectServer()
 
