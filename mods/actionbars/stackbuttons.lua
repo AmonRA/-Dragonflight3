@@ -327,6 +327,63 @@ DF:NewModule('stackbuttons', 2, 'PLAYER_LOGIN', function()
 
         self.otherScroll.content:SetHeight((row + 1) * (btnSize + spacing))
         self.otherScroll.updateScrollBar()
+    
+        -- Fix delayed icon refresh for stacks editor (fixes red ? on first load)
+        local elapsed = 0
+        local refreshFrame = CreateFrame("Frame")
+        refreshFrame:SetScript("OnUpdate", function()
+            elapsed = elapsed + arg1
+            if elapsed >= 2.5 then
+                refreshFrame:SetScript("OnUpdate", nil)
+                refreshFrame:Hide()
+        
+                -- Refresh spell buttons
+                if stack.allSpellButtons then
+                    for _, btn in pairs(stack.allSpellButtons) do
+                        if btn.spellID then
+                            local tex = GetSpellTexture(btn.spellID, BOOKTYPE_SPELL)
+                            if tex and btn.icon then
+                                btn.icon:SetTexture(tex)
+                            end
+                        end
+                    end
+                end
+        
+                -- Refresh item buttons (inv + bags)
+                if stack.allItemButtons then
+                    for _, btn in pairs(stack.allItemButtons) do
+                        local tex
+                        if btn.invSlot then
+                            tex = GetInventoryItemTexture('player', btn.invSlot)
+                        elseif btn.bagID and btn.slotID then
+                            tex = GetContainerItemInfo(btn.bagID, btn.slotID)  -- 1.12: direct first return (texture)
+                        end
+                        if tex and btn.icon then
+                            btn.icon:SetTexture(tex)
+                            -- Bonus: Update count if exists (mirrors RefreshData)
+                            if btn.countText then
+                                local _, count = GetContainerItemInfo(btn.bagID, btn.slotID)
+                                btn.countText:SetText(count > 1 and count or '')
+                            end
+                        end
+                    end
+                end
+        
+                -- Refresh editor slot buttons (from saved data)
+                if stack.slotButtons then
+                    for _, btn in pairs(stack.slotButtons) do
+                        local data = DF_CharData[btn.btnID] or {}
+                        local tex = data.texture or data.icon  -- Matches saved format
+                        if tex and btn.icon then
+                            btn.icon:SetTexture(tex)
+                        end
+                    end
+                end
+                -- Optional debug (remove after testing)
+                -- print("|cffff0000DF Stacks Editor|r: Icons refreshed (no more red ?)!")
+            end
+        end)
+        -- end Fix
     end
 
     function stack:FilterButtons(searchText)

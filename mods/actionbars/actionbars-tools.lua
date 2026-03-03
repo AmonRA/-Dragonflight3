@@ -1108,7 +1108,9 @@ function setup:OnEvent()
         end
     elseif event == 'UPDATE_BONUS_ACTIONBAR' then
         setup:UpdateBonusBarVisibility()
-        setup.hideEmptyTimer = 0.15
+        --setup.hideEmptyTimer = 0.15
+        setup:HideEmptyButtons()  -- immediate hide
+
     elseif event == 'PET_BAR_UPDATE' or event == 'PET_BAR_UPDATE_COOLDOWN' then
         for i = 1, table.getn(setup.petButtons) do
             local button = setup.petButtons[i]
@@ -1143,7 +1145,8 @@ function setup:OnEvent()
     elseif event == 'ACTIONBAR_SHOWGRID' then
         setup:ShowAllButtons()
     elseif event == 'ACTIONBAR_HIDEGRID' then
-        setup.hideEmptyTimer = 0.15
+        --setup.hideEmptyTimer = 0.15
+        setup:HideEmptyButtons()  -- immediate hide
     elseif event == 'BAG_UPDATE' then
         for _, bar in pairs(setup.bars) do
             for i = 1, table.getn(bar.buttons) do
@@ -1194,11 +1197,10 @@ function setup:InitUpdateTimer()
     end)
 end
 
--- init
 function setup:InitializeBar(bar)
+    -- Do all non-icon updates immediately (keybinds, counts, cooldowns, etc.)
     for i = 1, table.getn(bar.buttons) do
         local button = bar.buttons[i]
-        self:UpdateButtonIcon(button)
         self:UpdateButtonKeybind(button)
         self:UpdateButtonMacroText(button)
         self:UpdateButtonCount(button)
@@ -1206,7 +1208,29 @@ function setup:InitializeBar(bar)
         self:UpdateButtonUsable(button)
         self:UpdateButtonBorder(button)
     end
+    
+    -- Start the normal periodic timer right away
     self:InitUpdateTimer()
+    
+    -- Delay ONLY the icon updates (critical for first-load texture cache in 1.12)
+    -- Delay icons to prevent red ? textures on first load of the actionbar.
+    local elapsed = 0
+    local delayFrame = CreateFrame("Frame")
+    delayFrame:SetScript("OnUpdate", function()
+        elapsed = elapsed + arg1
+        if elapsed >= 2.5 then  -- Adjust 1.5–2.5s based on your tests
+            delayFrame:SetScript("OnUpdate", nil)
+            delayFrame:Hide()
+            
+            -- Now apply icons safely after delay
+            for i = 1, table.getn(bar.buttons) do
+                self:UpdateButtonIcon(bar.buttons[i])
+            end
+            
+            -- Optional debug
+            -- print("|cffff0000DF|r: Icons initialized for bar " .. (bar:GetName() or "unnamed") .. " after delay")
+        end
+    end)
 end
 
 function setup:GenerateDefaults()
