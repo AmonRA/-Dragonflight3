@@ -58,7 +58,7 @@ DF:NewModule('lootframe', 1, function()
     })
     topBg:SetBackdropColor(0, 0, 0, 0.5)
 
-    tinsert(UISpecialFrames, 'DF_LootCustomBg')
+
 
     DF.hooks.HookScript(LootFrame, 'OnShow', function()
         LootFrame:ClearAllPoints()

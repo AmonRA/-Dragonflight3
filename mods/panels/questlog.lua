@@ -24,7 +24,7 @@ DF:NewModule('questlog', 1, function()
     customBg:SetFrameLevel(QuestLogFrame:GetFrameLevel() - 1)
     DF.setups.questlogBg = customBg.Bg
 
-    tinsert(UISpecialFrames, 'DF_QuestLogCustomBg')
+
 
     local topWood = customBg:CreateTexture(nil, 'BORDER')
     topWood:SetTexture(media['tex:panels:spellbook_top_wood.blp'])

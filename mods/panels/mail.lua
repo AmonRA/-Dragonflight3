@@ -51,7 +51,7 @@ DF:NewModule('mail', 1, function()
         MailFrameTab_OnClick(2)
     end, 75)
 
-    tinsert(UISpecialFrames, 'DF_MailCustomBg')
+
 
     local callbacks = {}
     DF:NewCallbacks('mail', callbacks)

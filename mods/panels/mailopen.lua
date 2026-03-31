@@ -44,7 +44,7 @@ DF:NewModule('mailopen', 1, function()
     closeButton:SetSize(20, 20)
     closeButton:SetFrameLevel(customBg:GetFrameLevel() + 3)
 
-    tinsert(UISpecialFrames, 'DF_OpenMailCustomBg')
+
 
     local callbacks = {}
     DF:NewCallbacks('mailopen', callbacks)

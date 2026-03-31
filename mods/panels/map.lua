@@ -41,7 +41,7 @@ DF:NewModule('map', 1, 'PLAYER_ENTERING_WORLD',function()
     closeButton:SetSize(20, 20)
     closeButton:SetFrameLevel(customBg:GetFrameLevel() + 3)
 
-    tinsert(UISpecialFrames, 'DF_MapCustomBg')
+
 
     WorldMapFrame:ClearAllPoints()
     WorldMapFrame:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)

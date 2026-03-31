@@ -59,7 +59,7 @@ DF:NewModule('questframe', 1, function()
         QuestFrameCompleteQuestButton:SetPoint('BOTTOMLEFT', customBg, 'BOTTOMLEFT', 4, 3)
     end
 
-    tinsert(UISpecialFrames, 'DF_QuestCustomBg')
+
 
     local callbacks = {}
     DF:NewCallbacks('questframe', callbacks)

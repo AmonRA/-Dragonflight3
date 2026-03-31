@@ -50,7 +50,7 @@
 
 --     DF.mixins.AddInspectTalentTab(customBg)
 
---     tinsert(UISpecialFrames, 'DF_InspectCustomBg')
+
 
 --     local callbacks = {}
 --     DF:NewCallbacks('inspect', callbacks)

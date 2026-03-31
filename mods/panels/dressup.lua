@@ -37,7 +37,7 @@ DF:NewModule('dressup', 1, function()
     closeButton:SetSize(20, 20)
     closeButton:SetFrameLevel(customBg:GetFrameLevel() + 3)
 
-    tinsert(UISpecialFrames, 'DF_DressUpCustomBg')
+
 
     local callbacks = {}
     DF:NewCallbacks('dressup', callbacks)

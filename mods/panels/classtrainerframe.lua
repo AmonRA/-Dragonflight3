@@ -87,7 +87,7 @@ DF:NewModule('classtrainerframe', 1, function()
         closeButton:SetSize(20, 20)
         closeButton:SetFrameLevel(customBg:GetFrameLevel() + 3)
 
-        tinsert(UISpecialFrames, 'DF_ClassTrainerCustomBg')
+
     end
 
     local frame = CreateFrame('Frame')

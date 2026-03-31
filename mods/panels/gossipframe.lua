@@ -63,7 +63,7 @@ DF:NewModule('gossipframe', 1, function()
         GossipFrameNpcNameText:SetPoint('TOP', customBg, 'TOP', 0, -6)
     end
 
-    tinsert(UISpecialFrames, 'DF_GossipCustomBg')
+
 
     local callbacks = {}
     DF:NewCallbacks('gossipframe', callbacks)

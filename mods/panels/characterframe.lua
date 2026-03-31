@@ -117,7 +117,7 @@ DF:NewModule('characterframe', 1,'PLAYER_ENTERING_WORLD',function()
 
     customBg:UpdatePetTab()
 
-    tinsert(UISpecialFrames, 'DF_CharacterCustomBg')
+
 
     DF.hooks.Hook('ToggleCharacter', function(tab)
         DF.hooks.registry[_G]['ToggleCharacter'](tab)

@@ -116,7 +116,7 @@ DF:NewModule('socialframe', 1, 'PLAYER_ENTERING_WORLD', function()
         FriendsFrame_Update()
     end, 60)
 
-    tinsert(UISpecialFrames, 'DF_FriendsCustomBg')
+
 
     local originalToggleFriendsFrame = _G.ToggleFriendsFrame
     _G.ToggleFriendsFrame = function(tab)
